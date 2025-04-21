@@ -1,43 +1,60 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') | Admin Panel</title>
+    <!-- Hapus referensi vite sepenuhnya, bukan hanya dikomentari -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tambahkan konfigurasi Tailwind untuk warna kustom -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        purple: {
+                            light: '#e3d3f9',
+                            medium: '#cbb0ec',
+                            dark: '#3a2e52'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-100 font-sans">
-
-    <div class="flex h-screen">
+<body class="bg-[#f9f9fb] text-[#3a2e52] font-inter">
+    <!-- Template content tetap sama -->
+    <div class="flex min-h-screen">
         <!-- Sidebar -->
-        <aside class="w-64 bg-white shadow-md px-4 py-6">
-            <div class="text-2xl font-bold text-purple-700 mb-10">Festify Admin</div>
-            <nav class="flex flex-col space-y-4">
-                <a href="#" class="text-gray-700 hover:text-purple-600">Dashboard</a>
-                <a href="#" class="text-gray-700 hover:text-purple-600">User</a>
-                <a href="#" class="text-gray-700 hover:text-purple-600">Product</a>
-                <a href="#" class="text-gray-700 hover:text-purple-600">Orders</a>
+        <aside class="w-64 bg-white border-r flex flex-col p-6">
+            <h2 class="text-2xl font-bold mb-6">Hi, Admin!</h2>
+            <nav class="space-y-4">
+                <a href="/dashboard" class="block py-2 px-4 rounded-full text-center font-semibold bg-[#e3d3f9] text-[#3a2e52] hover:bg-[#cbb0ec]">Dashboard</a>
+                <a href="/users" class="block py-2 px-4 rounded-full text-center hover:bg-[#eee]">User</a>
+                <a href="/products" class="block py-2 px-4 rounded-full text-center hover:bg-[#eee]">Product</a>
+                <a href="/orders" class="block py-2 px-4 rounded-full text-center hover:bg-[#eee]">Orders</a>
             </nav>
         </aside>
 
-        <!-- Main content -->
+        <!-- Content -->
         <div class="flex-1 flex flex-col">
             <!-- Navbar -->
-            <header class="bg-white shadow px-6 py-4 flex justify-between items-center">
-                <div class="text-xl font-bold text-purple-600">Logo Festify</div>
-                <div class="flex items-center space-x-6">
-                    <span class="text-gray-700">Halo, {{ Auth::user()->username ?? 'Guest' }}</span>
-                    <button class="text-gray-600 hover:text-purple-600 text-xl">🔔</button>
-                    <button class="text-gray-600 hover:text-purple-600 text-xl">👤</button>
-                </div>
-            </header>
+            <header class="flex items-center justify-between px-6 py-4 border-b bg-white">
+            <div></div>
+            <div class="text-xl font-bold">
+                <img src="images\logofestify.png" alt="Festify Logo" class="h-10">
+            </div>
+            <div class="flex items-center gap-4">
+                <button>🔔</button>
+                <button>👤</button>
+            </div>
+        </header>
 
-            <!-- Content -->
-            <main class="flex-1 p-6 overflow-y-auto">
+            <!-- Page Content -->
+            <main class="p-6">
                 @yield('content')
             </main>
         </div>
     </div>
-
 </body>
 </html>
