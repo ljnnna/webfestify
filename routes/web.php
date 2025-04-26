@@ -9,3 +9,15 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index']);
 //->middleware('auth')->name('dashboard');
+
+Route::get('/cartpage', function () {
+   return view('cartpage');
+});
+
+Route::get('/halaman_pencarian', function () {
+   return view('halaman_pencarian');
+});
+
+
+
+
