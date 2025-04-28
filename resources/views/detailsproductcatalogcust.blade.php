@@ -32,7 +32,7 @@
     style="background: linear-gradient(to right, #eae1f9, #f5edfb)">
     <!-- Logo & Menu -->
     <div class="flex items-center space-x-6">
-      <img alt="Festify" class="h-10 w-auto" height="40" src="image/logofestify.png" width="100" />
+      <img alt="Festify" class="h-10 w-auto" height="40" src="images/logofestify.png" width="100" />
       <ul class="hidden md:flex space-x-8 text-[#493862] font-semibold text-base">
         <li>
           <a class="hover:underline" href="#"> HOME </a>
