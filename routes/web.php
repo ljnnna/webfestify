@@ -18,6 +18,9 @@ Route::get('/halaman_pencarian', function () {
    return view('halaman_pencarian');
 });
 
+Route::get('/detailsproductcatalogcust', function () {
+   return view('detailsproductcataogcust');
+});
 
 
 
