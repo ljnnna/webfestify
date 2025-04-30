@@ -29,7 +29,7 @@
           alt="Festify"
           class="h-10 w-auto"
           height="40"
-          src="logofestify.png"
+          src="images/logofestify.png"
           width="100"
         />
         <ul

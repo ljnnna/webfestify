@@ -19,8 +19,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
-
 Route::get('/cartpage', function () {
     return view('cart');
 });
@@ -29,12 +27,12 @@ Route::get('/detailsproductcatalogcust', function () {
     return view('detailsproductcatalogcust');
 });
 
-// Route ke form login custom
+// Route ke form login
 Route::get('/login', function () {
     return view('login'); // view login buatanmu
 })->name('login');
 
-// Route ke form register custom
+// Route ke form register
 Route::get('/register', function () {
     return view('register'); // view register buatanmu
 })->name('register');
@@ -47,7 +45,4 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 
 // Logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
-
-
-
-                                                                                                                                                                                                 
+                                                                                                                                                                                         
