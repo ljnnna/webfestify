@@ -16,27 +16,3 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-<<<<<<< HEAD
-Route::get('/halaman_pencarian', function () {
-   return view('halaman_pencarian');
-});
-
-Route::get('/detailsproductcatalogcust', function () {
-<<<<<<< HEAD
-   return view('detailsproductcatalogcust');
-});
-
-Route::get('/catalogcust', function () {
-   return view('catalogcust');
-});
-=======
-   return view('detailsproductcataogcust');
-});
-
-
-
-=======
-require __DIR__.'/auth.php';
->>>>>>> f38462f579100675f2d9ab345e3e76b23fec9d4d
->>>>>>> 10160e801d5779e4345bb5dd6b71fdc55802826d
