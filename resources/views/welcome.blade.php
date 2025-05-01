@@ -173,8 +173,45 @@
       </div>
     </section>
 
+    <!-- Why Renting Section -->
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center p-6 bg-white">
+    <div class="space-y-8">
+    <h2 class="text-3xl font-bold text-gray-900">Why renting just make sense?</h2>
+
+    <div class="flex items-start space-x-4">
+      <div class="w-4 h-4 mt-1 rounded-full bg-purple-300"></div>
+      <div>
+        <h3 class="font-bold text-gray-900">Save Your Money for the Ticket, Not the Gear</h3>
+        <p class="text-gray-600">High-end cameras and phones cost a lot. Why spend millions for something you’ll only use once or twice?</p>
+      </div>
+    </div>
+
+    <div class="flex items-start space-x-4">
+      <div class="w-4 h-4 mt-1 rounded-full bg-purple-300"></div>
+      <div>
+        <h3 class="font-bold text-gray-900">Get That Pro Quality Without Owning It</h3>
+        <p class="text-gray-600">Our tools are top-tier, so you can capture every concert moment like a pro — without the price tag.</p>
+      </div>
+    </div>
+
+    <div class="flex items-start space-x-4">
+      <div class="w-4 h-4 mt-1 rounded-full bg-purple-300"></div>
+      <div>
+        <h3 class="font-bold text-gray-900">Fast, Easy, No Drama</h3>
+        <p class="text-gray-600">Pick. Rent. Rock. We make it quick and simple so you can focus on the fun part.</p>
+      </div>
+    </div>
+  </div>
+  <div>
+    <img src="{{ asset ('images/banner.png') }}"
+         alt="Concert crowd"
+         class="shadow-md w-full h-auto object-cover">
+  </div>
+</div>
+
+
     <!-- Testimonials -->
-    <div class="bg-gradient-to-b from-pink-100 to-purple-100 py-10 px-4 sm:px-6 lg:px-8 text-center">
+    <div class="bg-gradient-to-b from-pink-100 to-purple-100 mt-12 py-10 px-4 sm:px-6 lg:px-8 text-center">
   <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">What they say</h2>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
     <!-- Card 1 -->
@@ -203,7 +240,6 @@
     </div>
   </div>
 </div>
-
 
     <!-- Footer -->
 <footer class="bg-gradient-to-r from-purple-200 to-purple-100 dark:bg-gray-900">
