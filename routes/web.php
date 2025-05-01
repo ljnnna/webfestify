@@ -45,4 +45,6 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 
 // Logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+
+
                                                                                                                                                                                          

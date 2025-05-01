@@ -56,7 +56,7 @@
           class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-300">
       </div>
 
-      <!-- Tombol login -->
+      <!-- submit -->
       <div>
         <button type="submit"
           class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 rounded-full transition duration-300">
@@ -67,7 +67,7 @@
       <!-- Link register -->
       <div class="text-center text-sm">
         Don’t have an account?
-        <a href="register.html" class="text-purple-600 font-semibold hover:underline">Register</a>
+        <a href="{{ route ('register') }}" class="text-purple-600 font-semibold hover:underline">Register</a>
       </div>
     </form>
   </div>
