@@ -9,9 +9,29 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Admin ----------------------------------------------------------------
+
+use App\Http\Controllers\DashboardController;
+
+Route::get('/dashboardfest', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+Route::get('/userfest', function () {
+    return view('admin.admincostumer');
+});
+
+use App\Http\Controllers\ProductController;
+
+Route::prefix('admin')->group(function () {
+    Route::resource('product', ProductController::class);
+});
+
+// Customer -------------------------------------------------------------
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/users', [UsersController::class, 'index']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
