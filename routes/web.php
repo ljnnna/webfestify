@@ -63,6 +63,6 @@ Route::get('/learnmore', function () {
 });
 
 Route::get('/searchpage', function () {
-    return view('customer.searchchpage');
+    return view('customer.searchpage');
 });
                                                                                                                                                                                          
