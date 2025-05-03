@@ -62,7 +62,7 @@ Route::get('/learnmore', function () {
     return view('learnmore');
 });
 
-Route::get('customer/search', function () {
-    return view('customer.searchpage');
+Route::get('/searchpage', function () {
+    return view('customer.searchchpage');
 });
                                                                                                                                                                                          
