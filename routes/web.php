@@ -29,7 +29,8 @@ Route::prefix('admin')->group(function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+});
+// ->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/users', [UsersController::class, 'index']);
 
@@ -58,6 +59,14 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 // Logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
+Route::get('/home', function () {
+    return view('customer.homepage');
+});
+
+Route::get('/katalogmerch', function () {
+    return view('customer.katalog_merch');
+});
+
 Route::get('/learnmore', function () {
     return view('learnmore');
 });
@@ -66,5 +75,10 @@ Route::get('/searchpage', function () {
     return view('customer.searchpage');
 });
 
-
+Route::get('/cartpage', function () {
+    return view('customer.cartpage');
+});
                                                                                                                                                                                          
+Route::get('/payment', function () {
+    return view('customer.paymentcust');
+});
