@@ -65,4 +65,6 @@ Route::get('/learnmore', function () {
 Route::get('/searchpage', function () {
     return view('customer.searchpage');
 });
+
+
                                                                                                                                                                                          
