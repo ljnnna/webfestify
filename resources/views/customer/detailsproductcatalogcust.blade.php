@@ -117,28 +117,6 @@
         </h1>
         <p class="text-[#7F5CB2] text-xl mb-6">Rp.250.000/day</p>
 
-        <!-- Pilih Versi -->
-        <div class="mb-6">
-          <h2 class="text-[#493862] font-bold text-lg mb-2">Version</h2>
-          <div class="flex space-x-4" id="version-buttons">
-            <button class="version-btn bg-[#EFD0EF] text-white font-semibold rounded-full px-6 py-2" data-version="1">
-              1
-            </button>
-            <button class="version-btn border border-gray-300 text-[#8B7CC4] font-semibold rounded-full px-6 py-2"
-              data-version="2">
-              2
-            </button>
-            <button class="version-btn border border-gray-300 text-[#8B7CC4] font-semibold rounded-full px-6 py-2"
-              data-version="3">
-              3
-            </button>
-            <button class="version-btn border border-gray-300 text-[#8B7CC4] font-semibold rounded-full px-6 py-2"
-              data-version="4">
-              4
-            </button>
-          </div>
-        </div>
-
         <!-- Jumlah & Aksi -->
         <div class="mb-6 flex items-center space-x-4">
           <div aria-label="Quantity selector"
@@ -487,31 +465,7 @@
     });
 
     updateActiveThumbnail();
-
-    // Pilih versi lightstick
-    const versionButtons = document.querySelectorAll(".version-btn");
-    versionButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        versionButtons.forEach((b) => {
-          b.classList.remove("bg-[#EFD0EF]", "text-white");
-          b.classList.add("border", "border-gray-300", "text-[#8B7CC4]");
-        });
-
-        // Tambahkan style ke tombol yang diklik
-        btn.classList.remove("border", "border-gray-300", "text-[#8B7CC4]");
-        btn.classList.add("bg-[#EFD0EF]", "text-white");
-
-        // Ambil versi terpilih
-        const selectedVersion = btn.getAttribute("data-version");
-
-        // Ganti gambar utama berdasarkan versi
-        currentIndex = selectedVersion - 1;
-        mainImage.src = thumbnails[currentIndex];
-
-        // Perbarui status thumbnail
-        updateActiveThumbnail();
-      });
-    });
+    
 
     // Tambah/Kurang Quantity
     const decreaseBtn = document.querySelector(

@@ -87,7 +87,7 @@
         <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white md:text-5xl lg:text-6xl dark:text-white">OWN THE MOMENT</h1>
         <p class="mb-8 text-lg font-normal text-white lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">Here at Festify we focus on markets where music and experience can unlock long-term memories.</p>
         <div class="flex flex-col mb-8 space-y-4 lg:mb-16 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-            <a href="#" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white bg-purple-500 rounded-lg hover:bg-purple-600 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+            <a href="/learnmore" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white bg-purple-500 rounded-lg hover:bg-purple-600 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
                 Learn more
                 <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
             </a>
@@ -134,9 +134,9 @@
     <div class="items-center max-w-screen-xl gap-16 px-4 py-8 mx-auto lg:grid lg:grid-cols-2 lg:py-16 lg:px-6">
         <div class="text-gray-500 sm:text-lg dark:text-gray-400">
             <h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">About Festify</h2>
-            <p class="mb-4">Festify hadir untuk membuat pengalaman konser kamu jadi lebih praktis dan terjangkau. Tak perlu lagi membeli lightstick mahal atau kamera profesional hanya untuk satu acara. Melalui layanan sewa kami, kamu bisa mendapatkan perlengkapan seperti lightstick, kursi kayu lipat kecil, hingga kamera handphone berkualitas tinggi dengan mudah dan hemat. 
-                Tujuan kami sederhana — agar setiap orang yang mencintai konser bisa menikmati momen terbaiknya tanpa ribet dan tanpa harus mengeluarkan banyak uang..</p>
-            <p>.</p>
+            <p class="mb-4">Festify is here to make your concert experience more practical and affordable.
+                No more spending a fortune on lightsticks or professional cameras for just one event. With our rental services, you can easily and affordably access essentials like lightsticks, compact folding chairs, and high-quality phone cameras. Our goal is simple — to help every concert lover enjoy their best moments without hassle and without breaking the bank.
+            </p>
         </div>
         <div class="grid grid-cols-2 gap-4 mt-8">
             <img class="w-full rounded-lg" src="{{ asset ('images/merchkpop.jpg') }}" alt="office content 1">
@@ -144,25 +144,6 @@
         </div>
     </div>
 </section>
-
-    <!-- Why Renting Section -->
-    <!-- <section class="mb-20 max-w-4xl mx-auto px-4 sm:px-0">
-      <h3 class="text-2xl font-semibold text-gray-900 mb-8">Why renting just make sense?</h3>
-      <ul class="space-y-8 text-gray-700 text-sm leading-relaxed">
-        <li class="flex items-start space-x-4">
-          <div class="w-5 h-5 rounded-full bg-purple-300 mt-1"></div>
-          <p><span class="font-semibold text-gray-900">Save Your Money for The Travel, Not the Gear</span><br />High-end cameras and portable gear is costly. Why spend your savings on something you could just rent?</p>
-        </li>
-        <li class="flex items-start space-x-4">
-          <div class="w-5 h-5 rounded-full bg-purple-300 mt-1"></div>
-          <p><span class="font-semibold text-gray-900">Get That Pro Quality Without Owning It</span><br />Our tools are top-tier, so you can capture every moment transient like a pro — without the extra cost.</p>
-        </li>
-        <li class="flex items-start space-x-4">
-          <div class="w-5 h-5 rounded-full bg-purple-300 mt-1"></div>
-          <p><span class="font-semibold text-gray-900">Fast, Easy, No Drama</span><br />Rent, return, repeat. We make it quick and simple so you can feel focus on the fun part.</p>
-        </li>
-      </ul>
-    </section> -->
 
     <!-- Popular Product Section -->
     <section class="mb-20 max-w-7xl mx-auto px-6 sm:px-10 bg-gradient-to-b from-pink-100 to-purple-100 py-10 ">

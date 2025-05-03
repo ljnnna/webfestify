@@ -39,14 +39,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/cartpage', function () {
-    return view('cart');
-});
-
-Route::get('/detailsproductcatalogcust', function () {
-    return view('detailsproductcatalogcust');
-});
-
 // Route ke form login
 Route::get('/login', function () {
     return view('login'); // view login buatanmu
@@ -66,5 +58,11 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 // Logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
+Route::get('/learnmore', function () {
+    return view('learnmore');
+});
 
+Route::get('/searchpage', function () {
+    return view('customer.searchchpage');
+});
                                                                                                                                                                                          
