@@ -117,13 +117,7 @@
         Select Payment Method
        </option>
        <option>
-        Credit Card
-       </option>
-       <option>
-        Bank Transfer
-       </option>
-       <option>
-        Paypal
+        QRIS
        </option>
       </select>
      </div>
