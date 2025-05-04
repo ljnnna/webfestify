@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <title>Catalog Customer</title>
+    <title>Search Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet" />
@@ -100,16 +100,16 @@
                     Details
                 </a>
             </article>
-            <!-- Card 3 -->
-            <article class="bg-white rounded-xl shadow-md shadow-gray-300 p-4 flex flex-col items-center">
-                <img alt="Sony DSC-WX350"
+             <!-- Card 3 -->
+             <article class="bg-white rounded-xl shadow-md shadow-gray-300 p-4 flex flex-col items-center">
+                <img alt="Sony DSC-WX220, pink"
                     class="rounded-xl mb-4 w-full max-w-[250px] object-cover" height="250"
-                    src="https://camerok.com/images/DS/DSC-WX350P/8a8d/d/Sony-DSC-WX350-1.jpg" width="250" />
+                    src="https://thaka.bing.com/th/id/OIP.GYar-3p-ac5Q5eDg4mvKugHaHa?w=800&h=800&rs=1&pid=ImgDetMain" width="250" />
                 <h3 class="text-[#493862] font-semibold text-sm w-full mb-1">
-                Sony DSC-WX350
+                Sony Cybershot DSC-WX220 Point & Shoot
                 </h3>
                 <p class="text-[#493862] text-xs w-full mb-4">
-                    Rp275.000/day
+                    Rp170.000/day
                 </p>
                 <a href="details_product_catalog_customer.html"
                     class="bg-[#E6C7E9] text-[#6B5B8A] text-sm rounded-lg py-2 px-8 w-full max-w-[140px] text-center">
@@ -118,14 +118,14 @@
             </article>
             <!-- Card 4 -->
             <article class="bg-white rounded-xl shadow-md shadow-gray-300 p-4 flex flex-col items-center">
-                <img alt="Panasonic Lumix DMC-FZ150 Compact Digital Camera"
+                <img alt="Panasonic Lumix FZ40 Hybrid Superzoom Camera"
                     class="rounded-xl mb-4 w-full max-w-[250px] object-cover" height="250"
-                    src="https://www.ephotozine.com/articles/panasonic-lumix-dmc-fz150-compact-digital-camera-17284/images/highres-panasoniclumixdmcFZ150slant_1314347165.jpg" width="250" />
+                    src="https://th.bing.com/th/id/R.d534aa4be6568e744b3b809843c2ae79?rik=ydNBUVUbyuA7TQ&riu=http%3a%2f%2fwww.photographyreview.com%2freviews%2ffiles%2f2010%2f07%2ffz40-angle-flash.jpg&ehk=mT%2b5o%2fpmYu5k1EzdVCX1lGYOufgUztYipgNY0ScEazs%3d&risl=&pid=ImgRaw&r=0" width="250" />
                 <h3 class="text-[#493862] font-semibold text-sm w-full mb-1">
-                Panasonic Lumix DMC-FZ150 Compact Digital Camera
+                Panasonic Lumix FZ40 Hybrid Superzoom Camera
                 </h3>
                 <p class="text-[#493862] text-xs w-full mb-4">
-                    Rp250.000/day
+                    Rp225.000/day
                 </p>
                 <a href="details_product_catalog_customer.html"
                     class="bg-[#E6C7E9] text-[#6B5B8A] text-sm rounded-lg py-2 px-8 w-full max-w-[140px] text-center">
