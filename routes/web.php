@@ -72,8 +72,13 @@ Route::get('/paymentcust', function () {
 
 Route::get('/detailsproduct', function () {
     return view('customer.detailsproductcatalogcust');
-});                                                                                                                                                                                      
+});
+
+Route::get('/catalogcust', function () {
+    return view('customer.catalogcust');
+});
 
 Route::get('/cartpage', function () {
     return view('customer.cartpage');
 }); 
+
