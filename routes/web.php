@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\PageController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -74,11 +75,9 @@ Route::get('/detailsproduct', function () {
     return view('customer.detailsproductcatalogcust');
 });
 
-Route::get('/catalogcust', function () {
-    return view('customer.catalogcust');
-});
-
 Route::get('/cartpage', function () {
     return view('customer.cartpage');
 }); 
 
+
+Route::get('/catalog', [PageController::class, 'catalog']);
