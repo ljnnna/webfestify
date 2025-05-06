@@ -82,3 +82,7 @@ Route::get('/cartpage', function () {
     return view('customer.cartpage');
 }); 
 
+Route::get('/team', function () {
+    return view('team');
+});
+
