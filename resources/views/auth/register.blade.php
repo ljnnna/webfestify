@@ -1,4 +1,18 @@
 <x-guest-layout>
+    <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 to-purple-50">
+  <div class="w-full max-w-6xl h-auto md:h-[560px] flex flex-col md:flex-row rounded-3xl shadow-2xl overflow-hidden  bg-purple-50">    
+<div class="w-full max-w-6xl h-auto md:h-[560px] flex flex-col md:flex-row rounded-3xl shadow-2xl overflow-hidden bg-purple-100">
+        <!-- Kiri -->
+    <div class="w-full md:w-1/2 flex flex-col items-center justify-center bg-transparent p-10">
+      <img src="{{ asset('images/logofestify.png') }}" alt="Festify Logo" class="w-40 md:w-44 mb-6 animate-float">
+      <h2 class="text-3xl font-bold text-purple-900 text-center">WELCOME!</h2>
+      <p class="text-gray-600 mt-3 text-center">Sign in to continue</p>
+    </div>
+
+    <!-- Kanan -->
+    <form action="{{ route('login') }}" method="POST" class="w-full md:w-1/2 bg-white p-10 flex flex-col justify-center space-y-5">
+      <h2 class="text-2xl font-bold text-purple-600 text-center">LOGIN</h2>
+    @csrf
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
