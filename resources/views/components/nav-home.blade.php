@@ -8,7 +8,7 @@
 
       <!-- Desktop Nav -->
       <nav class="hidden md:flex space-x-8 font-semibold text-sm">
-        <a class="hover:opacity-35" href="{{ url('/homepage') }}">HOME</a>
+        <a class="hover:opacity-35" href="{{ url('/home') }}">HOME</a>
         <a class="hover:opacity-35" href="{{ url('/catalogcust') }}">CATALOG</a>
         <a class="hover:opacity-35" href="{{ url('/learnmore') }}">LEARN MORE</a>
         <a class="hover:opacity-35" href="https://mail.google.com/mail/?view=cm&fs=1&to=festify2b@gmail.com">CONTACT</a>
