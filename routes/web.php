@@ -42,7 +42,7 @@ Route::middleware('auth')->group(function () {
 
 // Route ke form login
 Route::get('/login', function () {
-    return view('login'); // view login buatanmu
+    return view('auth.login'); // view login buatanmu
 })->name('login');
 
 // Route ke form register
