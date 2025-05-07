@@ -88,6 +88,13 @@ Route::get('/team', function () {
 
 Route::get('/catalog', [CatalogController::class, 'catalog']);
 
+<<<<<<< HEAD
 Route::get('/payment', [PaymentController::class, 'payment']);
 
 Route::get('/detailsproduct', [DetailsController::class, 'details']);
+=======
+
+Route::get('/dashboard', [DashboardController::class, 'index']);
+//->middleware('auth')->name('dashboard');
+
+>>>>>>> 240addca493bdd70d77fc3b90c2b5ae19113b40c
