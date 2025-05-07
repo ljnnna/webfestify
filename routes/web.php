@@ -49,7 +49,7 @@ Route::get('/login', function () {
 
 // Route ke form register
 Route::get('/register', function () {
-    return view('register'); // view register buatanmu
+    return view('auth.register'); // view register buatanmu
 })->name('register');
 
 // Proses login

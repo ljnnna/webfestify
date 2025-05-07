@@ -23,6 +23,7 @@
     }
   </style>
 </head>
+
        
             <!-- Content Slot (Login/Register Forms) -->
             {{ $slot }}
