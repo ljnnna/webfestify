@@ -87,3 +87,7 @@ Route::get('/team', function () {
 
 
 Route::get('/catalog', [CatalogController::class, 'catalog']);
+
+Route::get('/payment', [PaymentController::class, 'payment']);
+
+Route::get('/details', [DetailsController::class, 'details']);
