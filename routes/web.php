@@ -90,3 +90,6 @@ Route::get('/catalog', [PageController::class, 'catalog']);
 Route::get('/dashboard', [DashboardController::class, 'index']);
 //->middleware('auth')->name('dashboard');
 
+Route::get('/home', function () {
+    return view('homepage');
+});
