@@ -4,7 +4,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\PageController;
+use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\DetailsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -84,5 +86,4 @@ Route::get('/team', function () {
 });
 
 
-Route::get('/catalog', [PageController::class, 'catalog']);
-
+Route::get('/catalog', [CatalogController::class, 'catalog']);
