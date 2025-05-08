@@ -56,6 +56,10 @@ Route::get('/learnmore', function () {
     return view('learnmore');
 });
 
+Route::get('/home', function () {
+    return view('homepage');
+});
+
 Route::get('/searchpage', function () {
     return view('customer.searchpage');
 });
@@ -73,8 +77,12 @@ Route::get('/team', function () {
     return view('team');
 });
 
-
 Route::get('/catalog', [CatalogController::class, 'catalog']);
 
 
+
 require __DIR__.'/auth.php';
+
+Route::get('/payment', [PaymentController::class, 'payment']);
+
+Route::get('/details', [DetailsController::class, 'details']);

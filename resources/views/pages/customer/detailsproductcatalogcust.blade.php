@@ -1,31 +1,42 @@
-@extends('layouts.details')
+@extends('layouts.details') 
 
 @section('title', 'Details Product')
 
 @section('content')
+
 <!-- ========== Main Content ========== -->
-<div class="flex flex-col md:flex-row gap-8 px-4 sm:px-6 md:px-10 py-10 max-w-[1280px] mx-auto">
+<div
+    class="flex flex-col md:flex-row gap-8 px-4 sm:px-6 md:px-10 py-10 max-w-[1280px] mx-auto"
+>
     <!-- Product Display -->
     <div class="flex flex-col lg:flex-row items-center lg:items-start gap-10">
         <!-- Product Images -->
         <div class="flex flex-col items-center space-y-6 lg:space-y-10">
             <div class="relative w-72 h-96">
-                <img alt="BTS Lightstick with black box behind it, studio product photo" 
-                     class="w-full h-full object-cover"
-                     height="384" 
-                     src="https://m.media-amazon.com/images/I/31CsIQnw0IL._SL500_.jpg" 
-                     width="288" 
-                     id="main-product-image" />
+                <img
+                    alt="BTS Lightstick with black box behind it, studio product photo"
+                    class="w-full h-full object-cover"
+                    height="384"
+                    src="https://m.media-amazon.com/images/I/31CsIQnw0IL._SL500_.jpg"
+                    width="288"
+                    id="main-product-image"
+                />
 
                 <!-- Image Navigation -->
-                <button id="prev-image-btn" aria-label="Previous image"
+                <button
+                    id="prev-image-btn"
+                    aria-label="Previous image"
                     class="absolute top-1/2 -left-10 -translate-y-1/2 bg-white rounded-md p-3 shadow cursor-pointer text-[#2E1B5F] text-xl"
-                    onclick="changeImage(-1)">
+                    onclick="changeImage(-1)"
+                >
                     <i class="fas fa-chevron-left"></i>
                 </button>
-                <button id="next-image-btn" aria-label="Next image"
+                <button
+                    id="next-image-btn"
+                    aria-label="Next image"
                     class="absolute top-1/2 -right-10 -translate-y-1/2 bg-[#2E1B5F] rounded-md p-3 shadow cursor-pointer text-white text-xl"
-                    onclick="changeImage(1)">
+                    onclick="changeImage(1)"
+                >
                     <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
@@ -33,14 +44,19 @@
             <!-- Thumbnails -->
             <div class="flex space-x-6">
                 @foreach([
-                    'https://m.media-amazon.com/images/I/31CsIQnw0IL._SL500_.jpg',
-                    'https://images-cdn.ubuy.co.in/3OBSR3Q-kpop-bts-army-bomb-light-stick-ver-2.jpg',
-                    'https://images-na.ssl-images-amazon.com/images/I/514NA2icOPL._AC_SL1000_.jpg',
-                    'https://tse4.mm.bing.net/th/id/OIP.3H__uguti1yf6K5CsD6KbgAAAA?w=350&h=350&rs=1&pid=ImgDetMain'
+                'https://m.media-amazon.com/images/I/31CsIQnw0IL._SL500_.jpg',
+                'https://images-cdn.ubuy.co.in/3OBSR3Q-kpop-bts-army-bomb-light-stick-ver-2.jpg',
+                'https://images-na.ssl-images-amazon.com/images/I/514NA2icOPL._AC_SL1000_.jpg',
+                'https://tse4.mm.bing.net/th/id/OIP.3H__uguti1yf6K5CsD6KbgAAAA?w=350&h=350&rs=1&pid=ImgDetMain'
                 ] as $index => $image)
-                <img alt="Thumbnail image of BTS Lightstick, product photo angle {{ $index + 1 }}"
+                <img
+                    alt="Thumbnail image of BTS Lightstick, product photo angle {{ $index + 1 }}"
                     class="thumbnail w-18 h-18 object-cover rounded-sm border-2 {{ $index === 0 ? 'border-[#6B549A]' : 'border-transparent' }} cursor-pointer"
-                    height="72" src="{{ $image }}" width="72" data-index="{{ $index }}" />
+                    height="72"
+                    src="{{ $image }}"
+                    width="72"
+                    data-index="{{ $index }}"
+                />
                 @endforeach
             </div>
         </div>
@@ -54,92 +70,132 @@
 
             <!-- Quantity & Actions -->
             <div class="mb-6 flex items-center space-x-4">
-                <div aria-label="Quantity selector"
-                    class="flex items-center border border-gray-300 rounded-full overflow-hidden w-36">
-                    <button aria-label="Decrease quantity"
+                <div
+                    aria-label="Quantity selector"
+                    class="flex items-center border border-gray-300 rounded-full overflow-hidden w-36"
+                >
+                    <button
+                        aria-label="Decrease quantity"
                         class="flex-1 py-2 text-2xl text-[#6D5983] font-semibold text-center focus:outline-none"
-                        id="decrease-qty">
+                        id="decrease-qty"
+                    >
                         -
                     </button>
-                    <span class="w-10 text-center py-2 text-xl font-semibold text-[#6D5983]" id="qty-display">
+                    <span
+                        class="w-10 text-center py-2 text-xl font-semibold text-[#6D5983]"
+                        id="qty-display"
+                    >
                         1
                     </span>
-                    <button aria-label="Increase quantity"
+                    <button
+                        aria-label="Increase quantity"
                         class="flex-1 py-2 text-2xl text-[#6D5983] font-semibold text-center focus:outline-none"
-                        id="increase-qty">
+                        id="increase-qty"
+                    >
                         +
                     </button>
                 </div>
 
-                <a href="{{ route('cart') }}" class="bg-[#6B549A] text-white rounded-full px-8 py-3 font-semibold text-lg">
+                <a
+                    href=""
+                    class="bg-[#6B549A] text-white rounded-full px-8 py-3 font-semibold text-lg"
+                >
                     Add To Cart
                 </a>
 
-                <a href="{{ route('cart') }}" class="bg-[#6B549A] text-white rounded-full px-8 py-3 font-semibold text-lg">
+                <a
+                    href=""
+                    class="bg-[#6B549A] text-white rounded-full px-8 py-3 font-semibold text-lg"
+                >
                     Rent Now
                 </a>
             </div>
 
             <!-- Rental Date -->
-            <button id="select-date-btn" 
-                    class="w-full bg-[#E6D9F7] text-[#8B7CC4] text-lg font-semibold rounded-full py-3"
-                    type="button">
+            <button
+                id="select-date-btn"
+                class="w-full bg-[#E6D9F7] text-[#8B7CC4] text-lg font-semibold rounded-full py-3"
+                type="button"
+            >
                 Select Rental Date
             </button>
 
+            <!-- Datepicker Container -->
+            <div id="datepicker-container" class="mt-4 hidden">
+                <input
+                    id="rental-date"
+                    class="w-full border border-gray-300 rounded-full px-4 py-2 text-[#6D5983] focus:outline-none"
+                    placeholder="Pilih tanggal penyewaan"
+                />
+            </div>
+
             <!-- Date Range Picker -->
             <div id="datepicker-wrapper" class="mt-6 space-y-4 hidden">
-                <!-- Start Date -->
+                <!-- Tanggal Mulai -->
                 <div>
-                    <label for="start-date" class="block text-[#6D5983] font-semibold mb-1">Rental Start Date</label>
-                    <input id="start-date"
+                    <label
+                        for="start-date"
+                        class="block text-[#6D5983] font-semibold mb-1"
+                        >Rental Start Date</label
+                    >
+                    <input
+                        id="start-date"
                         class="w-full border border-gray-300 rounded-full px-4 py-2 text-[#6D5983] focus:outline-none"
-                        placeholder="Select rental start date" />
+                        placeholder="Select rental start date"
+                    />
                 </div>
 
-                <!-- End Date -->
+                <!-- Tanggal Selesai -->
                 <div>
-                    <label for="end-date" class="block text-[#6D5983] font-semibold mb-1">Rental End Date</label>
-                    <input id="end-date"
+                    <label
+                        for="end-date"
+                        class="block text-[#6D5983] font-semibold mb-1"
+                        >Rental End Date</label
+                    >
+                    <input
+                        id="end-date"
                         class="w-full border border-gray-300 rounded-full px-4 py-2 text-[#6D5983] focus:outline-none"
-                        placeholder="Select rental end date" />
+                        placeholder="Select rental end date"
+                    />
                 </div>
             </div>
 
-            <!-- Description & Details -->
+            <!-- Deskripsi & Detail -->
             <div class="mt-10 border-t border-gray-300 pt-6 flex space-x-20">
-                <button id="description-btn" 
-                        class="text-[#2E1B5F] font-extrabold text-2xl border-b-4 border-[#2E1B5F] pb-2"
-                        type="button">
+                <button
+                    id="description-btn"
+                    class="text-[#2E1B5F] font-extrabold text-2xl border-b-4 border-[#2E1B5F] pb-2"
+                    type="button"
+                >
                     Description
                 </button>
-                <button id="details-btn" 
-                        class="text-[#2E1B5F] font-extrabold text-2xl pb-2" 
-                        type="button">
+                <button
+                    id="details-btn"
+                    class="text-[#2E1B5F] font-extrabold text-2xl pb-2"
+                    type="button"
+                >
                     Details
                 </button>
             </div>
             <div id="description" class="content">
-                <p class="mt-4 text-[#8B7CC4] font-semibold text-base max-w-3xl leading-relaxed">
-                    The official BTS ARMY Bomb Lightstick is perfect for concerts and fan events.
-                    This authentic merchandise features high-quality LED lighting with multiple modes
-                    and a comfortable grip. Connect via Bluetooth at official events for synchronized
-                    light shows. Batteries not included. This rental includes the lightstick and 
-                    original packaging.
+                <p
+                    class="mt-4 text-[#8B7CC4] font-semibold text-base max-w-3xl leading-relaxed"
+                >
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    Duis aute irure dolor in reprehenderit in voluptate velit
+                    esse cillum dolore eu fugiat nulla pariatur.
                 </p>
             </div>
 
             <div id="details" class="content hidden">
-                <p class="mt-4 text-[#8B7CC4] font-semibold text-base max-w-3xl leading-relaxed">
-                    <ul class="list-disc pl-5 space-y-2">
-                        <li>Model: BTS ARMY Bomb Ver. 3</li>
-                        <li>Power: 3 AAA batteries (not included)</li>
-                        <li>Connectivity: Bluetooth enabled</li>
-                        <li>Material: High-quality plastic with LED lighting</li>
-                        <li>Weight: Approximately 300g</li>
-                        <li>Package includes: Lightstick, carry pouch, manual</li>
-                        <li>Return condition: All parts intact, functional, and clean</li>
-                    </ul>
+                <p
+                    class="mt-4 text-[#8B7CC4] font-semibold text-base max-w-3xl leading-relaxed"
+                >
+                    Here are the details about the product, including
+                    specifications, features, and other relevant information.
                 </p>
             </div>
         </section>
@@ -147,21 +203,18 @@
 </div>
 
 <!-- Customer Reviews -->
-@include('components.reviews')
-@endsection
-
-@section('scripts')
+@include('components.reviews') @endsection @section('scripts')
 <script>
     // Image Gallery
     const thumbnails = [
         "https://m.media-amazon.com/images/I/31CsIQnw0IL._SL500_.jpg",
         "https://images-cdn.ubuy.co.in/3OBSR3Q-kpop-bts-army-bomb-light-stick-ver-2.jpg",
         "https://images-na.ssl-images-amazon.com/images/I/514NA2icOPL._AC_SL1000_.jpg",
-        "https://tse4.mm.bing.net/th/id/OIP.3H__uguti1yf6K5CsD6KbgAAAA?w=350&h=350&rs=1&pid=ImgDetMain"
+        "https://tse4.mm.bing.net/th/id/OIP.3H__uguti1yf6K5CsD6KbgAAAA?w=350&h=350&rs=1&pid=ImgDetMain",
     ];
 
     let currentIndex = 0;
-    const mainImage = document.getElementById('main-product-image');
+    const mainImage = document.getElementById("main-product-image");
     const prevButton = document.getElementById("prev-image-btn");
     const nextButton = document.getElementById("next-image-btn");
     const thumbnailImgs = document.querySelectorAll(".thumbnail");
