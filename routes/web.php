@@ -42,15 +42,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Route ke form login
-Route::get('/login', function () {
-    return view('auth.login'); // view login buatanmu
-})->name('login');
-
-// Route ke form register
-Route::get('/register', function () {
-    return view('auth.register'); // view register buatanmu
-})->name('register');
 
 // Proses login
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
@@ -77,9 +68,6 @@ Route::get('/detailsproduct', function () {
     return view('customer.detailsproductcatalogcust');
 });
 
-Route::get('/cartpage', function () {
-    return view('customer.cartpage');
-}); 
 
 Route::get('/team', function () {
     return view('team');
@@ -87,3 +75,6 @@ Route::get('/team', function () {
 
 
 Route::get('/catalog', [CatalogController::class, 'catalog']);
+
+
+require __DIR__.'/auth.php';

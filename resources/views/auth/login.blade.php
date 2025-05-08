@@ -1,7 +1,5 @@
 <x-guest-layout>
-  <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 to-purple-50">
-    <div class="w-full max-w-6xl h-auto md:h-[560px] flex flex-col md:flex-row rounded-3xl shadow-2xl overflow-hidden bg-purple-50">
-      
+ 
       <!-- Kiri -->
       <div class="w-full md:w-1/2 flex flex-col items-center justify-center bg-transparent p-10">
         <img src="{{ asset('images/logofestify.png') }}" alt="Festify Logo" class="w-40 md:w-44 mb-6 animate-float">
@@ -49,11 +47,10 @@
           </div>
 
           <!-- Login Button -->
-          <div>
-            <x-primary-button class="w-full justify-center">
-              {{ __('Log in') }}
-            </x-primary-button>
-          </div>
+          <x-primary-button class="w-full justify-center text-center py-3 text-base">
+              {{ __('Register') }}
+          </x-primary-button>
+
 
           <!-- Link Register -->
           <div class="text-center text-sm">
