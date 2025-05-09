@@ -46,19 +46,21 @@
             @endif
           </div>
 
+          @include('components.capca-session')
+
           <!-- Login Button -->
-          <x-primary-button class="w-full justify-center text-center py-3 text-base">
-              {{ __('Register') }}
-          </x-primary-button>
+          <div class="mt-6 text-center">
+            <x-primary-button class="w-full justify-center text-center py-3 text-base">
+                {{ __('Login') }}
+            </x-primary-button>
+          </div>
 
-
-          <!-- Link Register -->
-          <div class="text-center text-sm">
-            Don't have an account?
-            <a href="{{ route('register') }}" class="text-purple-600 font-semibold hover:underline">Register</a>
+          <!-- Link Register --> 
+          <div class="mt-6 text-center">
+            <a class=" text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('register') }} ">
+                {{ __('Dont have an account?') }}
+            </a>
           </div>
         </form>
-      </div>
-    </div>
-  </body>
+      
 </x-guest-layout>
