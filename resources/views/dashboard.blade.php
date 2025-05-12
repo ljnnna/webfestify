@@ -26,10 +26,10 @@
   </style>
  </head>
  <body class="bg-white text-[#3E3667] dark:bg-[#1E1B2E] dark:text-white">
-  <!-- Navbar -->
   <header class="sticky top-0 z-50 bg-[#E9DFF7] dark:bg-[#1E1B2E] shadow-md text-[#3E3667] dark:text-white">
   <div class="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
     
+  
     <!-- Left Section: Logo & Nav -->
     <div class="flex items-center space-x-6 flex-shrink-0 flex-wrap">
       <img alt="Festify logo" src="images/logofestify.png" class="w-24 h-auto flex-shrink-0" />
@@ -268,7 +268,7 @@ flatpickr("#startDate", {
   </section>
   
   <!-- Footer -->
-  <footer class="bg-[#E9DFF7] mt-32 py-10">
+  <!-- <footer class="bg-[#E9DFF7] mt-32 py-10">
    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-[#3E3667] text-sm font-semibold px-4 sm:px-6 lg:px-8">
     <div class="border-r border-[#3E3667] pr-6 mb-6 sm:mb-0">
      <span>
@@ -308,5 +308,5 @@ flatpickr("#startDate", {
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </x-app-layout>

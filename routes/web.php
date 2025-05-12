@@ -79,7 +79,9 @@ Route::get('/team', function () {
 
 Route::get('/catalog', [CatalogController::class, 'catalog']);
 
-
+Route::get('/home', function () {
+    return view('homepage');
+});
 
 require __DIR__.'/auth.php';
 

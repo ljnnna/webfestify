@@ -40,7 +40,7 @@
         </div>
       </header>
     @endisset
-
+      
     <main>
       @yield('content') {{-- Untuk halaman biasa --}}
       {{ $slot ?? '' }}   {{-- Untuk komponen Blade (misalnya <x-app-layout>) --}}
