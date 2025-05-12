@@ -4,6 +4,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\DetailsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -40,15 +43,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Route ke form login
-Route::get('/login', function () {
-    return view('login'); // view login buatanmu
-})->name('login');
-
-// Route ke form register
-Route::get('/register', function () {
-    return view('register'); // view register buatanmu
-})->name('register');
 
 // Proses login
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
@@ -71,6 +65,10 @@ Route::get('/learnmore', function () {
     return view('learnmore');
 });
 
+Route::get('/home', function () {
+    return view('homepage');
+});
+
 Route::get('/searchpage', function () {
     return view('customer.searchpage');
 });
@@ -85,5 +83,21 @@ Route::get('/paymentcust', function () {
 
 Route::get('/detailsproduct', function () {
     return view('customer.detailsproductcatalogcust');
-});                                                                                                                                                                                      
+});
 
+
+Route::get('/team', function () {
+    return view('team');
+});
+
+Route::get('/catalog', [CatalogController::class, 'catalog']);
+
+Route::get('/home', function () {
+    return view('homepage');
+});
+
+require __DIR__.'/auth.php';
+
+Route::get('/payment', [PaymentController::class, 'payment']);
+
+Route::get('/details', [DetailsController::class, 'details']);
