@@ -24,7 +24,7 @@
   <header class="fixed top-0 left-0 w-full z-50 bg-[#E9DFF7] dark:bg-[#1E1B2E] shadow-md text-[#3E3667] dark:text-white">
     <div class="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
       <div class="flex items-center space-x-6">
-        <img alt="Festify logo" src="image/logofestify.png" width="100" height="80" />
+        <img alt="Festify logo" src="images/logofestify.png" width="100" height="80" />
         <nav class="hidden md:flex space-x-8 font-semibold text-sm">
           <a class="hover:opacity-35" href="homepage.html">HOME</a>
           <a class="hover:opacity-35" href="#category">CATEGORY</a>

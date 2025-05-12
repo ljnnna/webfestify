@@ -79,9 +79,6 @@ Route::get('/cartpage', function () {
     return view('customer.cartpage');
 });
                                                                                                                                                                                          
-Route::get('/payment', function () {
-    return view('customer.paymentcust');
-});
 Route::get('/paymentcust', function () {
     return view('customer.paymentcust');
 });
@@ -90,6 +87,3 @@ Route::get('/detailsproduct', function () {
     return view('customer.detailsproductcatalogcust');
 });                                                                                                                                                                                      
 
-Route::get('/cartpage', function () {
-    return view('customer.cartpage');
-}); 
