@@ -3,6 +3,16 @@
 @section('title', 'Welcome')
 
 @section('content')
+
+@section('desktop-menu')
+    <div class="hidden lg:flex space-x-6 items-center">
+        <a href="#" class="text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Welcome</a>
+        <a href="#" class="text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Marketplace</a>
+        <a href="/team" class="text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Team</a>
+        <a href="#" class="text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Contact</a>
+    </div>
+@endsection
+
   <!-- Konten utama dari halaman welcome.blade.php -->
   <section class="relative bg-cover bg-center bg-no-repeat bg-[url('{{ asset('images/banner3.png') }}')] dark:bg-gray-900">
     <div class="max-w-screen-xl px-4 py-8 mx-auto text-center lg:py-16 lg:px-12">
