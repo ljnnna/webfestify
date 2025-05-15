@@ -324,5 +324,29 @@
         detailsBtn.classList.add("border-b-4", "border-[#2E1B5F]");
         descriptionBtn.classList.remove("border-b-4", "border-[#2E1B5F]");
     });
+
+    //Bintang dan Rating
+    const ratingStars = document.querySelectorAll('#rating i');
+    let selectedRating = 0;
+
+    function setRating(rating) {
+      ratingStars.forEach((star, index) => {
+        if (index < rating) {
+          star.classList.remove('far'); // hilangin outline
+          star.classList.add('fas');     // tambahin solid
+        } else {
+          star.classList.remove('fas');
+          star.classList.add('far');
+        }
+      });
+    }
+
+    ratingStars.forEach((star, index) => {
+      star.addEventListener('click', () => {
+        selectedRating = index + 1; // index mulai 0, makanya +1
+        setRating(selectedRating);
+      });
+    });
+    
 </script>
 @endsection
