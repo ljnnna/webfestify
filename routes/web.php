@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\DetailsController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,10 +33,10 @@ Route::prefix('admin')->group(function () {
 
 Route::get('/users', [UsersController::class, 'index']);
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/save', [ProfileController::class, 'saveAll'])->name('profile.saveAll');
+    Route::post('/profile/photo-upload', [ProfileController::class, 'uploadPicture'])->name('profile.uploadPicture');
 });
 
 
@@ -81,7 +81,6 @@ Route::get('/detailsproduct', function () {
     return view('customer.detailsproductcatalogcust');
 });
 
-
 Route::get('/team', function () {
     return view('team');
 });
@@ -101,3 +100,9 @@ require __DIR__.'/auth.php';
 Route::get('/payment', [PaymentController::class, 'payment']);
 
 Route::get('/details', [DetailsController::class, 'details']);
+
+Route::put('/profile/save-all', [ProfileController::class, 'saveAll'])->name('profile.saveAll');
+Route::post('/profile/picture-upload', [ProfileController::class, 'uploadPicture'])->name('profile.picture');
+Route::get('/profile/rental-information', [ProfileController::class, 'rentalInfo'])->name('profile.rentalInfo');
+Route::get('/profile/rental-history', [ProfileController::class, 'rentalHistory'])->name('profile.rentalHistory');
+
