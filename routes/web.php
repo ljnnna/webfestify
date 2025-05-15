@@ -66,7 +66,7 @@ Route::get('/home', function () {
 });
 
 Route::get('/searchpage', function () {
-    return view('customer.searchpage');
+    return view('pages.customer.searchpage');
 });
 
 Route::get('/cartpage', function () {
