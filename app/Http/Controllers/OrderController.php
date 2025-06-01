@@ -9,56 +9,23 @@ class OrderController extends Controller
 {
     public function index()
     {
-        //
-    }
+        $totalOrders = Order::count();
+        $completedOrders = Order::where('status', 'Completed')->count();
+        $onProgressOrders = Order::where('status', 'Pending')->count(); // asumsi: 'Pending' == On Progress
+        $canceledOrders = Order::where('status', 'Canceled')->count();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        $orders = Order::orderBy('user_id')
+                       ->orderBy('product_id')
+                       ->orderBy('status')
+                       ->orderBy('order_date', 'desc')
+                       ->get();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Order $order)
-    {
-        // Pastikan relasi 'products' di-load agar bisa dipakai di view
-        $order->load('products');
-        return view('orders.show', compact('order'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Order $order)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Order $order)
-    {
-        //
+        return view('orders.index', compact(
+            'totalOrders',
+            'completedOrders',
+            'onProgressOrders',
+            'canceledOrders',
+            'orders'
+        ));
     }
 }

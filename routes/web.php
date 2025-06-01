@@ -28,6 +28,11 @@ Route::prefix('admin')->group(function () {
     Route::resource('product', ProductController::class);
 });
 
+use App\Http\Controllers\OrderController;
+
+Route::get('/orders', function () {
+    return view('admin.orders');
+});
 // Customer -------------------------------------------------------------
 
 
