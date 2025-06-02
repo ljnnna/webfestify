@@ -7,6 +7,10 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\DetailsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UsersController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -14,15 +18,11 @@ Route::get('/', function () {
 
 // Admin ----------------------------------------------------------------
 
-use App\Http\Controllers\DashboardController;
-
-Route::get('/dashboardfest', [DashboardController::class, 'index'])->name('admin.dashboard');
+// Route::get('/dashboardfest', [DashboardController::class, 'index'])->name('admin.dashboard');
 
 Route::get('/userfest', function () {
     return view('admin.admincostumer');
 });
-
-use App\Http\Controllers\ProductController;
 
 Route::prefix('admin')->group(function () {
     Route::resource('product', ProductController::class);
@@ -30,6 +30,12 @@ Route::prefix('admin')->group(function () {
 
 // Customer -------------------------------------------------------------
 
+Route::get('/dashboard', [HomeController::class, 'index'])
+->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/home',[HomeController::class, 'index']);
+
+Route::get('post', [HomeController::class, 'post'])->middleware(['auth', 'admin']);
 
 Route::get('/users', [UsersController::class, 'index']);
 
@@ -38,6 +44,11 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile/save', [ProfileController::class, 'saveAll'])->name('profile.saveAll');
     Route::post('/profile/photo-upload', [ProfileController::class, 'uploadPicture'])->name('profile.uploadPicture');
 });
+
+Route::put('/profile/save-all', [ProfileController::class, 'saveAll'])->name('profile.saveAll');
+Route::post('/profile/picture-upload', [ProfileController::class, 'uploadPicture'])->name('profile.picture');
+Route::get('/profile/rental-information', [ProfileController::class, 'rentalInfo'])->name('profile.rentalInfo');
+Route::get('/profile/rental-history', [ProfileController::class, 'rentalHistory'])->name('profile.rentalHistory');
 
 
 // Proses login
@@ -49,10 +60,6 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 // Logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
-Route::get('/home', function () {
-    return view('customer.homepage');
-});
-
 Route::get('/katalogmerch', function () {
     return view('customer.katalog_merch');
 });
@@ -61,9 +68,6 @@ Route::get('/learnmore', function () {
     return view('learnmore');
 });
 
-Route::get('/home', function () {
-    return view('homepage');
-});
 
 Route::get('/searchpage', function () {
     return view('pages.customer.searchpage');
@@ -87,22 +91,8 @@ Route::get('/team', function () {
 
 Route::get('/catalog', [CatalogController::class, 'catalog']);
 
-Route::get('/home', function () {
-    return view('homepage');
-});
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-require __DIR__.'/auth.php';
-
 Route::get('/payment', [PaymentController::class, 'payment']);
 
 Route::get('/details', [DetailsController::class, 'details']);
 
-Route::put('/profile/save-all', [ProfileController::class, 'saveAll'])->name('profile.saveAll');
-Route::post('/profile/picture-upload', [ProfileController::class, 'uploadPicture'])->name('profile.picture');
-Route::get('/profile/rental-information', [ProfileController::class, 'rentalInfo'])->name('profile.rentalInfo');
-Route::get('/profile/rental-history', [ProfileController::class, 'rentalHistory'])->name('profile.rentalHistory');
-
+require __DIR__.'/auth.php';
