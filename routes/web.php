@@ -28,6 +28,11 @@ Route::prefix('admin')->group(function () {
     Route::resource('product', ProductController::class);
 });
 
+use App\Http\Controllers\OrderController;
+
+Route::get('/orders', function () {
+    return view('admin.orders');
+});
 // Customer -------------------------------------------------------------
 
 Route::get('/dashboard', [HomeController::class, 'index'])
@@ -69,30 +74,32 @@ Route::get('/learnmore', function () {
 });
 
 
-Route::get('/searchpage', function () {
-    return view('pages.customer.searchpage');
-});
-
-Route::get('/cartpage', function () {
-    return view('customer.cartpage');
-});
-                                                                                                                                                                                         
-Route::get('/paymentcust', function () {
-    return view('customer.paymentcust');
-});
-
-Route::get('/detailsproduct', function () {
-    return view('customer.detailsproductcatalogcust');
-});
-
 Route::get('/team', function () {
     return view('team');
 });
 
 Route::get('/catalog', [CatalogController::class, 'catalog']);
 
+Route::get('/home', function () {
+    return view('homepage');
+});
+
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+
+require __DIR__.'/auth.php';
+
+
+Route::get('/searchpage', function () {
+    return view('pages.customer.searchpage');
+});
+
+Route::get('/catalog', [CatalogController::class, 'catalog']);
+
+Route::get('/details', [DetailsController::class, 'details'])->name('details');
+
 Route::get('/payment', [PaymentController::class, 'payment']);
 
-Route::get('/details', [DetailsController::class, 'details']);
 
 require __DIR__.'/auth.php';

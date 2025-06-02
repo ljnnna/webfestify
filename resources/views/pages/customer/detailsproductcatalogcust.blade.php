@@ -205,148 +205,453 @@
 <!-- Customer Reviews -->
 @include('components.reviews') @endsection @section('scripts')
 <script>
-    // Image Gallery
-    const thumbnails = [
-        "https://m.media-amazon.com/images/I/31CsIQnw0IL._SL500_.jpg",
-        "https://images-cdn.ubuy.co.in/3OBSR3Q-kpop-bts-army-bomb-light-stick-ver-2.jpg",
-        "https://images-na.ssl-images-amazon.com/images/I/514NA2icOPL._AC_SL1000_.jpg",
-        "https://tse4.mm.bing.net/th/id/OIP.3H__uguti1yf6K5CsD6KbgAAAA?w=350&h=350&rs=1&pid=ImgDetMain",
-    ];
+// ========== Object-Oriented Implementation ==========
 
-    let currentIndex = 0;
-    const mainImage = document.getElementById("main-product-image");
-    const prevButton = document.getElementById("prev-image-btn");
-    const nextButton = document.getElementById("next-image-btn");
-    const thumbnailImgs = document.querySelectorAll(".thumbnail");
+// Base Product Class
+class Product {
+    constructor(name, price, images, description, details) {
+        this.name = name;
+        this.price = price;
+        this.images = images;
+        this.description = description;
+        this.details = details;
+    }
 
-    function changeImage(direction) {
-        currentIndex += direction;
-        if (currentIndex < 0) {
-            currentIndex = 0;
-        } else if (currentIndex >= thumbnails.length) {
-            currentIndex = thumbnails.length - 1;
+    getFormattedPrice() {
+        return `Rp.${this.price.toLocaleString()}/day`;
+    }
+
+    getImageCount() {
+        return this.images.length;
+    }
+}
+
+// Image Gallery Class
+class ImageGallery {
+    constructor(images, mainImageId, thumbnailClass) {
+        this.images = images;
+        this.currentIndex = 0;
+        this.mainImage = document.getElementById(mainImageId);
+        this.thumbnails = document.querySelectorAll(`.${thumbnailClass}`);
+        this.prevButton = document.getElementById('prev-image-btn');
+        this.nextButton = document.getElementById('next-image-btn');
+        
+        this.init();
+    }
+
+    init() {
+        this.bindEvents();
+        this.updateDisplay();
+    }
+
+    bindEvents() {
+        // Previous button
+        this.prevButton?.addEventListener('click', () => this.previousImage());
+        
+        // Next button
+        this.nextButton?.addEventListener('click', () => this.nextImage());
+        
+        // Thumbnail clicks
+        this.thumbnails.forEach((thumbnail, index) => {
+            thumbnail.addEventListener('click', () => this.goToImage(index));
+        });
+    }
+
+    previousImage() {
+        if (this.currentIndex > 0) {
+            this.currentIndex--;
+            this.updateDisplay();
         }
-        mainImage.src = thumbnails[currentIndex];
-        updateActiveThumbnail();
-        updateButtonStates();
     }
 
-    function updateButtonStates() {
-        prevButton.disabled = currentIndex === 0;
-        nextButton.disabled = currentIndex === thumbnails.length - 1;
+    nextImage() {
+        if (this.currentIndex < this.images.length - 1) {
+            this.currentIndex++;
+            this.updateDisplay();
+        }
     }
 
-    function updateActiveThumbnail() {
-        thumbnailImgs.forEach((img, index) => {
-            if (index === currentIndex) {
-                img.classList.add("border-[#6B549A]");
-                img.classList.remove("border-transparent");
+    goToImage(index) {
+        if (index >= 0 && index < this.images.length) {
+            this.currentIndex = index;
+            this.updateDisplay();
+        }
+    }
+
+    updateDisplay() {
+        // Update main image
+        if (this.mainImage) {
+            this.mainImage.src = this.images[this.currentIndex];
+        }
+
+        // Update thumbnails
+        this.updateThumbnails();
+        
+        // Update button states
+        this.updateButtonStates();
+    }
+
+    updateThumbnails() {
+        this.thumbnails.forEach((thumbnail, index) => {
+            if (index === this.currentIndex) {
+                thumbnail.classList.add('border-[#6B549A]');
+                thumbnail.classList.remove('border-transparent');
             } else {
-                img.classList.remove("border-[#6B549A]");
-                img.classList.add("border-transparent");
+                thumbnail.classList.remove('border-[#6B549A]');
+                thumbnail.classList.add('border-transparent');
             }
         });
     }
 
-    thumbnailImgs.forEach((img) => {
-        img.addEventListener("click", () => {
-            currentIndex = parseInt(img.dataset.index);
-            mainImage.src = thumbnails[currentIndex];
-            updateActiveThumbnail();
-            updateButtonStates();
-        });
-    });
-
-    updateButtonStates();
-
-    // Quantity Controls
-    const decreaseBtn = document.getElementById("decrease-qty");
-    const increaseBtn = document.getElementById("increase-qty");
-    const quantityDisplay = document.getElementById("qty-display");
-    let quantity = parseInt(quantityDisplay.textContent);
-
-    decreaseBtn.addEventListener("click", () => {
-        if (quantity > 1) {
-            quantity--;
-            quantityDisplay.textContent = quantity;
+    updateButtonStates() {
+        if (this.prevButton) {
+            this.prevButton.disabled = this.currentIndex === 0;
         }
-    });
-
-    increaseBtn.addEventListener("click", () => {
-        quantity++;
-        quantityDisplay.textContent = quantity;
-    });
-
-    // Date Picker
-    const selectDateBtn = document.getElementById("select-date-btn");
-    const datepickerWrapper = document.getElementById("datepicker-wrapper");
-    const startDateInput = document.getElementById("start-date");
-    const endDateInput = document.getElementById("end-date");
-
-    // Initialize Flatpickr for start date
-    const startPicker = flatpickr(startDateInput, {
-        minDate: "today",
-        dateFormat: "Y-m-d",
-        onChange: function (selectedDates) {
-            if (selectedDates.length > 0) {
-                endPicker.set("minDate", selectedDates[0]);
-            }
-        },
-    });
-
-    // Initialize Flatpickr for end date
-    const endPicker = flatpickr(endDateInput, {
-        minDate: "today",
-        dateFormat: "Y-m-d",
-    });
-
-    // Toggle datepicker visibility
-    selectDateBtn.addEventListener("click", () => {
-        datepickerWrapper.classList.toggle("hidden");
-    });
-
-    // Description & Details Tabs
-    const descriptionBtn = document.getElementById("description-btn");
-    const detailsBtn = document.getElementById("details-btn");
-    const descriptionContent = document.getElementById("description");
-    const detailsContent = document.getElementById("details");
-
-    descriptionBtn.addEventListener("click", () => {
-        descriptionContent.classList.remove("hidden");
-        detailsContent.classList.add("hidden");
-        descriptionBtn.classList.add("border-b-4", "border-[#2E1B5F]");
-        detailsBtn.classList.remove("border-b-4", "border-[#2E1B5F]");
-    });
-
-    detailsBtn.addEventListener("click", () => {
-        detailsContent.classList.remove("hidden");
-        descriptionContent.classList.add("hidden");
-        detailsBtn.classList.add("border-b-4", "border-[#2E1B5F]");
-        descriptionBtn.classList.remove("border-b-4", "border-[#2E1B5F]");
-    });
-
-    //Bintang dan Rating
-    const ratingStars = document.querySelectorAll('#rating i');
-    let selectedRating = 0;
-
-    function setRating(rating) {
-      ratingStars.forEach((star, index) => {
-        if (index < rating) {
-          star.classList.remove('far'); // hilangin outline
-          star.classList.add('fas');     // tambahin solid
-        } else {
-          star.classList.remove('fas');
-          star.classList.add('far');
+        if (this.nextButton) {
+            this.nextButton.disabled = this.currentIndex === this.images.length - 1;
         }
-      });
+    }
+}
+
+// Quantity Controller Class
+class QuantityController {
+    constructor(initialQuantity = 1, minQuantity = 1, maxQuantity = 99) {
+        this.quantity = initialQuantity;
+        this.minQuantity = minQuantity;
+        this.maxQuantity = maxQuantity;
+        
+        this.decreaseBtn = document.getElementById('decrease-qty');
+        this.increaseBtn = document.getElementById('increase-qty');
+        this.display = document.getElementById('qty-display');
+        
+        this.init();
     }
 
-    ratingStars.forEach((star, index) => {
-      star.addEventListener('click', () => {
-        selectedRating = index + 1; // index mulai 0, makanya +1
-        setRating(selectedRating);
-      });
-    });
-    
+    init() {
+        this.bindEvents();
+        this.updateDisplay();
+    }
+
+    bindEvents() {
+        this.decreaseBtn?.addEventListener('click', () => this.decrease());
+        this.increaseBtn?.addEventListener('click', () => this.increase());
+    }
+
+    decrease() {
+        if (this.quantity > this.minQuantity) {
+            this.quantity--;
+            this.updateDisplay();
+            this.onQuantityChange();
+        }
+    }
+
+    increase() {
+        if (this.quantity < this.maxQuantity) {
+            this.quantity++;
+            this.updateDisplay();
+            this.onQuantityChange();
+        }
+    }
+
+    updateDisplay() {
+        if (this.display) {
+            this.display.textContent = this.quantity;
+        }
+    }
+
+    getQuantity() {
+        return this.quantity;
+    }
+
+    setQuantity(newQuantity) {
+        if (newQuantity >= this.minQuantity && newQuantity <= this.maxQuantity) {
+            this.quantity = newQuantity;
+            this.updateDisplay();
+            this.onQuantityChange();
+        }
+    }
+
+    onQuantityChange() {
+        // Override this method for custom behavior
+        console.log(`Quantity changed to: ${this.quantity}`);
+    }
+}
+
+// Date Picker Class
+class RentalDatePicker {
+    constructor() {
+        this.selectDateBtn = document.getElementById('select-date-btn');
+        this.datepickerWrapper = document.getElementById('datepicker-wrapper');
+        this.startDateInput = document.getElementById('start-date');
+        this.endDateInput = document.getElementById('end-date');
+        
+        this.startDate = null;
+        this.endDate = null;
+        
+        this.init();
+    }
+
+    init() {
+        this.bindEvents();
+        this.initializeDatePickers();
+    }
+
+    bindEvents() {
+        this.selectDateBtn?.addEventListener('click', () => this.toggleDatePicker());
+    }
+
+    initializeDatePickers() {
+        if (typeof flatpickr !== 'undefined') {
+            // Start date picker
+            this.startPicker = flatpickr(this.startDateInput, {
+                minDate: 'today',
+                dateFormat: 'Y-m-d',
+                onChange: (selectedDates) => {
+                    if (selectedDates.length > 0) {
+                        this.startDate = selectedDates[0];
+                        this.endPicker?.set('minDate', selectedDates[0]);
+                    }
+                }
+            });
+
+            // End date picker
+            this.endPicker = flatpickr(this.endDateInput, {
+                minDate: 'today',
+                dateFormat: 'Y-m-d',
+                onChange: (selectedDates) => {
+                    if (selectedDates.length > 0) {
+                        this.endDate = selectedDates[0];
+                    }
+                }
+            });
+        }
+    }
+
+    toggleDatePicker() {
+        if (this.datepickerWrapper) {
+            this.datepickerWrapper.classList.toggle('hidden');
+        }
+    }
+
+    getDateRange() {
+        return {
+            startDate: this.startDate,
+            endDate: this.endDate
+        };
+    }
+
+    getRentalDays() {
+        if (this.startDate && this.endDate) {
+            const timeDiff = this.endDate.getTime() - this.startDate.getTime();
+            return Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+        }
+        return 0;
+    }
+}
+
+// Tab Manager Class
+class TabManager {
+    constructor(tabs) {
+        this.tabs = tabs;
+        this.activeTab = null;
+        this.init();
+    }
+
+    init() {
+        this.tabs.forEach(tab => {
+            const button = document.getElementById(tab.buttonId);
+            const content = document.getElementById(tab.contentId);
+            
+            if (button && content) {
+                button.addEventListener('click', () => this.switchTab(tab.id));
+            }
+        });
+
+        // Set default active tab
+        if (this.tabs.length > 0) {
+            this.switchTab(this.tabs[0].id);
+        }
+    }
+
+    switchTab(tabId) {
+        const targetTab = this.tabs.find(tab => tab.id === tabId);
+        if (!targetTab) return;
+
+        // Hide all tabs and remove active states
+        this.tabs.forEach(tab => {
+            const button = document.getElementById(tab.buttonId);
+            const content = document.getElementById(tab.contentId);
+            
+            if (content) content.classList.add('hidden');
+            if (button) {
+                button.classList.remove('border-b-4', 'border-[#2E1B5F]');
+            }
+        });
+
+        // Show active tab and add active state
+        const activeButton = document.getElementById(targetTab.buttonId);
+        const activeContent = document.getElementById(targetTab.contentId);
+        
+        if (activeContent) activeContent.classList.remove('hidden');
+        if (activeButton) {
+            activeButton.classList.add('border-b-4', 'border-[#2E1B5F]');
+        }
+
+        this.activeTab = tabId;
+    }
+
+    getActiveTab() {
+        return this.activeTab;
+    }
+}
+
+// Rating System Class
+class RatingSystem {
+    constructor(containerId, maxRating = 5) {
+        this.container = document.getElementById(containerId);
+        this.maxRating = maxRating;
+        this.selectedRating = 0;
+        this.stars = [];
+        
+        this.init();
+    }
+
+    init() {
+        if (this.container) {
+            this.stars = this.container.querySelectorAll('i');
+            this.bindEvents();
+        }
+    }
+
+    bindEvents() {
+        this.stars.forEach((star, index) => {
+            star.addEventListener('click', () => this.setRating(index + 1));
+            star.addEventListener('mouseenter', () => this.previewRating(index + 1));
+            star.addEventListener('mouseleave', () => this.updateDisplay());
+        });
+    }
+
+    setRating(rating) {
+        if (rating >= 1 && rating <= this.maxRating) {
+            this.selectedRating = rating;
+            this.updateDisplay();
+            this.onRatingChange(rating);
+        }
+    }
+
+    previewRating(rating) {
+        this.updateStars(rating);
+    }
+
+    updateDisplay() {
+        this.updateStars(this.selectedRating);
+    }
+
+    updateStars(rating) {
+        this.stars.forEach((star, index) => {
+            if (index < rating) {
+                star.classList.remove('far');
+                star.classList.add('fas');
+            } else {
+                star.classList.remove('fas');
+                star.classList.add('far');
+            }
+        });
+    }
+
+    getRating() {
+        return this.selectedRating;
+    }
+
+    onRatingChange(rating) {
+        // Override this method for custom behavior
+        console.log(`Rating changed to: ${rating}`);
+    }
+}
+
+// Main Product Details Controller
+class ProductDetailsController {
+    constructor(productData) {
+        this.product = new Product(
+            productData.name,
+            productData.price,
+            productData.images,
+            productData.description,
+            productData.details
+        );
+
+        this.imageGallery = new ImageGallery(
+            this.product.images,
+            'main-product-image',
+            'thumbnail'
+        );
+
+        this.quantityController = new QuantityController();
+        this.datePicker = new RentalDatePicker();
+        
+        this.tabManager = new TabManager([
+            { id: 'description', buttonId: 'description-btn', contentId: 'description' },
+            { id: 'details', buttonId: 'details-btn', contentId: 'details' }
+        ]);
+
+        this.ratingSystem = new RatingSystem('rating');
+        
+        this.init();
+    }
+
+    init() {
+        this.bindCartEvents();
+        console.log('Product Details Controller initialized');
+    }
+
+    bindCartEvents() {
+        // Add to cart functionality
+        const addToCartBtn = document.querySelector('a[href=""]');
+        if (addToCartBtn) {
+            addToCartBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.addToCart();
+            });
+        }
+    }
+
+    addToCart() {
+        const cartItem = {
+            product: this.product,
+            quantity: this.quantityController.getQuantity(),
+            dateRange: this.datePicker.getDateRange(),
+            totalDays: this.datePicker.getRentalDays()
+        };
+
+        console.log('Adding to cart:', cartItem);
+        // Here you would typically send this to your backend or local storage
+    }
+
+    getTotalPrice() {
+        const quantity = this.quantityController.getQuantity();
+        const days = this.datePicker.getRentalDays() || 1;
+        return this.product.price * quantity * days;
+    }
+}
+
+// ========== Initialize Application ==========
+document.addEventListener('DOMContentLoaded', function() {
+    // Product data - this would typically come from your backend
+    const productData = {
+        name: 'Lightstick - BTS',
+        price: 250000,
+        images: [
+            'https://m.media-amazon.com/images/I/31CsIQnw0IL._SL500_.jpg',
+            'https://images-cdn.ubuy.co.in/3OBSR3Q-kpop-bts-army-bomb-light-stick-ver-2.jpg',
+            'https://images-na.ssl-images-amazon.com/images/I/514NA2icOPL._AC_SL1000_.jpg',
+            'https://tse4.mm.bing.net/th/id/OIP.3H__uguti1yf6K5CsD6KbgAAAA?w=350&h=350&rs=1&pid=ImgDetMain'
+        ],
+        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
+        details: 'Here are the details about the product, including specifications...'
+    };
+
+    // Initialize the main controller
+    window.productController = new ProductDetailsController(productData);
+});
 </script>
 @endsection
