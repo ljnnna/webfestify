@@ -54,14 +54,6 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 // Logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
-Route::get('/home', function () {
-    return view('customer.homepage');
-});
-
-Route::get('/katalogmerch', function () {
-    return view('customer.katalog_merch');
-});
-
 Route::get('/learnmore', function () {
     return view('learnmore');
 });
@@ -70,27 +62,9 @@ Route::get('/home', function () {
     return view('homepage');
 });
 
-Route::get('/searchpage', function () {
-    return view('pages.customer.searchpage');
-});
-
-Route::get('/cartpage', function () {
-    return view('customer.cartpage');
-});
-                                                                                                                                                                                         
-Route::get('/paymentcust', function () {
-    return view('customer.paymentcust');
-});
-
-Route::get('/detailsproduct', function () {
-    return view('customer.detailsproductcatalogcust');
-});
-
 Route::get('/team', function () {
     return view('team');
 });
-
-Route::get('/catalog', [CatalogController::class, 'catalog']);
 
 Route::get('/home', function () {
     return view('homepage');
@@ -102,9 +76,17 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
+
+Route::get('/searchpage', function () {
+    return view('pages.customer.searchpage');
+});
+
+Route::get('/catalog', [CatalogController::class, 'catalog']);
+
+Route::get('/details', [DetailsController::class, 'details'])->name('details');
+
 Route::get('/payment', [PaymentController::class, 'payment']);
 
-Route::get('/details', [DetailsController::class, 'details']);
 
 Route::put('/profile/save-all', [ProfileController::class, 'saveAll'])->name('profile.saveAll');
 Route::post('/profile/picture-upload', [ProfileController::class, 'uploadPicture'])->name('profile.picture');
