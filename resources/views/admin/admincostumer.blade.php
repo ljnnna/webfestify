@@ -8,17 +8,17 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Produk -->
-        <x-card-stat title="User" :value="739" />
+        <!-- Total User -->
+        <x-card-stat title="User" :value="$total_customers" />
 
-        <!-- Order Baru -->
-        <x-card-stat title="Active User" :value="426" />
+        <!-- Active User -->
+        <x-card-stat title="Active User" :value="$active_users ?? 0" />
 
-        <!-- On Progress -->
-        <x-card-stat title="New Signups" :value="80" />
+        <!-- New Signups -->
+        <x-card-stat title="New Signups" :value="$new_signups ?? 0" />
 
-        <!-- Order Selesai -->
-        <x-card-stat title="Feedback Received" :value="209" />
+        <!-- Feedback -->
+        <x-card-stat title="Feedback Received" :value="$feedback_count ?? 0" />
         
     </div>
 

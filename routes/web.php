@@ -20,17 +20,18 @@ Route::get('/dashboardfest', [DashboardController::class, 'index'])->name('admin
 
 Route::get('/userfest', function () {
     return view('admin.admincostumer');
-});
+})->name('admin.user');
 
 use App\Http\Controllers\ProductController;
 
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('product', ProductController::class);
 });
 
+
 // Customer -------------------------------------------------------------
 
-
+use App\Http\Controllers\UsersController;
 Route::get('/users', [UsersController::class, 'index']);
 
 Route::middleware(['auth'])->group(function () {
