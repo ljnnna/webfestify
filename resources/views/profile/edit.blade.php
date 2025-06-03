@@ -5,16 +5,8 @@
         <aside class="w-full md:w-1/4 bg-gradient-to-b from-pink-100 to-blue-100 p-6 md:rounded-r-3xl shadow-md mt-2 md:mt-10">
             <div class="flex flex-col items-center">
                 <!-- Gambar Profil -->
-                <form action="{{ route('profile.uploadPicture') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <label class="cursor-pointer relative">
-                        <img src="{{ asset(auth()->user()->picture ?? 'default-user.png') }}"
-                             class="w-32 h-32 rounded-full border-2 border-gray-300 object-cover"
-                             alt="Profile Picture">
-                        <input type="file" name="picture" class="hidden" onchange="this.form.submit()">
-                        <span class="absolute bottom-0 right-0 bg-white rounded-full p-1 text-xs shadow">Edit</span>
-                    </label>
-                </form>
+                 <x-profile-picture-upload :user="auth()->user()" />
+
 
                 <!-- Menu -->
                 <nav class="mt-10 space-y-3 text-center font-semibold text-gray-700">
@@ -76,19 +68,28 @@
                 </div>
 
                 <!-- Tombol -->
-                <div class="flex justify-start gap-4 mt-6">
-                    <button type="submit" name="delete_account" value="on"
-                            class="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700 transition">
-                        Delete Account
-                    </button>
+
+                <div x-data="{ confirmDelete: false }" class="flex justify-start gap-4 mt-6">
+                    <template x-if="!confirmDelete">
+                        <button type="button" @click="confirmDelete = true"
+                                class="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700 transition">
+                            Delete Account
+                        </button>
+                    </template>
+
+                    <template x-if="confirmDelete">
+                        <button type="submit" name="delete_account" value="on"
+                                class="bg-red-700 text-white px-4 py-2 rounded shadow border border-red-900">
+                            Are you sure?
+                        </button>
+                    </template>
+
                     <button type="submit"
                             class="bg-gray-300 px-4 py-2 rounded shadow hover:bg-gray-400 transition">
                         Save Changes
                     </button>
                 </div>
-            </form>
-        </main>
-    </div>
+
 
     <!-- Script Toggle Navbar -->
     <script>

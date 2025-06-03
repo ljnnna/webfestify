@@ -80,13 +80,13 @@
         flatpickr("#startDate", {
             dateFormat: "Y-m-d",
             minDate: "today",
-            maxDate: new Date().fp_incr(7),
+            maxDate: new Date().fp_incr(30), // Ubah dari 7 ke 30 hari
             onChange: function (selectedDates) {
                 const startDate = selectedDates[0];
                 if (!startDate) return;
 
                 const maxEndDate = new Date(startDate);
-                maxEndDate.setDate(startDate.getDate() + 7);
+                maxEndDate.setDate(startDate.getDate() + 30); // Ubah dari 7 ke 30 hari
 
                 endDatePicker.set("minDate", startDate);
                 endDatePicker.set("maxDate", maxEndDate);
@@ -94,6 +94,7 @@
             }
         });
     </script>
+
 
     {{-- Browse by Category --}}
     <section id="category" class="max-w-7xl mx-auto mt-20 px-4 sm:px-6 lg:px-8">
