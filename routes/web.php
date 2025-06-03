@@ -23,8 +23,20 @@ Route::get('/', function () {
 
 Route::get('/userfest', function () {
     return view('admin.admincostumer');
+})->name('admin.user');
+
+<<<<<<< HEAD
+use App\Http\Controllers\ProductController;
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::resource('product', ProductController::class);
 });
 
+
+// Customer -------------------------------------------------------------
+
+use App\Http\Controllers\UsersController;
+=======
 Route::prefix('admin')->group(function () {
     Route::resource('product', ProductController::class);
 });
@@ -41,6 +53,7 @@ Route::get('/home',[HomeController::class, 'index']);
 
 Route::get('post', [HomeController::class, 'post'])->middleware(['auth', 'admin']);
 
+>>>>>>> 9a725531f0d0eff074a358dbb388038abd8579f2
 Route::get('/users', [UsersController::class, 'index']);
 
 Route::middleware(['auth'])->group(function () {

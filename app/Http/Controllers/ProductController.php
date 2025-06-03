@@ -10,7 +10,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all(); // ambil semua produk dari DB
+        $products = Product::with('images')->get();
         $categories = Category::all(); // ambil semua kategori
         return view('admin.product.index', compact('products', 'categories'));
     }
@@ -20,7 +20,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('product.create');
+        return view('admin.product.create');
     }
 
     /**
@@ -35,17 +35,20 @@ class ProductController extends Controller
             'description' => 'required|string',
             'details' => 'required|string',
             'stock_quantity' => 'required|integer|min:0',
-            'images.*' => 'nullable|image|mimes:jpg,jpeg,png'
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
-        $imagePaths = [];
+        // Simpan gambar ke storage
+    $path = $request->file('image')->store('products', 'public');
+        
+        //$imagePaths = [];
 
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
-                $imagePaths[] = $path;
-            }
-        }
+        // if ($request->hasFile('images')) {
+        //     foreach ($request->file('images') as $image) {
+        //         $path = $image->store('products', 'public');
+        //         $imagePaths[] = $path;
+        //     }
+        // }
 
         Product::create([
             'category_id' => $request->category_id,
@@ -54,10 +57,10 @@ class ProductController extends Controller
             'description' => $request->description,
             'details' => $request->details,
             'stock_quantity' => $request->stock_quantity,
-            'images' => json_encode($imagePaths),
+            'image' => $path, // Simpan 'products/nama-file.jpg'
         ]);
 
-        return redirect()->route('product.index')->with('success', 'Product added.');
+        return redirect()->route('admin.product.index')->with('success', 'Product added.');
     }
 
     /**
@@ -73,7 +76,9 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        return view('admin.product.edit', compact('product'));
+        $products = Product::with('images')->get();
+        $categories = Category::all(); // ambil semua kategori
+        return view('admin.product.index', compact('products','product', 'categories'));
     }
 
     /**
@@ -87,19 +92,8 @@ class ProductController extends Controller
             'description' => 'required|string',
             'details' => 'required|string',
             'stock_quantity' => 'required|integer|min:0',
-            'images.*' => 'nullable|image|mimes:jpg,jpeg,png'
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048'
         ]);
-    
-        $imagePaths = json_decode($product->images ?? '[]');
-    
-        if ($request->hasFile('images')) {
-            // Ganti gambar lama kalau ada gambar baru
-            $imagePaths = [];
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
-                $imagePaths[] = $path;
-            }
-        }
     
         $product->update([
             'name' => $request->name,
@@ -107,10 +101,25 @@ class ProductController extends Controller
             'description' => $request->description,
             'details' => $request->details,
             'stock_quantity' => $request->stock_quantity,
-            'images' => json_encode($imagePaths),
         ]);
+
+        if ($request->hasFile('images')) {
+        // Hapus gambar lama (opsional)
+        foreach ($product->images as $img) {
+            \Storage::disk('public')->delete($img->path);
+            $img->delete();
+        }
+
+        foreach ($request->file('images') as $image) {
+            $path = $image->store('products', 'public');
+            ProductImage::create([
+                'product_id' => $product->id,
+                'path' => $path,
+            ]);
+        }
+        }
     
-        return redirect()->route('product.index')->with('success', 'Product updated.');
+        return redirect()->route('admin.product.index')->with('success', 'Product updated.');
     }
 
     /**
@@ -119,6 +128,6 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-        return redirect()->route('product.index')->with('success', 'Product deleted.');
+        return redirect()->route('admin.product.index')->with('success', 'Product deleted.');
     }
 }
