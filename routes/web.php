@@ -11,6 +11,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,8 +28,6 @@ Route::get('/userfest', function () {
 Route::prefix('admin')->group(function () {
     Route::resource('product', ProductController::class);
 });
-
-use App\Http\Controllers\OrderController;
 
 Route::get('/orders', function () {
     return view('admin.orders');
