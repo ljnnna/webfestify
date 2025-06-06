@@ -118,7 +118,6 @@ flatpickr("#startDate", {
     const maxEndDate = new Date(startDate);
     maxEndDate.setDate(startDate.getDate() + 7);
 
-<<<<<<< HEAD
     // Update min & max date untuk #endDate
     endDatePicker.set("minDate", startDate);
     endDatePicker.set("maxDate", maxEndDate);
@@ -137,91 +136,6 @@ flatpickr("#startDate", {
           <span class="text-[#BDB9B9] font-extrabold text-lg tracking-wide">
             ELECTRONIC
           </span>
-=======
-            <!-- SEARCH BUTTON -->
-            <button id="searchBtn" aria-label="Search" type="submit" class="flex-shrink-0 px-4 py-3 text-[#3E3667] hover:text-[#6B5DD3] transition-all duration-200 hover:shadow-lg flex items-center justify-center">
-                <i class="fas fa-search text-lg" id="searchIcon"></i>
-                <svg id="loadingSpinner" class="hidden animate-spin h-5 w-5 text-[#3E3667]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                </svg>
-            </button>
-        </form>
-    </section>
-
-    {{-- Calendar logic --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-    <script>
-        document.getElementById("searchForm").addEventListener("submit", function (e) {
-            e.preventDefault();
-            const btn = document.getElementById("searchBtn");
-            const icon = document.getElementById("searchIcon");
-            const spinner = document.getElementById("loadingSpinner");
-
-            icon.classList.add("hidden");
-            spinner.classList.remove("hidden");
-
-            setTimeout(() => {
-                icon.classList.remove("hidden");
-                spinner.classList.add("hidden");
-                alert("nanti user diarahkan ke product yang available, tapi nanti yaa kita hubungi ke backend duluuu 😚💜");
-            }, 2000);
-        });
-
-        const endDatePicker = flatpickr("#endDate", {
-            dateFormat: "Y-m-d",
-            minDate: "today"
-        });
-
-        flatpickr("#startDate", {
-            dateFormat: "Y-m-d",
-            minDate: "today",
-            maxDate: new Date().fp_incr(30), // Ubah dari 7 ke 30 hari
-            onChange: function (selectedDates) {
-                const startDate = selectedDates[0];
-                if (!startDate) return;
-
-                const maxEndDate = new Date(startDate);
-                maxEndDate.setDate(startDate.getDate() + 30); // Ubah dari 7 ke 30 hari
-
-                endDatePicker.set("minDate", startDate);
-                endDatePicker.set("maxDate", maxEndDate);
-                endDatePicker.clear();
-            }
-        });
-    </script>
-
-
-    {{-- Browse by Category --}}
-    <section id="category" class="max-w-7xl mx-auto mt-20 px-4 sm:px-6 lg:px-8">
-        <h2 class="text-3xl font-extrabold mb-8 text-center">
-            Browse by Category
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <a href="/electronic" class="block">
-                <div class="bg-[#F8F1EE] rounded-xl shadow-md flex items-center justify-center h-40 transform hover:scale-105 transition duration-300 cursor-pointer">
-                    <span class="text-[#BDB9B9] font-extrabold text-lg tracking-wide">
-                        ELECTRONIC
-                    </span>
-                </div>
-            </a>
-            <a href="katalog_merch.html" class="block">
-                <div class="bg-[#EBD7F0] rounded-xl shadow-md flex items-center justify-center h-40 transform hover:scale-105 transition duration-300 cursor-pointer">
-                    <span class="text-[#BDB9B9] font-extrabold text-lg tracking-wide">
-                        MERCHANDISE
-                    </span>
-                </div>
-            </a>
-            <a href="/others" class="block">
-                <div class="bg-[#D9DFF7] rounded-xl shadow-md flex items-center justify-center h-40 transform hover:scale-105 transition duration-300 cursor-pointer">
-                    <span class="text-[#BDB9B9] font-extrabold text-lg tracking-wide">
-                        OTHERS
-                    </span>
-                </div>
-            </a>
->>>>>>> d25387a1b739058cbb3054e2e6f0e7f45d3bcdd2
         </div>
       </a>
       <a href="katalog_merch.html" class="block">

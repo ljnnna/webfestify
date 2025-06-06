@@ -8,7 +8,7 @@
 
     <!-- Product Grid -->
     <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 flex-1">
-        @include('components.productgrid')
+        @include('components.productgridcatalog')
     </section>
 </div>
 @endsection
