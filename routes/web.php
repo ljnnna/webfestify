@@ -26,18 +26,6 @@ Route::get('/userfest', function () {
     return view('admin.admincostumer');
 })->name('admin.user');
 
-<<<<<<< HEAD
-use App\Http\Controllers\ProductController;
-
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('product', ProductController::class);
-});
-
-
-// Customer -------------------------------------------------------------
-
-use App\Http\Controllers\UsersController;
-=======
 Route::prefix('admin')->group(function () {
     Route::resource('product', ProductController::class);
 });
@@ -54,7 +42,6 @@ Route::get('/home',[HomeController::class, 'index']);
 
 Route::get('post', [HomeController::class, 'post'])->middleware(['auth', 'admin']);
 
->>>>>>> 9a725531f0d0eff074a358dbb388038abd8579f2
 Route::get('/users', [UsersController::class, 'index']);
 
 Route::middleware(['auth'])->group(function () {
@@ -91,23 +78,15 @@ Route::get('/team', function () {
     return view('team');
 });
 
-<<<<<<< HEAD
-//Dashboard
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-=======
 Route::get('/catalog', [CatalogController::class, 'catalog']);
 
 Route::get('/home', function () {
     return view('homepage');
 });
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
->>>>>>> d25387a1b739058cbb3054e2e6f0e7f45d3bcdd2
-
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 require __DIR__.'/auth.php';
 
 
