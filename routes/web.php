@@ -6,11 +6,13 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\DetailsController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,23 +26,9 @@ Route::get('/userfest', function () {
     return view('admin.admincostumer');
 })->name('admin.user');
 
-<<<<<<< HEAD
-use App\Http\Controllers\ProductController;
-
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('product', ProductController::class);
-});
-
-
-// Customer -------------------------------------------------------------
-
-use App\Http\Controllers\UsersController;
-=======
 Route::prefix('admin')->group(function () {
     Route::resource('product', ProductController::class);
 });
-
-use App\Http\Controllers\OrderController;
 
 Route::get('/orders', function () {
     return view('admin.orders');
@@ -54,7 +42,6 @@ Route::get('/home',[HomeController::class, 'index']);
 
 Route::get('post', [HomeController::class, 'post'])->middleware(['auth', 'admin']);
 
->>>>>>> 9a725531f0d0eff074a358dbb388038abd8579f2
 Route::get('/users', [UsersController::class, 'index']);
 
 Route::middleware(['auth'])->group(function () {
@@ -78,41 +65,27 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 // Logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
-Route::get('/katalogmerch', function () {
-    return view('customer.katalog_merch');
-});
-
 Route::get('/learnmore', function () {
     return view('learnmore');
 });
-
 
 Route::get('/team', function () {
     return view('team');
 });
 
-Route::get('/catalog', [CatalogController::class, 'catalog']);
-
-Route::get('/home', function () {
-    return view('homepage');
-});
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 require __DIR__.'/auth.php';
 
 
-Route::get('/searchpage', function () {
-    return view('pages.customer.searchpage');
-});
+Route::get('/search', [SearchController::class, 'search'])->name('search');
 
-Route::get('/catalog', [CatalogController::class, 'catalog']);
+Route::get('/catalog', [CatalogController::class, 'catalog'])->name('catalog');
 
 Route::get('/details', [DetailsController::class, 'details'])->name('details');
 
-Route::get('/payment', [PaymentController::class, 'payment']);
+Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');;
 
 
 require __DIR__.'/auth.php';
