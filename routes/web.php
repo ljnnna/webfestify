@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\DetailsController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
@@ -53,18 +54,12 @@ Route::get('/learnmore', function () {
     return view('learnmore');
 });
 
-Route::get('/home', function () {
-    return view('homepage');
-});
 
 Route::get('/team', function () {
     return view('team');
 });
 
-Route::get('/home', function () {
-    return view('homepage');
-});
-
+//Dashboard
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -72,15 +67,13 @@ Route::get('/dashboard', function () {
 require __DIR__.'/auth.php';
 
 
-Route::get('/searchpage', function () {
-    return view('pages.customer.searchpage');
-});
+Route::get('/search', [SearchController::class, 'search'])->name('search');
 
-Route::get('/catalog', [CatalogController::class, 'catalog']);
+Route::get('/catalog', [CatalogController::class, 'catalog'])->name('catalog');
 
 Route::get('/details', [DetailsController::class, 'details'])->name('details');
 
-Route::get('/payment', [PaymentController::class, 'payment']);
+Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');;
 
 
 Route::put('/profile/save-all', [ProfileController::class, 'saveAll'])->name('profile.saveAll');

@@ -32,7 +32,7 @@
         >
             <option disabled="" selected="">Select Payment Method</option>
             <option>QRIS</option></select
-        >~
+        >
     </div>
     <hr class="border-gray-300" />
     <div class="flex items-center gap-2 justify-center">
