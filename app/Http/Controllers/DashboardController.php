@@ -26,7 +26,7 @@ class DashboardController extends Controller
         $product_rented = Product::where('status', 'rented')->count();
 
         // Total customer (asumsi role user customer adalah 'customer')
-        $total_customers = User::where('role', 'customer')->count();
+        $total_customers = User::where('usertype', 'customer')->count();
 
         // Review terbaru
         $reviews = Review::with(['user', 'product'])->latest()->take(5)->get();
