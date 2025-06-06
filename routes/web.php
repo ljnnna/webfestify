@@ -65,23 +65,12 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 // Logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
-Route::get('/katalogmerch', function () {
-    return view('customer.katalog_merch');
-});
-
 Route::get('/learnmore', function () {
     return view('learnmore');
 });
 
-
 Route::get('/team', function () {
     return view('team');
-});
-
-Route::get('/catalog', [CatalogController::class, 'catalog']);
-
-Route::get('/home', function () {
-    return view('homepage');
 });
 
 Route::get('/dashboard', function () {
