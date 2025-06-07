@@ -71,7 +71,7 @@ Route::get('/learnmore', function () {
 
 Route::get('/team', function () {
     return view('team');
-});
+})->name('team');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -87,5 +87,12 @@ Route::get('/details', [DetailsController::class, 'details'])->name('details');
 
 Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');;
 
+Route::get('/tandc', function () {
+    return view('pages.customer.tandc');
+})->name('tandc');
+
+Route::get('/privacypolice', function () {
+    return view('pages.customer.privacypolice');
+})->name('privacypolice');
 
 require __DIR__.'/auth.php';
