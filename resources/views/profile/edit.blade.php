@@ -1,35 +1,33 @@
 <x-app-layout>
-    <!-- ISI HALAMAN -->
-    <div class="flex flex-col md:flex-row min-h-screen bg-gray-50">
-        <!-- SIDEBAR (Sekarang tampil di mobile juga) -->
+    <!-- CONTAINER UTAMA -->
+    <div class="flex flex-col md:flex-row bg-gray-50">
+        <!-- SIDEBAR -->
         <aside class="w-full md:w-1/4 bg-gradient-to-b from-pink-100 to-blue-100 p-6 md:rounded-r-3xl shadow-md mt-2 md:mt-10">
             <div class="flex flex-col items-center">
                 <!-- Gambar Profil -->
-                 <x-profile-picture-upload :user="auth()->user()" />
+                <x-profile-picture-upload :user="auth()->user()" />
 
-
-                <!-- Menu -->
+                <!-- Menu Navigasi -->
                 <nav class="mt-10 space-y-3 text-center font-semibold text-gray-700">
-                    <a href="{{ route('profile.edit') }}" 
-                    class="block px-3 py-2 rounded-full transition 
-                    {{ request()->routeIs('profile.edit') ? 'bg-white text-purple-800 font-bold' : 'hover:bg-purple-100' }}">
-                    ACCOUNT SETTING
+                    <a href="{{ route('profile.edit') }}"
+                       class="block px-3 py-2 rounded-full transition
+                       {{ request()->routeIs('profile.edit') ? 'bg-white text-purple-800 font-bold' : 'hover:bg-purple-100' }}">
+                        ACCOUNT SETTING
                     </a>
 
-                    <a href="{{ route('profile.rentalInfo') }}" 
-                    class="block px-3 py-2 rounded-full transition 
-                    {{ request()->routeIs('profile.rentalInfo') ? 'bg-white text-purple-800 font-bold' : 'hover:bg-purple-100' }}">
-                    RENTAL INFORMATION
+                    <a href="{{ route('profile.rentalInfo') }}"
+                       class="block px-3 py-2 rounded-full transition
+                       {{ request()->routeIs('profile.rentalInfo') ? 'bg-white text-purple-800 font-bold' : 'hover:bg-purple-100' }}">
+                        RENTAL INFORMATION
                     </a>
                 </nav>
             </div>
         </aside>
 
-        <!-- FORM KONTEN -->
-        <main class="flex-1 p-6 flex justify-center items-center min-h-screen">
+        <!-- FORM UTAMA -->
+        <main class="flex-1 p-6 flex justify-center items-center">
             <form method="POST" action="{{ route('profile.saveAll') }}"
-            class="bg-white rounded-2xl shadow-lg p-8 max-w-3xl w-full mx-auto mb-10">
-                  
+                  class="bg-white rounded-2xl shadow-lg p-8 max-w-3xl w-full mx-auto mb-10">
                 @csrf
                 @method('PUT')
 
@@ -67,8 +65,7 @@
                     </div>
                 </div>
 
-                <!-- Tombol -->
-
+                <!-- Tombol Aksi -->
                 <div x-data="{ confirmDelete: false }" class="flex justify-start gap-4 mt-6">
                     <template x-if="!confirmDelete">
                         <button type="button" @click="confirmDelete = true"
@@ -89,15 +86,7 @@
                         Save Changes
                     </button>
                 </div>
-
-
-    <!-- Script Toggle Navbar -->
-    <script>
-        const toggle = document.getElementById('nav-toggle');
-        const menu = document.getElementById('mobile-menu');
-
-        toggle.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
-        });
-    </script>
+            </form>
+        </main>
+    </div>
 </x-app-layout>

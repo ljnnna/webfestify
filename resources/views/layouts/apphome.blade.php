@@ -22,7 +22,7 @@
  <body class="bg-white text-[#3E3667] dark:bg-[#1E1B2E] dark:text-white">
 
     <!-- Header -->
-    @include('components.navbar')
+    @include('components.navhome')
 
     <!-- Main Content -->
     <main>
