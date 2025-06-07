@@ -59,7 +59,7 @@
                 />
                 <label class="text-sm text-gray-700 leading-relaxed cursor-pointer text-center" for="terms">
                     I have read and agree to the 
-                    <a href="#" class="text-[#5B4B7A] underline hover:text-[#6B5DD3] transition-smooth">
+                    <a href="{{ route('tandc') }}" class="text-[#5B4B7A] underline hover:text-[#6B5DD3] transition-smooth">
                         terms and conditions
                     </a>
                 </label>
@@ -172,8 +172,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function cancelOrder() {
     if (confirm('Are you sure you want to cancel this order?')) {
         console.log('Order cancelled');
-        // Add your cancellation logic here
-        // window.location.href = '/dashboard'; // Example redirect
+        // Redirect to dashboard using Laravel named route
+        window.location.href = "{{ route('dashboard') }}";
     }
 }
 
