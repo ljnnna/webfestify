@@ -31,24 +31,25 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
   </head>
 
-  <body class="bg-white text-[#3E3667] dark:bg-[#1E1B2E] dark:text-white">
-    @include('layouts.navigation')
+  <body class="min-h-screen flex flex-col">
 
-    @isset($header)
-      <header class="bg-white dark:bg-gray-800 shadow">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          {{ $header }}
-        </div>
-      </header>
-    @endisset
-      
-    <main>
-      @yield('content') {{-- Untuk halaman biasa --}}
-      {{ $slot ?? '' }}   {{-- Untuk komponen Blade (misalnya <x-app-layout>) --}}
-    </main>
+  @include('components.navbar')
 
-    @include('components.footer')
-  </body>
+  @isset($header)
+    <header class="bg-white dark:bg-gray-800 shadow">
+      <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        {{ $header }}
+      </div>
+    </header>
+  @endisset
+
+  <main class="flex-1">
+    @yield('content')
+    {{ $slot ?? '' }}
+  </main>
+
+  @include('components.footer')
+</body>
 </html>
 
 

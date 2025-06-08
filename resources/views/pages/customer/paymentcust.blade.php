@@ -1,47 +1,24 @@
 @extends('layouts.payment')
 
-@section('title', 'Payment Customer')
+@section('title', 'Payment Customer - Festify')
 
-@section('body-class', 'bg-gradient-to-b from-[#F9D9FF] to-[#D9D9FF]
-min-h-screen') 
-
-@push('styles')
-
-<style>
-    .cancel-button {
-        background: linear-gradient(to right, #b6b0f7, #f9d9ff);
-    }
-</style>
-
-@endpush 
+@section('body-class', 'bg-gradient-to-b from-[#F9D9FF] to-[#D9D9FF] min-h-screen')
 
 @section('content')
-<div class="flex items-center justify-center p-8">
-    <main
-        class="max-w-6xl w-full bg-white/90 rounded-xl shadow-md p-10 grid grid-cols-1 md:grid-cols-2 gap-10"
-    >
-        <!-- Left side -->
-        <section>
-            <h1
-                class="text-[36px] font-extrabold text-[#5B4B7A] mb-6 border-b border-gray-300 pb-2"
-            >
-                ORDER DETAILS
-            </h1>
-            @include('components.ordersummary')
+<!-- Include Navbar -->
+@include('components.navbar')
 
-            <div class="mt-8 flex justify-center">
-                <button
-                    class="max-w-xs w-full ml-[-65px] py-3 text-[#5B4B7A] font-extrabold text-lg rounded-full bg-gradient-to-r from-[#B6B0F7] to-[#F9D9FF] shadow-md hover:brightness-105 transition"
-                    type="button"
-                >
-                    CANCEL ORDER
-                </button>
+<!-- Ubah pt-24 menjadi pt-4 atau pt-6 untuk mengurangi jarak -->
+<main class="pt-4 container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="bg-white/90 rounded-xl shadow-lg p-6 sm:p-8 lg:p-10 backdrop-blur-sm">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+
+                @include('components.orderdetailssection')
+                @include('components.paymentsection')
+
             </div>
-        </section>
-
-        <!-- Right side -->
-        <section class="flex flex-col justify-between">
-            @include('components.orderform')
-        </section>
-    </main>
-</div>
+        </div>
+    </div>
+</main>
+@endsection
