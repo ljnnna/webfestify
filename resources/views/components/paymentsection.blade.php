@@ -179,7 +179,7 @@ function cancelOrder() {
 
 function goBackToCart() {
     console.log('Navigating back to cart');
-    // Add your navigation logic here
-    // window.location.href = '/cart'; // Example redirect
+    // Redirect to home using Laravel named route
+    window.location.href = "{{ route('cart') }}";
 }
 </script>
