@@ -6,11 +6,13 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\DetailsController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,12 +39,15 @@ Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders');
 //     return view('admin.orders');
 // })->name('admin.orders');
 
+
 // Customer -------------------------------------------------------------
 
-Route::get('/dashboard', [HomeController::class, 'index'])
-->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', [HomeController::class, 'index'])
+// ->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/home',[HomeController::class, 'index']);
+Route::get('/home', [HomeController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('home');
 
 Route::get('post', [HomeController::class, 'post'])->middleware(['auth', 'admin']);
 
@@ -69,41 +74,59 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 // Logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
-Route::get('/katalogmerch', function () {
-    return view('customer.katalog_merch');
-});
-
 Route::get('/learnmore', function () {
     return view('learnmore');
 });
 
+// Route::get('/team', function () {
+//     return view('team');
 
-Route::get('/team', function () {
-    return view('team');
-});
+// });
 
-Route::get('/catalog', [CatalogController::class, 'catalog']);
+// Route::get('/catalog', [CatalogController::class, 'catalog']);
 
-Route::get('/home', function () {
-    return view('homepage');
-});
+// Route::get('/home', function () {
+//     return view('homepage');
+// });
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-require __DIR__.'/auth.php';
 
 
-Route::get('/searchpage', function () {
-    return view('pages.customer.searchpage');
-});
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/catalog', [CatalogController::class, 'catalog']);
+
+Route::get('/search', [SearchController::class, 'search'])->name('search');
+
+Route::get('/catalog', [CatalogController::class, 'catalog'])->name('catalog');
 
 Route::get('/details', [DetailsController::class, 'details'])->name('details');
 
-Route::get('/payment', [PaymentController::class, 'payment']);
+Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
 
+Route::get('/cart', function () {
+    return view('pages.customer.cart-page');
+})->name('cart');
+
+Route::get('/admin/home', function () {
+    return redirect()->route('home');
+})->name('admin.home');
+
+
+Route::get('/tandc', function () {
+    return view('pages.customer.tandc');
+})->name('tandc');
+
+Route::get('/privacypolice', function () {
+    return view('pages.customer.privacypolice');
+})->name('privacypolice');
+
+Route::get('/team', function () {
+    return view('team');
+})->name('team');
 
 require __DIR__.'/auth.php';

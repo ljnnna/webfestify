@@ -1,31 +1,25 @@
 <header class="fixed top-0 left-0 w-full z-50 bg-[#E9DFF7] shadow-md text-[#3E3667]">
+
     <div class="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
         <div class="flex items-center space-x-6">
             <img alt="Festify logo" src="{{ asset('images/logofestify.png') }}" width="100" height="80" />
-            <nav class="hidden md:flex space-x-8 font-semibold text-sm">
-                <a href="{{ route('home') }}"
-                    class="px-4 py-2 rounded-xl transition {{ request()->is('dashboard') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:opacity-60' }}">HOME</a>
-                <a href="{{ route('catalog') }}"
-                    class="px-4 py-2 rounded-xl transition {{ request()->is('catalog') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:opacity-60' }}">CATALOG</a>
-                <a href="{{ route('team') }}"
-                    class="px-4 py-2 rounded-xl transition {{ request()->is('team') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:opacity-60' }}">ABOUT
-                    US</a>
-                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=festify2b@gmail.com"
-                    class="px-4 py-2 rounded-xl transition hover:opacity-60">CONTACT</a>
-            </nav>
-
-
         </div>
 
+        <!-- Menu -->
+        <nav class="hidden md:flex space-x-8 font-semibold text-sm absolute left-1/2 transform -translate-x-1/2">
+            <a href="{{ route('home') }}"
+                class="px-4 py-2 rounded-xl transition {{ request()->is('home') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:opacity-60' }}">HOME</a>
+            <a href="{{ route('catalog') }}"
+                class="px-4 py-2 rounded-xl transition {{ request()->is('catalog') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:opacity-60' }}">CATALOG</a>
+            <a href="{{ url('about_us') }}"
+                class="px-4 py-2 rounded-xl transition {{ request()->is('about_us') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:opacity-60' }}">ABOUT US</a>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=festify2b@gmail.com"
+                class="px-4 py-2 rounded-xl transition hover:opacity-60">CONTACT</a>
+        </nav>
+
         <div class="flex items-center space-x-4">
-            <!-- Search -->
-            <div class="relative w-[280px] hidden sm:block">
-                <input type="text" placeholder="Search..."
-                    class="w-full rounded-full py-2 pl-4 pr-10 text-sm bg-white text-[#3E3667] focus:outline-none shadow-inner">
-                <i class="fas fa-search absolute right-3 top-2.5 text-gray-500"></i>
-            </div>
             <!-- Icons -->
-            <a href="{{ route('cart') }}" aria-label="Cart" class="text-[#3E3667] hover:text-[#6B5DD3] text-2xl">
+            <a href="{{ url('chart') }}" aria-label="Cart" class="text-[#3E3667] hover:text-[#6B5DD3] text-2xl">
                 <i class="fas fa-shopping-cart"></i>
             </a>
             <a href="{{ route('profile.edit') }}" aria-label="User" class="text-[#3E3667] hover:text-[#6B5DD3] text-2xl">
@@ -57,11 +51,11 @@
     </div>
     <nav class="flex flex-col p-4 space-y-4 font-semibold text-sm">
         <a href="{{ route('home') }}"
-            class="px-4 py-2 rounded-xl transition {{ request()->is('dashboard') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:bg-gray-100' }}">HOME</a>
+            class="px-4 py-2 rounded-xl transition {{ request()->is('home') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:bg-gray-100' }}">HOME</a>
         <a href="{{ route('catalog') }}"
             class="px-4 py-2 rounded-xl transition {{ request()->is('catalog') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:bg-gray-100' }}">CATALOG</a>
-        <a href="{{ route('team') }}"
-            class="px-4 py-2 rounded-xl transition {{ request()->is('team') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:bg-gray-100' }}">ABOUT
+        <a href="{{ url('about_us') }}"
+            class="px-4 py-2 rounded-xl transition {{ request()->is('about_us') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:bg-gray-100' }}">ABOUT
             US</a>
         <a href="https://mail.google.com/mail/?view=cm&fs=1&to=festify2b@gmail.com"
             class="px-4 py-2 rounded-xl transition hover:bg-gray-100">CONTACT</a>

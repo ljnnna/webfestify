@@ -15,8 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\Admin::class,
         ]);
 
-        // Kalau kamu mau tambahkan middleware group, bisa ditambahkan di sini juga:
-        // $middleware->group('web', [...]);
+        
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

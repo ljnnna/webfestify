@@ -1,43 +1,33 @@
 <x-app-layout>
-    <!-- ISI HALAMAN -->
-    <div class="flex flex-col md:flex-row min-h-screen bg-gray-50">
-        <!-- SIDEBAR (Sekarang tampil di mobile juga) -->
+    <!-- CONTAINER UTAMA -->
+    <div class="flex flex-col md:flex-row bg-gray-50">
+        <!-- SIDEBAR -->
         <aside class="w-full md:w-1/4 bg-gradient-to-b from-pink-100 to-blue-100 p-6 md:rounded-r-3xl shadow-md mt-2 md:mt-10">
             <div class="flex flex-col items-center">
                 <!-- Gambar Profil -->
-                <form action="{{ route('profile.uploadPicture') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <label class="cursor-pointer relative">
-                        <img src="{{ asset(auth()->user()->picture ?? 'default-user.png') }}"
-                             class="w-32 h-32 rounded-full border-2 border-gray-300 object-cover"
-                             alt="Profile Picture">
-                        <input type="file" name="picture" class="hidden" onchange="this.form.submit()">
-                        <span class="absolute bottom-0 right-0 bg-white rounded-full p-1 text-xs shadow">Edit</span>
-                    </label>
-                </form>
+                <x-profile-picture-upload :user="auth()->user()" />
 
-                <!-- Menu -->
+                <!-- Menu Navigasi -->
                 <nav class="mt-10 space-y-3 text-center font-semibold text-gray-700">
-                    <a href="{{ route('profile.edit') }}" 
-                    class="block px-3 py-2 rounded-full transition 
-                    {{ request()->routeIs('profile.edit') ? 'bg-white text-purple-800 font-bold' : 'hover:bg-purple-100' }}">
-                    ACCOUNT SETTING
+                    <a href="{{ route('profile.edit') }}"
+                       class="block px-3 py-2 rounded-full transition
+                       {{ request()->routeIs('profile.edit') ? 'bg-white text-purple-800 font-bold' : 'hover:bg-purple-100' }}">
+                        ACCOUNT SETTING
                     </a>
 
-                    <a href="{{ route('profile.rentalInfo') }}" 
-                    class="block px-3 py-2 rounded-full transition 
-                    {{ request()->routeIs('profile.rentalInfo') ? 'bg-white text-purple-800 font-bold' : 'hover:bg-purple-100' }}">
-                    RENTAL INFORMATION
+                    <a href="{{ route('profile.rentalInfo') }}"
+                       class="block px-3 py-2 rounded-full transition
+                       {{ request()->routeIs('profile.rentalInfo') ? 'bg-white text-purple-800 font-bold' : 'hover:bg-purple-100' }}">
+                        RENTAL INFORMATION
                     </a>
                 </nav>
             </div>
         </aside>
 
-        <!-- FORM KONTEN -->
-        <main class="flex-1 p-6 flex justify-center items-center min-h-screen">
+        <!-- FORM UTAMA -->
+        <main class="flex-1 p-6 flex justify-center items-center">
             <form method="POST" action="{{ route('profile.saveAll') }}"
-            class="bg-white rounded-2xl shadow-lg p-8 max-w-3xl w-full mx-auto mb-10">
-                  
+                  class="bg-white rounded-2xl shadow-lg p-8 max-w-3xl w-full mx-auto mb-10">
                 @csrf
                 @method('PUT')
 
@@ -75,12 +65,22 @@
                     </div>
                 </div>
 
-                <!-- Tombol -->
-                <div class="flex justify-start gap-4 mt-6">
-                    <button type="submit" name="delete_account" value="on"
-                            class="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700 transition">
-                        Delete Account
-                    </button>
+                <!-- Tombol Aksi -->
+                <div x-data="{ confirmDelete: false }" class="flex justify-start gap-4 mt-6">
+                    <template x-if="!confirmDelete">
+                        <button type="button" @click="confirmDelete = true"
+                                class="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700 transition">
+                            Delete Account
+                        </button>
+                    </template>
+
+                    <template x-if="confirmDelete">
+                        <button type="submit" name="delete_account" value="on"
+                                class="bg-red-700 text-white px-4 py-2 rounded shadow border border-red-900">
+                            Are you sure?
+                        </button>
+                    </template>
+
                     <button type="submit"
                             class="bg-gray-300 px-4 py-2 rounded shadow hover:bg-gray-400 transition">
                         Save Changes
@@ -89,14 +89,4 @@
             </form>
         </main>
     </div>
-
-    <!-- Script Toggle Navbar -->
-    <script>
-        const toggle = document.getElementById('nav-toggle');
-        const menu = document.getElementById('mobile-menu');
-
-        toggle.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
-        });
-    </script>
 </x-app-layout>
