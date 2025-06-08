@@ -112,7 +112,7 @@ Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
 
 Route::get('/cart', function () {
     return view('pages.customer.cart-page');
-});
+})->name('cart');
 
 Route::get('/admin/home', function () {
     return redirect()->route('home');
