@@ -1,28 +1,38 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Product;
+use App\Models\Order;
+use App\Models\User;
 
 class HomeController extends Controller
 {
+    public function __construct()
+    {
+        logger('Middleware constructor dijalankan.');
+        $this->middleware('auth');
+    }
+
     public function index(){
+        $user = Auth::user();
 
-        $usertype=Auth()->user()->usertype;
-
-        if($usertype=='user') {
-            return view('dashboard');
+        if (!$user) {
+            return redirect('/login')->withErrors('Autentikasi gagal, silakan login ulang.');
         }
 
-        else if($usertype=='admin'){
-            return view('admin.admincostumer');
-        }
+        $usertype = $user->usertype;
 
-        else {
-            return redirect()->back();
+        if($usertype == 'customer') {
+            return view('home');
+        } else if($usertype == 'admin') {
+            $data = DashboardController::getDashboardData();
+            return view('admin.dashboardfestify', $data);
+        } else {
+            Auth::logout();
+            return redirect('/login')->withErrors('Akun tidak memiliki akses valid.');
         }
     }
 

@@ -37,8 +37,8 @@
                             </x-slot>
 
                             <x-slot name="content">
-                                <x-dropdown-link :href="route('dashboard')">
-                                    {{ __('Dashboard') }}
+                                <x-dropdown-link :href="route('home')">
+                                    {{ __('home') }}
                                 </x-dropdown-link>
                                 <x-dropdown-link :href="route('profile.edit')">
                                     {{ __('Profile') }}
@@ -88,20 +88,21 @@
         <a href="#" class="block text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Contact</a>
 
         @auth
-            <div class="border-t border-gray-200 dark:border-gray-600 pt-2">
-                <div class="text-gray-800 dark:text-white font-medium">{{ Auth::user()->name }}</div>
-                <div class="text-sm text-gray-500 dark:text-gray-300">{{ Auth::user()->email }}</div>
+        <div class="border-t border-gray-200 dark:border-gray-600 pt-2">
+        <div class="text-gray-800 dark:text-white font-medium">{{ Auth::user()->name }}</div>
+        <div class="text-sm text-gray-500 dark:text-gray-300">{{ Auth::user()->email }}</div>
 
-                <a href="{{ route('dashboard') }}" class="block mt-2 text-sm text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Dashboard</a>
-                <a href="{{ route('profile.edit') }}" class="block text-sm text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Profile</a>
+        <a href="{{ route('home') }}" class="block mt-2 text-sm text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Home</a>
+        <a href="{{ route('profile.edit') }}" class="block text-sm text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Profile</a>
 
-                <form method="POST" action="{{ route('logout') }}" class="mt-2">
-                    @csrf
-                    <button type="submit" class="block text-sm text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">
-                        Log Out
-                    </button>
-                </form>
-            </div>
-        @endauth
+        <form method="POST" action="{{ route('logout') }}" class="mt-2">
+            @csrf
+            <button type="submit" class="block text-sm text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">
+                Log Out
+            </button>
+        </form>
+    </div>
+@endauth
+
     </div>
 </nav>

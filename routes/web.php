@@ -25,8 +25,7 @@ Route::get('/userfest', function () {
     return view('admin.admincostumer');
 })->name('admin.user');
 
-<<<<<<< HEAD
-use App\Http\Controllers\ProductController;
+
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('product', ProductController::class);
@@ -35,8 +34,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 // Customer -------------------------------------------------------------
 
-use App\Http\Controllers\UsersController;
-=======
+
+
 Route::prefix('admin')->group(function () {
     Route::resource('product', ProductController::class);
 });
@@ -46,14 +45,15 @@ Route::get('/orders', function () {
 });
 // Customer -------------------------------------------------------------
 
-Route::get('/dashboard', [HomeController::class, 'index'])
-->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', [HomeController::class, 'index'])
+// ->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/home',[HomeController::class, 'index']);
+Route::get('/home', [HomeController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('home');
 
 Route::get('post', [HomeController::class, 'post'])->middleware(['auth', 'admin']);
 
->>>>>>> 9a725531f0d0eff074a358dbb388038abd8579f2
 Route::get('/users', [UsersController::class, 'index']);
 
 Route::middleware(['auth'])->group(function () {
@@ -92,15 +92,13 @@ Route::get('/team', function () {
 
 Route::get('/catalog', [CatalogController::class, 'catalog']);
 
-Route::get('/home', function () {
-    return view('homepage');
-});
+// Route::get('/home', function () {
+//     return view('homepage');
+// });
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
-
-require __DIR__.'/auth.php';
 
 
 Route::get('/searchpage', function () {
@@ -111,7 +109,16 @@ Route::get('/catalog', [CatalogController::class, 'catalog']);
 
 Route::get('/details', [DetailsController::class, 'details'])->name('details');
 
-Route::get('/payment', [PaymentController::class, 'payment']);
+Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
+
+
+Route::get('/cart', function () {
+    return view('pages.customer.cart-page');
+});
+
+Route::get('/admin/home', function () {
+    return redirect()->route('home');
+})->name('admin.home');
 
 
 require __DIR__.'/auth.php';
