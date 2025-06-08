@@ -33,7 +33,7 @@
 
   <body class="min-h-screen flex flex-col">
 
-  @include('components.navbar')
+  @include('components.navhome')
 
   @isset($header)
     <header class="bg-white dark:bg-gray-800 shadow">

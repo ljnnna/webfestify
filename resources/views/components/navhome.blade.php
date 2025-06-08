@@ -7,8 +7,8 @@
 
         <!-- Menu -->
         <nav class="hidden md:flex space-x-8 font-semibold text-sm absolute left-1/2 transform -translate-x-1/2">
-            <a href="{{ route('dashboard') }}"
-                class="px-4 py-2 rounded-xl transition {{ request()->is('dashboard') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:opacity-60' }}">HOME</a>
+            <a href="{{ route('home') }}"
+                class="px-4 py-2 rounded-xl transition {{ request()->is('home') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:opacity-60' }}">HOME</a>
             <a href="{{ route('catalog') }}"
                 class="px-4 py-2 rounded-xl transition {{ request()->is('catalog') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:opacity-60' }}">CATALOG</a>
             <a href="{{ url('about_us') }}"
@@ -50,8 +50,8 @@
         </button>
     </div>
     <nav class="flex flex-col p-4 space-y-4 font-semibold text-sm">
-        <a href="{{ route('dashboard') }}"
-            class="px-4 py-2 rounded-xl transition {{ request()->is('dashboard') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:bg-gray-100' }}">HOME</a>
+        <a href="{{ route('home') }}"
+            class="px-4 py-2 rounded-xl transition {{ request()->is('home') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:bg-gray-100' }}">HOME</a>
         <a href="{{ route('catalog') }}"
             class="px-4 py-2 rounded-xl transition {{ request()->is('catalog') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:bg-gray-100' }}">CATALOG</a>
         <a href="{{ url('about_us') }}"

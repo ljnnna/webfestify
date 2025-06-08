@@ -80,10 +80,10 @@ Route::get('/learnmore', function () {
     return view('learnmore');
 });
 
-Route::get('/team', function () {
-    return view('team');
+// Route::get('/team', function () {
+//     return view('team');
 
-});
+// });
 
 // Route::get('/catalog', [CatalogController::class, 'catalog']);
 
@@ -126,5 +126,9 @@ Route::get('/tandc', function () {
 Route::get('/privacypolice', function () {
     return view('pages.customer.privacypolice');
 })->name('privacypolice');
+
+Route::get('/team', function () {
+    return view('team');
+})->name('team');
 
 require __DIR__.'/auth.php';
