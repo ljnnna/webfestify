@@ -14,37 +14,29 @@ use App\Http\Controllers\UsersController;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 // Admin ----------------------------------------------------------------
 
-// Route::get('/dashboardfest', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::get('/dashboardfest', [DashboardController::class, 'index'])->name('admin.dashboard');
 
-Route::get('/userfest', function () {
-    return view('admin.admincostumer');
-})->name('admin.user');
+Route::get('/userfest', [UsersController::class, 'index'])->name('admin.user');
 
-<<<<<<< HEAD
-use App\Http\Controllers\ProductController;
+// Route::get('/userfest', function () {
+//     return view('admin.admincostumer');
+// })->name('admin.user');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('product', ProductController::class);
 });
 
-
-// Customer -------------------------------------------------------------
-
-use App\Http\Controllers\UsersController;
-=======
-Route::prefix('admin')->group(function () {
-    Route::resource('product', ProductController::class);
-});
-
 use App\Http\Controllers\OrderController;
+Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders');
 
-Route::get('/orders', function () {
-    return view('admin.orders');
-});
+// Route::get('/orders', function () {
+//     return view('admin.orders');
+// })->name('admin.orders');
+
 // Customer -------------------------------------------------------------
 
 Route::get('/dashboard', [HomeController::class, 'index'])
@@ -54,7 +46,6 @@ Route::get('/home',[HomeController::class, 'index']);
 
 Route::get('post', [HomeController::class, 'post'])->middleware(['auth', 'admin']);
 
->>>>>>> 9a725531f0d0eff074a358dbb388038abd8579f2
 Route::get('/users', [UsersController::class, 'index']);
 
 Route::middleware(['auth'])->group(function () {
