@@ -32,7 +32,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('product', ProductController::class);
 });
 
-
 Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders');
 
 // Route::get('/orders', function () {
