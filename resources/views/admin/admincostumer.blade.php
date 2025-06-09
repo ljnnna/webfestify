@@ -9,7 +9,7 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Total User -->
-        <x-card-stat title="User" :value="$total_customers" />
+        <x-card-stat title="Total User" :value="$total_customers" />
 
         <!-- Active User -->
         <x-card-stat title="Active User" :value="$active_users ?? 0" />

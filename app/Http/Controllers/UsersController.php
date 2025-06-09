@@ -6,14 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 
-
-
 class UsersController extends Controller
 {
     public function index()
     {
         // User statistics
-        $total_customers = User::where('usertype', 'user')->count();
+        $total_customers = User::where('usertype', 'customer')->count();
         $active_users = User::where('usertype', 'user')
                           ->where('usertype', 'active')
                           ->count();
@@ -25,7 +23,7 @@ class UsersController extends Controller
          // Feedback count
          $feedback_count = Feedback::count();
 
-         return view('admin.dashboard', [
+         return view('admin.admincustomer', [
             'total_customers' => $total_customers,
             'active_users' => $active_users,
             'new_signups' => $new_signups,

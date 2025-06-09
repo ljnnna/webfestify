@@ -86,7 +86,7 @@
     </div>
 
     <div class="mt-8 sm:mt-10 text-center">
-      <a href="/home" class="text-white bg-[#b081f5] hover:bg-[#a26be0] font-semibold py-2 px-5 sm:px-6 rounded-full transition-all duration-300 shadow-md">
+      <a href="{{ route('welcome') }}" class="text-white bg-[#b081f5] hover:bg-[#a26be0] font-semibold py-2 px-5 sm:px-6 rounded-full transition-all duration-300 shadow-md">
         Kembali ke Beranda
       </a>
     </div>
