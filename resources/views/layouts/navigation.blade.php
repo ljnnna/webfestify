@@ -6,95 +6,80 @@
                 <a href="{{ url('/') }}">
                     <img src="{{ asset('images/logofestify.png') }}" class="h-12 w-auto" alt="Festify Logo" />
                 </a>
-                <span class="text-2xl font-semibold text-gray-800 dark:text-white">Festify</span>
+                <span class="text-1xl font-semibold text-purple-800 dark:text-white">Festify</span>
             </div>
 
             <!-- Desktop Menu -->
-            {{-- Desktop menu akan dimasukkan di sini --}}
             @yield('desktop-menu')
-            <!-- <div class="hidden lg:flex space-x-6 items-center">
-                <a href="#" class="text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Welcome</a>
-                <a href="#" class="text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Marketplace</a>
-                <a href="/team" class="text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Team</a>
-                <a href="#" class="text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Contact</a>
-            </div> -->
 
             <!-- Right Section -->
             <div class="flex items-center space-x-4">
 
-            <!-- Search Input di Navbar -->
-            <form action="{{ url('/search/result') }}" method="GET" class="relative hidden lg:block">
-                        <input 
-                             type="text" 
-                             name="query" 
-                             placeholder="Search..." 
-                             class="pl-4 pr-10 py-2 rounded-full border border-gray-200 focus:ring-2 focus:ring-purple-300 focus:outline-none w-64 dark:bg-gray-700 dark:text-white"
-                             />
-                        <button type="submit" 
-                             class="absolute right-0 top-0 bottom-0 px-4 rounded-r-full bg-gradient-to-r from-purple-300 to-indigo-200 text-white hover:opacity-90">
-                             <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
-                             </svg>
-                        </button>
+                <!-- Search Input -->
+                <form action="{{ url('/search/result') }}" method="GET" class="relative hidden lg:block">
+                    <input 
+                        type="text" 
+                        name="query" 
+                        placeholder="Search..." 
+                        class="pl-4 pr-10 py-2 rounded-full border border-purple-800 focus:ring-2 focus:ring-purple-300 focus:outline-none w-64 dark:bg-gray-700 dark:text-white"
+                    />
+                    <button type="submit" 
+                        class="absolute right-0 top-0 bottom-0 px-4 rounded-r-full bg-gradient-to-r from-purple-300 to-indigo-200 text-white hover:opacity-90">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </button>
                 </form>
 
-                <div class="mr-6">
-                    <img src="https://cdn-icons-png.flaticon.com/512/833/833314.png"
-                    alt="Icon Keranjang"
-                    class="w-6 h-6 opacity-90" />
-                </div>
-            
+                <!-- Cart Icon -->
+                <a href="{{ route('cart') }}" aria-label="Cart" class="text-[#3E3667] hover:text-[#6B5DD3] text-2xl">
+                <i class="fas fa-shopping-cart"></i>
+            </a>
+
                 @auth
-                    <!-- Desktop User Dropdown -->
-                    <div class="hidden sm:flex items-center">
-    <x-dropdown align="right" width="48">
-        <x-slot name="trigger">
-            <button class="flex items-center focus:outline-none">
-                <!-- Avatar User Bulat -->
-                <img class="h-10 w-10 rounded-full object-cover border-2 border-purple-400"
-                     src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=8b5cf6&color=fff"
-                     alt="User Avatar">
-            </button>
-        </x-slot>
+                <!-- User Dropdown -->
+                <div class="hidden sm:flex items-center">
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button class="flex items-center focus:outline-none">
+                                <img class="h-10 w-10 rounded-full object-cover border-2 border-purple-400"
+                                    src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=8b5cf6&color=fff"
+                                    alt="User Avatar">
+                            </button>
+                        </x-slot>
 
-        <x-slot name="content">
-            <!-- Isi Dropdown -->
-            <x-dropdown-link :href="route('home')">
-                {{ __('Home') }}
-            </x-dropdown-link>
-            <x-dropdown-link :href="route('profile.edit')">
-                {{ __('Profile') }}
-            </x-dropdown-link>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                    {{ __('Log Out') }}
-                </x-dropdown-link>
-            </form>
-        </x-slot>
-    </x-dropdown>
-</div>
+                        <x-slot name="content">
+    {{-- User Info --}}
+    <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
+        <div class="font-medium">{{ Auth::user()->name }}</div>
+        <div class="text-xs text-gray-500">{{ Auth::user()->email }}</div>
+    </div>
 
-                            <x-slot name="content">
-                                <x-dropdown-link :href="route('home')">
-                                    {{ __('Home') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('profile.edit')">
-                                    {{ __('Profile') }}
-                                </x-dropdown-link>
-                                <!-- Logout -->
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                                        {{ __('Log Out') }}
-                                    </x-dropdown-link>
-                                </form>
-                            </x-slot>
-                        </x-dropdown>
-                    </div>
+    {{-- Menu Links --}}
+    <x-dropdown-link :href="route('home')">
+        {{ __('Home') }}
+    </x-dropdown-link>
+    <x-dropdown-link :href="route('profile.edit')">
+        {{ __('Profile') }}
+    </x-dropdown-link>
 
+    {{-- Logout --}}
+    <form method="POST" action="{{ route('logout') }}">
+    @csrf
+    <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); 
+        if (confirm('Are you sure you want to log out?')) {
+            this.closest('form').submit();
+        }">
+        {{ __('Log Out') }}
+    </x-dropdown-link>
+</form>
+
+</x-slot>
+
+                    </x-dropdown>
+                </div>
                 @else
-                    <!-- Login / Register for guests -->
+                    <!-- Guest Buttons -->
                     @if (Route::has('register'))
                         <a href="{{ route('register') }}" class="text-gray-800 dark:text-white hover:bg-gray-50 font-medium rounded-lg text-sm px-4 py-2 dark:hover:bg-gray-700">
                             Register
@@ -107,10 +92,7 @@
                     @endif
                 @endauth
 
-                
-
-
-                <!-- Mobile Toggle -->
+                <!-- Mobile Menu Toggle -->
                 <div class="lg:hidden">
                     <button @click="open = ! open" class="text-gray-700 dark:text-gray-300 hover:text-purple-700 focus:outline-none">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -132,20 +114,19 @@
 
         @auth
         <div class="border-t border-gray-200 dark:border-gray-600 pt-2">
-        <div class="text-gray-800 dark:text-white font-medium">{{ Auth::user()->name }}</div>
-        <div class="text-sm text-gray-500 dark:text-gray-300">{{ Auth::user()->email }}</div>
+            <div class="text-gray-800 dark:text-white font-medium">{{ Auth::user()->name }}</div>
+            <div class="text-sm text-gray-500 dark:text-gray-300">{{ Auth::user()->email }}</div>
 
-        <a href="{{ route('home') }}" class="block mt-2 text-sm text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Home</a>
-        <a href="{{ route('profile.edit') }}" class="block text-sm text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Profile</a>
+            <a href="{{ route('home') }}" class="block mt-2 text-sm text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Home</a>
+            <a href="{{ route('profile.edit') }}" class="block text-sm text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Profile</a>
 
-        <form method="POST" action="{{ route('logout') }}" class="mt-2">
-            @csrf
-            <button type="submit" class="block text-sm text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">
-                Log Out
-            </button>
-        </form>
-    </div>
-@endauth
-
+            <form method="POST" action="{{ route('logout') }}" class="mt-2">
+                @csrf
+                <button type="submit" class="block text-sm text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">
+                    Log Out
+                </button>
+            </form>
+        </div>
+        @endauth
     </div>
 </nav>

@@ -27,6 +27,7 @@
         </a>
     </div>
 
+<script src="//unpkg.com/alpinejs" defer></script>
 @endsection
 
 @section('content')

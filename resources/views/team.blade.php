@@ -3,6 +3,7 @@
 @section('title', 'Our Team - Festify')
 
 @section('desktop-menu')
+
     <div class="hidden lg:flex space-x-6 items-center">
         
 
@@ -28,6 +29,7 @@
         </a>
     </div>
 
+    <script src="//unpkg.com/alpinejs" defer></script>
 @endsection
 
 @section('content')

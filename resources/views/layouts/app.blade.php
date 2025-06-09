@@ -9,6 +9,7 @@
   {{-- Tailwind & Flowbite --}}
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+  <script src="//unpkg.com/alpinejs" defer></script>
 
   {{-- AlpineJS --}}
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -37,8 +38,7 @@
   {{-- Navbar --}}
   @include('layouts.navigation')
 
-  @include('components.navbar')
-
+  
   {{-- Optional header --}}
   @isset($header)
     <header class="bg-white dark:bg-gray-800 shadow">

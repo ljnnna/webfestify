@@ -22,15 +22,16 @@
         Contact
     </a>
     <a href="{{ route('profile.edit') }}"
-        class="{{ request()->routeIs('profile.edit') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
-        Profile
+         class="{{ request()->routeIs('profile.*') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+         Profile
     </a>
+
 </div>
 @endsection
 
 @section('content')
 <!-- CONTAINER UTAMA -->
-<div class="mt-6 flex flex-col md:flex-row bg-gray-50 min-h-[80vh]">
+<div class=" flex flex-col md:flex-row bg-gray-50 min-h-[80vh]">
     <!-- SIDEBAR -->
     <aside class="mb-12 w-full md:w-1/4 bg-gradient-to-b from-pink-100 to-blue-100 p-6 md:rounded-r-2xl shadow-md md:mt-10 flex flex-col items-center">
         <!-- Gambar Profil -->
