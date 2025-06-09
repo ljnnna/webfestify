@@ -19,10 +19,10 @@
 
         <div class="flex items-center space-x-4">
             <!-- Icons -->
-            <a href="{{ url('chart') }}" aria-label="Cart" class="text-[#3E3667] hover:text-[#6B5DD3] text-2xl">
+            <a href="{{ url('cart') }}" aria-label="Cart" class="text-[#3E3667] hover:text-[#6B5DD3] text-2xl">
                 <i class="fas fa-shopping-cart"></i>
             </a>
-            <a href="{{ route('profile.edit') }}" aria-label="User" class="text-[#3E3667] hover:text-[#6B5DD3] text-2xl">
+            <a href="{{ route('') }}" aria-label="User" class="text-[#3E3667] hover:text-[#6B5DD3] text-2xl">
                 <i class="fas fa-user-circle"></i>
             </a>
             <!-- Mobile Menu Button -->
