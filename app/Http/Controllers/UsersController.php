@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Models\Review;
 
 class UsersController extends Controller
 {
@@ -21,13 +23,16 @@ class UsersController extends Controller
                          ->where('created_at', '>=', Carbon::now()->subDays(30))
                          ->count();
          // Feedback count
-         $feedback_count = Feedback::count();
+         $feedback_count = Review::count();
 
-         return view('admin.admincustomer', [
+         $reviews = Review::with(['user', 'product'])->latest()->take(5)->get();
+
+         return view('admin.admincostumer', [
             'total_customers' => $total_customers,
             'active_users' => $active_users,
             'new_signups' => $new_signups,
             'feedback_count' => $feedback_count,
+            'reviews' => $reviews,
         ]);
     }
 }  

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -20,6 +21,7 @@ class ProductController extends Controller
      */
     public function create()
     {
+        $categories = Category::all();
         return view('admin.product.create');
     }
 
@@ -35,30 +37,30 @@ class ProductController extends Controller
             'description' => 'required|string',
             'details' => 'required|string',
             'stock_quantity' => 'required|integer|min:0',
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048'
+            'image' => 'required|array|min:1|max:5', // Array of images, max 5
+            'image.*' => 'image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
-        // Simpan gambar ke storage
-    $path = $request->file('image')->store('products', 'public');
-        
-        //$imagePaths = [];
-
-        // if ($request->hasFile('images')) {
-        //     foreach ($request->file('images') as $image) {
-        //         $path = $image->store('products', 'public');
-        //         $imagePaths[] = $path;
-        //     }
-        // }
-
-        Product::create([
+        $product = Product::create([
             'category_id' => $request->category_id,
             'name' => $request->name,
             'price' => $request->price,
             'description' => $request->description,
             'details' => $request->details,
             'stock_quantity' => $request->stock_quantity,
-            'image' => $path, // Simpan 'products/nama-file.jpg'
         ]);
+
+        // Handle multiple images
+        if ($request->hasFile('image')) {
+            foreach ($request->file('image') as $index => $image) {
+                $path = $image->store('products', 'public');
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'path' => $path,
+                    'is_primary' => $index === 0 // First image as primary
+                ]);
+            }
+        }
 
         return redirect()->route('admin.product.index')->with('success', 'Product added.');
     }
@@ -68,6 +70,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        $product->load('image');
         return view('product.show', compact('product'));
     }
 
@@ -76,9 +79,9 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $products = Product::with('images')->get();
         $categories = Category::all(); // ambil semua kategori
-        return view('admin.product.index', compact('products','product', 'categories'));
+        $product->load('image');
+        return view('admin.product.edit', compact('product', 'categories'));
     }
 
     /**
@@ -86,40 +89,47 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'description' => 'required|string',
-            'details' => 'required|string',
-            'stock_quantity' => 'required|integer|min:0',
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048'
-        ]);
-    
-        $product->update([
-            'name' => $request->name,
-            'price' => $request->price,
-            'description' => $request->description,
-            'details' => $request->details,
-            'stock_quantity' => $request->stock_quantity,
+    $request->validate([
+        'category_id' => 'required|exists:categories,id',
+        'name' => 'required|string|max:255',
+        'price' => 'required|numeric',
+        'description' => 'required|string',
+        'details' => 'required|string',
+        'stock_quantity' => 'required|integer|min:0',
+        'image' => 'nullable|array|max:5', // Optional for update
+        'image.*' => 'image|mimes:jpg,jpeg,png|max:2048'
+    ]);
+
+    // Data yang akan diupdate
+    $product->update([
+        'category_id' => $request->category_id,
+        'name' => $request->name,
+        'price' => $request->price,
+        'description' => $request->description,
+        'details' => $request->details,
+        'stock_quantity' => $request->stock_quantity,
         ]);
 
-        if ($request->hasFile('images')) {
-        // Hapus gambar lama (opsional)
-        foreach ($product->images as $img) {
-            \Storage::disk('public')->delete($img->path);
+    // Handle new images if uploaded
+    if ($request->hasFile('image')) {
+        // Delete old images
+        foreach ($product->image as $img) {
+            Storage::disk('public')->delete($img->path);
             $img->delete();
         }
 
-        foreach ($request->file('images') as $image) {
+        // Add new images
+        foreach ($request->file('image') as $index => $image) {
             $path = $image->store('products', 'public');
             ProductImage::create([
                 'product_id' => $product->id,
                 'path' => $path,
+                'is_primary' => $index === 0
             ]);
         }
-        }
-    
-        return redirect()->route('admin.product.index')->with('success', 'Product updated.');
+    }
+
+        return redirect()->route('admin.product.index')->with('success', 'Product updated successfully.');
     }
 
     /**

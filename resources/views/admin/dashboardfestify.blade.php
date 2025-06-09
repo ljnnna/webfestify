@@ -31,20 +31,4 @@
         <!-- Customer -->
         <x-card-stat title="User" :value="$total_customers" />
     </div>
-    <!-- Section Review Customer -->
-    <div class="mt-12">
-        <h2 class="text-2xl font-semibold mb-4 text-[#3a2e52]">Review Customer</h2>
-        <div class="bg-white rounded-xl shadow p-6 space-y-4">
-            @forelse ($reviews as $review)
-            <x-review-item 
-            :username="$review->user->username ?? '-'" 
-            :product="$review->product->name ?? '-'" 
-            :content="$review->content" 
-            :date="$review->created_at->format('d M Y')" 
-            />
-            @empty
-            <p class="text-gray-500">Belum ada review dari customer.</p>
-            @endforelse
-        </div>
-    </div>
 @endsection

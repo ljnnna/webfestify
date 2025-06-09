@@ -22,8 +22,6 @@ class DashboardController extends Controller
 
         $total_customers = User::where('usertype', 'customer')->count();
 
-        $reviews = Review::with(['user', 'product'])->latest()->take(5)->get();
-
         return [
             'total_product' => $total_product,
             'order_new' => $order_new,
@@ -32,7 +30,6 @@ class DashboardController extends Controller
             'product_available' => $product_available,
             'product_rented' => $product_rented,
             'total_customers' => $total_customers,
-            'reviews' => $reviews,
         ];
     }
 
