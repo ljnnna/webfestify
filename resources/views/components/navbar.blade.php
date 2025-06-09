@@ -25,7 +25,7 @@
                 <i class="fas fa-search absolute right-3 top-2.5 text-gray-500"></i>
             </div>
             <!-- Icons -->
-            <a href="{{ url('chart') }}" aria-label="Cart" class="text-[#3E3667] hover:text-[#6B5DD3] text-2xl">
+            <a href="{{ route('cart') }}" aria-label="Cart" class="text-[#3E3667] hover:text-[#6B5DD3] text-2xl">
                 <i class="fas fa-shopping-cart"></i>
             </a>
             <a href="{{ route('profile.edit') }}" aria-label="User" class="text-[#3E3667] hover:text-[#6B5DD3] text-2xl">

@@ -20,7 +20,7 @@ class OrderController extends Controller
                        ->orderBy('order_date', 'desc')
                        ->get();
 
-        return view('orders.index', compact(
+        return view('admin.orders', compact(
             'totalOrders',
             'completedOrders',
             'onProgressOrders',

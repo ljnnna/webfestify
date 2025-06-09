@@ -16,31 +16,29 @@ use App\Http\Controllers\OrderController;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 // Admin ----------------------------------------------------------------
 
-// Route::get('/dashboardfest', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::get('/dashboardfest', [DashboardController::class, 'index'])->name('admin.dashboard');
 
-Route::get('/userfest', function () {
-    return view('admin.admincostumer');
-})->name('admin.user');
+Route::get('/userfest', [UsersController::class, 'index'])->name('admin.user');
 
+// Route::get('/userfest', function () {
+//     return view('admin.admincostumer');
+// })->name('admin.user');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('product', ProductController::class);
 });
 
+use App\Http\Controllers\OrderController;
+Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders');
 
-// Customer -------------------------------------------------------------
+// Route::get('/orders', function () {
+//     return view('admin.orders');
+// })->name('admin.orders');
 
-// Route::prefix('admin')->group(function () {
-//     Route::resource('product', ProductController::class);
-// });
-
-Route::get('/orders', function () {
-    return view('admin.orders');
-});
 
 // Customer -------------------------------------------------------------
 
@@ -112,7 +110,7 @@ Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
 
 Route::get('/cart', function () {
     return view('pages.customer.cart-page');
-});
+})->name('cart');
 
 Route::get('/admin/home', function () {
     return redirect()->route('home');

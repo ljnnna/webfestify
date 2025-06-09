@@ -7,6 +7,6 @@
 
     <a href="{{ route('admin.product.index') }}" class="rounded-full border px-4 py-2 text-center font-semibold hover:bg-purple-100 {{ request()->routeIs('admin.product.*') ? 'bg-purple-200' : '' }}">Product</a>
 
-    <a href="#" class="rounded-full border px-4 py-2 text-center font-semibold hover:bg-purple-100">Orders</a>
+    <a href="{{ route('admin.orders') }}" class="rounded-full border px-4 py-2 text-center font-semibold hover:bg-purple-100">Orders</a>
 </nav>
 </div>

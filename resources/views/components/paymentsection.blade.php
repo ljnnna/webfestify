@@ -172,14 +172,14 @@ document.addEventListener('DOMContentLoaded', function() {
 function cancelOrder() {
     if (confirm('Are you sure you want to cancel this order?')) {
         console.log('Order cancelled');
-        // Redirect to dashboard using Laravel named route
-        window.location.href = "{{ route('dashboard') }}";
+        // Redirect to home using Laravel named route
+        window.location.href = "{{ route('home') }}";
     }
 }
 
 function goBackToCart() {
     console.log('Navigating back to cart');
-    // Add your navigation logic here
-    // window.location.href = '/cart'; // Example redirect
+    // Redirect to home using Laravel named route
+    window.location.href = "{{ route('cart') }}";
 }
 </script>
