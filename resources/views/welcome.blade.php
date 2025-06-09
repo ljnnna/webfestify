@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.welcome')
 
 @section('title', 'Welcome')
 
@@ -6,12 +6,29 @@
 
 @section('desktop-menu')
     <div class="hidden lg:flex space-x-6 items-center">
-        <a href="/" class="text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Welcome</a>
-        <a href="/catalog" class="text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Catalog</a>
-        <a href="/team" class="text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">About Us</a>
-        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=festify2b@gmail.com" class="text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white">Contact</a>
+        <a href="{{ url('/') }}"
+           class="{{ Request::is('/') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+            Welcome
+        </a>
+
+        <a href="{{ url('/marketplace') }}"
+           class="{{ Request::is('marketplace') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+            Marketplace
+        </a>
+
+        <a href="{{ url('/team') }}"
+           class="{{ Request::is('team') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+            Team
+        </a>
+
+        <a href="{{ url('/contact') }}"
+           class="{{ Request::is('contact') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+            Contact
+        </a>
     </div>
+
 @endsection
+
 
   <!-- Konten utama dari halaman welcome.blade.php -->
   <section class="relative bg-cover bg-center bg-no-repeat bg-[url('{{ asset('images/banner3.png') }}')] dark:bg-gray-900">
@@ -82,7 +99,7 @@
     </div>
 
     <!-- Popular Product -->
-    <section class="mb-20 max-w-7xl mx-auto px-6 sm:px-10 bg-gradient-to-b from-pink-100 to-purple-100 py-10 ">
+    <section class="mb-20 max-w-7xl mx-auto px-6 sm:px-10 bg-gradient-to-b from-indigo-100 to-purple-100 py-10 ">
       <h3 class="text-2xl font-semibold text-gray-900 mb-8 text-center">Popular Product</h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
         <!-- Card -->

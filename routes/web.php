@@ -74,7 +74,7 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
 Route::get('/learnmore', function () {
-    return view('learnmore');
+    return view('pages.customer.learnmore');
 });
 
 // Route::get('/team', function () {
