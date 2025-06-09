@@ -32,9 +32,12 @@
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
+
 <body class="flex flex-col min-h-screen">
   {{-- Navbar --}}
   @include('layouts.navigation')
+
+  @include('components.navbar')
 
   {{-- Optional header --}}
   @isset($header)
