@@ -17,8 +17,8 @@
         class="{{ request()->routeIs('team') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
         Team
     </a>
-    <a href="{{ route('details') }}"
-        class="{{ request()->routeIs('details') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+    <a href="{{ route('contact') }}"
+        class="{{ request()->routeIs('contact') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
         Contact
     </a>
     <a href="{{ route('profile.edit') }}"
@@ -29,14 +29,29 @@
 </div>
 @endsection
 
-<!-- CONTAINER UTAMA -->
-<div class="flex flex-col md:flex-row bg-gray-50">
-    <!-- SIDEBAR -->
-     <x-sidebar-profile :user="auth()->user()" />
-
 @section('content')
 <!-- CONTAINER UTAMA -->
 <div class=" flex flex-col md:flex-row bg-gray-50 min-h-[80vh]">
+    <!-- SIDEBAR -->
+    <aside class="mb-12 w-full md:w-1/4 bg-gradient-to-b from-pink-100 to-blue-100 p-6 md:rounded-r-2xl shadow-md md:mt-10 flex flex-col items-center">
+        <!-- Gambar Profil -->
+        <x-profile-picture-upload :user="auth()->user()" />
+
+        <!-- Menu Navigasi -->
+        <nav class="mt-6 w-full space-y-3 text-center font-semibold text-gray-700">
+            <a href="{{ route('profile.edit') }}"
+               class="block px-3 py-2 rounded-full transition
+               {{ request()->routeIs('profile.edit') ? 'bg-white text-purple-800 font-bold' : 'hover:bg-purple-100' }}">
+                ACCOUNT SETTING
+            </a>
+
+            <a href="{{ route('profile.rentalInfo') }}"
+               class="block px-3 py-2 rounded-full transition
+               {{ request()->routeIs('profile.rentalInfo') ? 'bg-white text-purple-800 font-bold' : 'hover:bg-purple-100' }}">
+                RENTAL INFORMATION
+            </a>
+        </nav>
+    </aside>
 
     <!-- FORM UTAMA -->
     <main class="flex-1 p-6 flex justify-center items-start">

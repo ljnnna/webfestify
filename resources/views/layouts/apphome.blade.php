@@ -54,7 +54,7 @@
 
   <body class="bg-white text-[#3E3667]">
     <!-- Header -->
-    @include('layouts.navigation')
+    @include('components.navhome')
 
     <!-- Main Content -->
     <main>

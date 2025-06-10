@@ -1,8 +1,3 @@
-<x-app-layout>
-    <div class="flex flex-col md:flex-row min-h-screen bg-gray-50">
-    <!-- SIDEBAR -->
-    <x-sidebar-profile :user="auth()->user()" />
-
 @extends('layouts.app')
 
 @section('title', 'Profile')
@@ -22,8 +17,8 @@
         class="{{ request()->routeIs('team') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
         Team
     </a>
-    <a href="{{ route('details') }}"
-        class="{{ request()->routeIs('details') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+    <a href="{{ route('contact') }}"
+        class="{{ request()->routeIs('contact') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
         Contact
     </a>
     <a href="{{ route('profile.edit') }}"
@@ -35,6 +30,9 @@
 
 @section('content')
 <div class="flex flex-col md:flex-row min-h-screen bg-gray-50">
+    <!-- SIDEBAR (Sekarang tampil di mobile juga) -->
+    <x-sidebar-profile :user="auth()->user()" />
+
 
     <!-- ISI HALAMAN -->
     <div class="flex-1 min-h-screen bg-gray-50 p-6">

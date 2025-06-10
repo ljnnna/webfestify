@@ -43,8 +43,8 @@
                         <x-slot name="trigger">
                             <button class="flex items-center focus:outline-none">
                                 <img class="h-10 w-10 rounded-full object-cover border-2 border-purple-400"
-                                    src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=8b5cf6&color=fff"
-                                    alt="User Avatar">
+                                 src="{{ Auth::user()->profile ? asset('storage/' . Auth::user()->profile) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=8b5cf6&color=fff' }}"
+                                 alt="User Avatar">
                             </button>
                         </x-slot>
 
