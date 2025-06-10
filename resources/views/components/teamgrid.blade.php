@@ -15,7 +15,7 @@
         <div class="contact-info mt-4 flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm text-gray-500">
           <div class="flex items-center gap-2">
             <i data-feather="mail" class="w-4 h-4"></i>
-            <span class="break-all sm:break-normal">nania.maharany@email.com</span>
+            <span class="break-all sm:break-normal">heymenania@gmail.com</span>
           </div>
           <div class="flex items-center gap-2 text-blue-500">
             <i data-feather="instagram" class="w-4 h-4"></i>
@@ -35,7 +35,7 @@
         <div class="contact-info mt-4 flex flex-col sm:flex-row items-center md:justify-end gap-2 sm:gap-4 text-sm text-gray-500">
           <div class="flex items-center gap-2">
             <i data-feather="mail" class="w-4 h-4"></i>
-            <span class="break-all sm:break-normal">elsa.veronika@email.com</span>
+            <span class="break-all sm:break-normal">elsavero03@gmail.com</span>
           </div>
           <div class="flex items-center gap-2 text-blue-500">
             <i data-feather="instagram" class="w-4 h-4"></i>
@@ -55,7 +55,7 @@
         <div class="contact-info mt-4 flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm text-gray-500">
           <div class="flex items-center gap-2">
             <i data-feather="mail" class="w-4 h-4"></i>
-            <span class="break-all sm:break-normal">theo.febrian@email.com</span>
+            <span class="break-all sm:break-normal">theofebrian13@gmail.com</span>
           </div>
           <div class="flex items-center gap-2 text-blue-500">
             <i data-feather="instagram" class="w-4 h-4"></i>
@@ -75,7 +75,7 @@
         <div class="contact-info mt-4 flex flex-col sm:flex-row items-center md:justify-end gap-2 sm:gap-4 text-sm text-gray-500">
           <div class="flex items-center gap-2">
             <i data-feather="mail" class="w-4 h-4"></i>
-            <span class="break-all sm:break-normal">elisabeth.margaretta@email.com</span>
+            <span class="break-all sm:break-normal">elisabethmargareta02@gmail.com</span>
           </div>
           <div class="flex items-center gap-2 text-blue-500">
             <i data-feather="instagram" class="w-4 h-4"></i>
@@ -95,7 +95,7 @@
         <div class="contact-info mt-4 flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm text-gray-500">
           <div class="flex items-center gap-2">
             <i data-feather="mail" class="w-4 h-4"></i>
-            <span class="break-all sm:break-normal">salsabila@email.com</span>
+            <span class="break-all sm:break-normal">salsabilla0105@gmail.com</span>
           </div>
           <div class="flex items-center gap-2 text-blue-500">
             <i data-feather="instagram" class="w-4 h-4"></i>

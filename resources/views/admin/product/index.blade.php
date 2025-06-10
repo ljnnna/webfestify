@@ -16,8 +16,7 @@
     <!-- Modal Tambah Produk -->
     <div
         x-show="showAddModal"
-        x-transition
-        style="display: none"
+        x-transition style="display: none"
         class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
     >
         <div        

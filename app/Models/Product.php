@@ -17,6 +17,11 @@ class Product extends Model
         'status',
     ];        
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
     public function reviews()
     {
         return $this->hasMany(Review::class);
@@ -28,9 +33,9 @@ class Product extends Model
     }
 
     public function images()
-{
+    {
     return $this->hasMany(ProductImage::class);
-}
+    }
 
 
 }
