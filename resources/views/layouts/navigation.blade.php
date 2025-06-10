@@ -33,8 +33,8 @@
 
                 <!-- Cart Icon -->
                 <a href="{{ route('cart') }}" aria-label="Cart" class="text-[#3E3667] hover:text-[#6B5DD3] text-2xl">
-                <i class="fas fa-shopping-cart"></i>
-            </a>
+                    <i class="fas fa-shopping-cart"></i>
+                </a>
 
                 @auth
                 <!-- User Dropdown -->

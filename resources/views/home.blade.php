@@ -75,6 +75,44 @@
 
   </section>
 
+<<<<<<< HEAD
+{{-- Browse by Category --}}
+<section id="category" class="max-w-7xl mx-auto mt-12 px-4 mb-12 sm:px-6 lg:px-8">
+    <h2 class="text-3xl font-extrabold mb-8 text-center">Browse by Category</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <a href="/electronic" class="block">
+            <div class="bg-[#F8F1EE] rounded-xl shadow-md flex items-center justify-center h-40 transform hover:scale-105 transition duration-300 cursor-pointer">
+                <span class="text-[#BDB9B9] font-extrabold text-lg tracking-wide">ELECTRONIC</span>
+            </div>
+        </a>
+        <a href="katalog_merch.html" class="block">
+            <div class="bg-[#EBD7F0] rounded-xl shadow-md flex items-center justify-center h-40 transform hover:scale-105 transition duration-300 cursor-pointer">
+                <span class="text-[#BDB9B9] font-extrabold text-lg tracking-wide">MERCHANDISE</span>
+            </div>
+        </a>
+        <a href="/others" class="block">
+            <div class="bg-[#D9DFF7] rounded-xl shadow-md flex items-center justify-center h-40 transform hover:scale-105 transition duration-300 cursor-pointer">
+                <span class="text-[#BDB9B9] font-extrabold text-lg tracking-wide">OTHERS</span>
+            </div>
+        </a>
+    </div>
+</section>
+
+
+{{-- JS Section --}}
+<script>
+document.getElementById("searchForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const btn = document.getElementById("searchBtn");
+    const icon = document.getElementById("searchIcon");
+    const spinner = document.getElementById("loadingSpinner");
+
+    icon.classList.add("hidden");
+    spinner.classList.remove("hidden");
+
+    setTimeout(() => {
+=======
   <script>
     document.getElementById("searchForm").addEventListener("submit", function (e) {
       e.preventDefault(); // mencegah submit langsung
@@ -90,6 +128,7 @@
       // Simulasikan loading 2 detik (misalnya fetching data)
       setTimeout(() => {
         // Reset tampilan ke awal
+>>>>>>> 5c24bbd44182df8df89fc0b4b95bc786e28f39f5
         icon.classList.remove("hidden");
         spinner.classList.add("hidden");
     
