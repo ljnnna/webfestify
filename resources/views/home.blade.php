@@ -117,8 +117,6 @@
     </div>
 </section>
 
-{{-- Carousel Component --}}
-@include('components.corousel')
 
 {{-- JS Section --}}
 <script>
