@@ -1,8 +1,3 @@
-<x-app-layout>
-    <!-- CONTAINER UTAMA -->
-    <div class="flex flex-col md:flex-row bg-gray-50">
-        <!-- SIDEBAR -->
-         <x-sidebar-profile :user="auth()->user()" />
 @extends('layouts.app')
 
 @section('title', 'Edit Profile')
@@ -33,6 +28,11 @@
 
 </div>
 @endsection
+
+<!-- CONTAINER UTAMA -->
+<div class="flex flex-col md:flex-row bg-gray-50">
+    <!-- SIDEBAR -->
+     <x-sidebar-profile :user="auth()->user()" />
 
 @section('content')
 <!-- CONTAINER UTAMA -->
