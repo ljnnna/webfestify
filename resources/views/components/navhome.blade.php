@@ -11,9 +11,9 @@
                 class="px-4 py-2 rounded-xl transition {{ request()->is('dashboard') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:opacity-60' }}">HOME</a>
             <a href="{{ route('catalog') }}"
                 class="px-4 py-2 rounded-xl transition {{ request()->is('catalog') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:opacity-60' }}">CATALOG</a>
-            <a href="{{ url('about_us') }}"
+            <a href="{{ route('team') }}"
                 class="px-4 py-2 rounded-xl transition {{ request()->is('about_us') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:opacity-60' }}">ABOUT US</a>
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=festify2b@gmail.com"
+            <a href="{{ url('team') }}"
                 class="px-4 py-2 rounded-xl transition hover:opacity-60">CONTACT</a>
         </nav>
 
@@ -54,10 +54,10 @@
             class="px-4 py-2 rounded-xl transition {{ request()->is('dashboard') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:bg-gray-100' }}">HOME</a>
         <a href="{{ route('catalog') }}"
             class="px-4 py-2 rounded-xl transition {{ request()->is('catalog') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:bg-gray-100' }}">CATALOG</a>
-        <a href="{{ url('about_us') }}"
+        <a href="{{ route('team') }}"
             class="px-4 py-2 rounded-xl transition {{ request()->is('about_us') ? 'bg-[#B6A3E6] text-[#2E1B5F] font-bold' : 'hover:bg-gray-100' }}">ABOUT
             US</a>
-        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=festify2b@gmail.com"
+        <a href="{{ route('team') }}"
             class="px-4 py-2 rounded-xl transition hover:bg-gray-100">CONTACT</a>
     </nav>
 
