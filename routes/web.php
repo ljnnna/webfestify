@@ -129,3 +129,7 @@ Route::get('/team', function () {
 })->name('team');
 
 require __DIR__.'/auth.php';
+
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
