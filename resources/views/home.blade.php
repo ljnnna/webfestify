@@ -75,7 +75,6 @@
 
   </section>
 
-<<<<<<< HEAD
 {{-- Browse by Category --}}
 <section id="category" class="max-w-7xl mx-auto mt-12 px-4 mb-12 sm:px-6 lg:px-8">
     <h2 class="text-3xl font-extrabold mb-8 text-center">Browse by Category</h2>
@@ -112,23 +111,6 @@ document.getElementById("searchForm").addEventListener("submit", function (e) {
     spinner.classList.remove("hidden");
 
     setTimeout(() => {
-=======
-  <script>
-    document.getElementById("searchForm").addEventListener("submit", function (e) {
-      e.preventDefault(); // mencegah submit langsung
-    
-      const btn = document.getElementById("searchBtn");
-      const icon = document.getElementById("searchIcon");
-      const spinner = document.getElementById("loadingSpinner");
-    
-      // Tampilkan spinner, sembunyikan icon
-      icon.classList.add("hidden");
-      spinner.classList.remove("hidden");
-    
-      // Simulasikan loading 2 detik (misalnya fetching data)
-      setTimeout(() => {
-        // Reset tampilan ke awal
->>>>>>> 5c24bbd44182df8df89fc0b4b95bc786e28f39f5
         icon.classList.remove("hidden");
         spinner.classList.add("hidden");
     

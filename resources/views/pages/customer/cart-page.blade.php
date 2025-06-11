@@ -1,119 +1,245 @@
 @extends('layouts.cart')
 
-@section('left')
-<div class="flex justify-between mb-6">
-  <div class="flex items-center gap-2 ">
-    <img src="{{ asset('images/logofestify.png') }}" class="h-8 w-auto mr-2" alt="Festify Logo" />
-    <h2 class="text-xl  font-semibold">Your Shopping Cart</h2>
-  </div>
-  <div class= "mr-6 icon-justify">
-    <img src="https://cdn-icons-png.flaticon.com/512/833/833314.png"  alt="Icon Keranjang" width="32" height="32" />
-  </div>
+@section('content')
+<div class="min-h-screen bg-gray-50">
+    <!-- Cart Items Section -->
+    <div class="w-full p-6 sm:p-8 bg-white">
+        <div class="flex items-center gap-3 mb-6">
+            <img src="{{ asset('images/logofestify.png') }}" class="h-8 w-auto" alt="Festify Logo" />
+            <h2 class="text-2xl font-semibold text-gray-800">Your Shopping Cart</h2>
+        </div>
+
+        <!-- Cart Header -->
+        <div class="hidden sm:grid grid-cols-5 gap-4 text-sm font-semibold text-gray-600 border-b pb-3 mb-4">
+            <div class="col-span-2 flex items-center gap-2">
+                <input type="checkbox" id="select-all" class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                <span class="ml-4">Product</span>
+            </div>
+            <div class="text-center">Quantity</div>
+            <div class="text-center">Price/Day</div>
+            <div class="text-center">Action</div>
+        </div>
+
+        <!-- Cart Items -->
+        @php
+            $items = [
+                ['id' => 1, 'image' => 'lightstick.png', 'name' => 'Lightstick Seventeen', 'version' => 'Ver.2', 'price' => 25000],
+                ['id' => 2, 'image' => 'kursi.png', 'name' => 'Premium Chair', 'version' => 'Comfort Series', 'price' => 50000],
+                ['id' => 3, 'image' => 'kamera.png', 'name' => 'Professional Camera', 'version' => 'Pro Max', 'price' => 75000],
+            ];
+        @endphp
+
+        <div class="space-y-4">
+            @foreach($items as $item)
+            <div class="cart-item bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-purple-100" data-price="{{ $item['price'] }}">
+                <div class="grid sm:grid-cols-5 gap-4 items-center">
+                    <!-- Product Info -->
+                    <div class="col-span-2 flex items-center gap-3">
+                        <input type="checkbox" class="item-check w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500" checked>
+                        <img src="/images/{{ $item['image'] }}" alt="{{ $item['name'] }}" class="w-16 h-16 object-cover rounded-lg shadow-sm">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">{{ $item['name'] }}</h3>
+                            <p class="text-sm text-gray-600">{{ $item['version'] }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Quantity -->
+                    <div class="flex justify-center">
+                        <div class="flex items-center border border-gray-300 rounded-lg bg-white">
+                            <button class="decrement px-3 py-2 text-gray-600 hover:text-purple-600 transition-colors">
+                                <i class="fas fa-minus text-sm"></i>
+                            </button>
+                            <span class="count px-4 py-2 font-semibold text-gray-800">1</span>
+                            <button class="increment px-3 py-2 text-gray-600 hover:text-purple-600 transition-colors">
+                                <i class="fas fa-plus text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="text-center">
+                        <span class="font-semibold text-gray-800">IDR {{ number_format($item['price']) }}</span>
+                        <span class="text-sm text-gray-600">/day</span>
+                    </div>
+
+                    <!-- Remove Button -->
+                    <div class="text-center">
+                        <button class="remove text-red-500 hover:text-red-700 transition-colors p-2">
+                            <i class="fas fa-trash text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+
+          
+
+    <!-- Order Summary Section -->
+    <div>
+        <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-calculator text-purple-600"></i>
+                    Order Summary
+                </h3>
+                
+                <div class="space-y-3">
+                    <!-- Items Count -->
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-600">Items</span>
+                        <span id="item-count" class="font-medium text-gray-800">3 items</span>
+                    </div>
+                    
+                    <!-- Subtotal -->
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-600">Subtotal</span>
+                        <span id="item-subtotal" class="font-medium text-gray-800">IDR 150,000</span>
+                    </div>
+                    
+                    <!-- Service Fee -->
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-600">Service Fee</span>
+                        <span class="font-medium text-gray-800">IDR 5,000</span>
+                    </div>
+                    
+                    <!-- Divider -->
+                    <hr class="border-purple-200">
+                    
+                    <!-- Total -->
+                    <div class="flex justify-between items-center text-base font-semibold">
+                        <span class="text-gray-800">Total Amount</span>
+                        <span id="total-price" class="text-purple-600 text-lg">IDR 155,000</span>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="mt-6 space-y-3">
+                    <a href="{{ route('payment') }}" class="block w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-center">
+                        <i class="fas fa-shopping-cart mr-2"></i>
+                        Proceed to Checkout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-
-
-
-  {{-- Header Kolom --}}
-  @include('components.cart-header')
-
-  @php
-    $items = [
-      ['id' => 1, 'image' => 'lightstick.png', 'name' => 'Lightstick Seventeen', 'version' => 'Ver.2', 'selected' => true],
-      ['id' => 2, 'image' => 'kursi.png', 'name' => 'Lightstick Seventeen', 'version' => 'Ver.2', 'selected' => false],
-      ['id' => 3, 'image' => 'kamera.png', 'name' => 'Lightstick Seventeen', 'version' => 'Ver.2', 'selected' => true],
-    ];
-  @endphp
-
-  @foreach($items as $item)
-    @include('components.cart-item', ['item' => $item])
-  @endforeach
-
-  <a href="/" class="mt-6 inline-block text-sm text-black underline">
-    ← Back To Shop
-  </a>
-@endsection
-
-@section('right')
-  @include('components.cart-details')
-@endsection
-
-
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     const selectAll = document.getElementById('select-all');
+    const selectAllBottom = document.getElementById('select-all-bottom');
     const itemChecks = document.querySelectorAll('.item-check');
+    const deleteSelectedBtn = document.getElementById('delete-selected');
 
     function updateSummary() {
-      let items = document.querySelectorAll('.cart-item');
-      let subtotal = 0, itemCount = 0;
+        let items = document.querySelectorAll('.cart-item');
+        let subtotal = 0, itemCount = 0, selectedCount = 0;
 
-      items.forEach(item => {
-        const checkbox = item.querySelector('.item-check');
-        const count = parseInt(item.querySelector('.count').innerText);
-        const price = parseInt(item.getAttribute('data-price'));
+        items.forEach(item => {
+            const checkbox = item.querySelector('.item-check');
+            const count = parseInt(item.querySelector('.count').innerText);
+            const price = parseInt(item.getAttribute('data-price'));
 
-        if (checkbox.checked) {
-          subtotal += price * count;
-          itemCount += count;
-        }
-      });
+            if (checkbox.checked) {
+                subtotal += price * count;
+                itemCount += count;
+                selectedCount++;
+            }
+        });
 
-      const shipping = parseInt(document.getElementById('shipping')?.value || 0);
-      const voucherRate = parseFloat(document.getElementById('voucher')?.value || 0);
+        const serviceFee = 5000;
+        const total = subtotal + serviceFee;
 
-      let total = subtotal + shipping;
-      total = total - (total * voucherRate);
-
-      document.getElementById('item-count').innerText = `ITEMS ${itemCount}`;
-      document.getElementById('item-subtotal').innerText = `IDR ${subtotal.toLocaleString()}`;
-      document.getElementById('total-price').innerText = `IDR ${total.toLocaleString()}`;
+        document.getElementById('item-count').innerText = `${itemCount} items`;
+        document.getElementById('selected-count').innerText = `${selectedCount} items`;
+        document.getElementById('item-subtotal').innerText = `IDR ${subtotal.toLocaleString()}`;
+        document.getElementById('total-price').innerText = `IDR ${total.toLocaleString()}`;
     }
 
-    // + / - Quantity
+    // Quantity controls
     document.querySelectorAll('.increment').forEach(btn => {
-      btn.addEventListener('click', e => {
-        const countEl = e.target.closest('.cart-item').querySelector('.count');
-        countEl.innerText = parseInt(countEl.innerText) + 1;
-        updateSummary();
-      });
+        btn.addEventListener('click', e => {
+            const countEl = e.target.closest('.cart-item').querySelector('.count');
+            countEl.innerText = parseInt(countEl.innerText) + 1;
+            updateSummary();
+        });
     });
 
     document.querySelectorAll('.decrement').forEach(btn => {
-      btn.addEventListener('click', e => {
-        const countEl = e.target.closest('.cart-item').querySelector('.count');
-        let count = parseInt(countEl.innerText);
-        if (count > 1) countEl.innerText = count - 1;
-        updateSummary();
-      });
+        btn.addEventListener('click', e => {
+            const countEl = e.target.closest('.cart-item').querySelector('.count');
+            let count = parseInt(countEl.innerText);
+            if (count > 1) countEl.innerText = count - 1;
+            updateSummary();
+        });
     });
 
-    // Remove Item
+    // Remove item
     document.querySelectorAll('.remove').forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.target.closest('.cart-item').remove();
-        updateSummary();
-      });
+        btn.addEventListener('click', e => {
+            if (confirm('Are you sure you want to remove this item?')) {
+                e.target.closest('.cart-item').remove();
+                updateSummary();
+                updateSelectAllState();
+            }
+        });
     });
 
-    // Sync checkbox change (item or voucher/shipping)
-    document.querySelectorAll('.item-check, #shipping, #voucher').forEach(input => {
-      input.addEventListener('change', () => {
-        // Sinkronisasi: cek apakah semua item dicentang
-        const allChecked = Array.from(itemChecks).every(c => c.checked);
-        if (selectAll) selectAll.checked = allChecked;
-        updateSummary();
-      });
+    // Individual checkbox change
+    itemChecks.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            updateSummary();
+            updateSelectAllState();
+        });
     });
 
-    // Checkbox "select all"
+    // Select all functionality (top)
     if (selectAll) {
-      selectAll.addEventListener('change', function () {
-        itemChecks.forEach(cb => cb.checked = selectAll.checked);
-        updateSummary();
-      });
+        selectAll.addEventListener('change', function () {
+            const currentItemChecks = document.querySelectorAll('.item-check');
+            currentItemChecks.forEach(cb => cb.checked = selectAll.checked);
+            if (selectAllBottom) selectAllBottom.checked = selectAll.checked;
+            updateSummary();
+        });
     }
 
-    updateSummary(); // inisialisasi awal
-  });
+    // Select all functionality (bottom)
+    if (selectAllBottom) {
+        selectAllBottom.addEventListener('change', function () {
+            const currentItemChecks = document.querySelectorAll('.item-check');
+            currentItemChecks.forEach(cb => cb.checked = selectAllBottom.checked);
+            if (selectAll) selectAll.checked = selectAllBottom.checked;
+            updateSummary();
+        });
+    }
+
+    // Delete selected items
+    if (deleteSelectedBtn) {
+        deleteSelectedBtn.addEventListener('click', function () {
+            const selectedItems = document.querySelectorAll('.item-check:checked');
+            if (selectedItems.length === 0) {
+                alert('Please select items to delete.');
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to delete ${selectedItems.length} selected item(s)?`)) {
+                selectedItems.forEach(checkbox => {
+                    checkbox.closest('.cart-item').remove();
+                });
+                updateSummary();
+                updateSelectAllState();
+            }
+        });
+    }
+
+    function updateSelectAllState() {
+        const currentItemChecks = document.querySelectorAll('.item-check');
+        const allChecked = currentItemChecks.length > 0 && Array.from(currentItemChecks).every(c => c.checked);
+        if (selectAll) selectAll.checked = allChecked;
+        if (selectAllBottom) selectAllBottom.checked = allChecked;
+    }
+
+    // Initialize
+    updateSummary();
+});
 </script>
+@endsection
