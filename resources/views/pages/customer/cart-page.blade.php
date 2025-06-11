@@ -31,7 +31,7 @@
 
         <div class="space-y-4">
             @foreach($items as $item)
-            <div class="cart-item bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-purple-100" data-price="{{ $item['price'] }}">
+            <div class="cart-item bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-purple-100" data-price="{{ $item['price'] }}" data-base-price="{{ $item['price'] }}">
                 <div class="grid sm:grid-cols-5 gap-4 items-center">
                     <!-- Product Info -->
                     <div class="col-span-2 flex items-center gap-3">
@@ -58,8 +58,12 @@
 
                     <!-- Price -->
                     <div class="text-center">
-                        <span class="font-semibold text-gray-800">IDR {{ number_format($item['price']) }}</span>
-                        <span class="text-sm text-gray-600">/day</span>
+                        <div class="item-price-display">
+                            <span class="font-semibold text-gray-800 item-total-price">IDR {{ number_format($item['price']) }}</span>
+                            <div class="text-xs text-gray-500 mt-1">
+                                <span class="base-price">IDR {{ number_format($item['price']) }}</span>/day × <span class="qty-display">1</span>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Remove Button -->
@@ -71,12 +75,11 @@
                 </div>
             </div>
             @endforeach
+        </div>
 
-          
-
-    <!-- Order Summary Section -->
-    <div>
-        <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+        <!-- Order Summary Section -->
+        <div class="mt-8">
+            <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
                     <i class="fas fa-calculator text-purple-600"></i>
                     Order Summary
@@ -126,9 +129,20 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const selectAll = document.getElementById('select-all');
-    const selectAllBottom = document.getElementById('select-all-bottom');
     const itemChecks = document.querySelectorAll('.item-check');
-    const deleteSelectedBtn = document.getElementById('delete-selected');
+
+    function updateItemPriceDisplay(item) {
+        const count = parseInt(item.querySelector('.count').innerText);
+        const basePrice = parseInt(item.getAttribute('data-base-price'));
+        const totalPrice = basePrice * count;
+        
+        // Update the displayed price for this item
+        item.querySelector('.item-total-price').innerText = `IDR ${totalPrice.toLocaleString()}`;
+        item.querySelector('.qty-display').innerText = count;
+        
+        // Update the data-price attribute for summary calculation
+        item.setAttribute('data-price', totalPrice);
+    }
 
     function updateSummary() {
         let items = document.querySelectorAll('.cart-item');
@@ -137,10 +151,11 @@ document.addEventListener('DOMContentLoaded', function () {
         items.forEach(item => {
             const checkbox = item.querySelector('.item-check');
             const count = parseInt(item.querySelector('.count').innerText);
-            const price = parseInt(item.getAttribute('data-price'));
+            const basePrice = parseInt(item.getAttribute('data-base-price'));
+            const totalPrice = basePrice * count;
 
             if (checkbox.checked) {
-                subtotal += price * count;
+                subtotal += totalPrice;
                 itemCount += count;
                 selectedCount++;
             }
@@ -150,7 +165,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const total = subtotal + serviceFee;
 
         document.getElementById('item-count').innerText = `${itemCount} items`;
-        document.getElementById('selected-count').innerText = `${selectedCount} items`;
         document.getElementById('item-subtotal').innerText = `IDR ${subtotal.toLocaleString()}`;
         document.getElementById('total-price').innerText = `IDR ${total.toLocaleString()}`;
     }
@@ -158,18 +172,28 @@ document.addEventListener('DOMContentLoaded', function () {
     // Quantity controls
     document.querySelectorAll('.increment').forEach(btn => {
         btn.addEventListener('click', e => {
-            const countEl = e.target.closest('.cart-item').querySelector('.count');
-            countEl.innerText = parseInt(countEl.innerText) + 1;
+            const item = e.target.closest('.cart-item');
+            const countEl = item.querySelector('.count');
+            const newCount = parseInt(countEl.innerText) + 1;
+            
+            countEl.innerText = newCount;
+            updateItemPriceDisplay(item);
             updateSummary();
         });
     });
 
     document.querySelectorAll('.decrement').forEach(btn => {
         btn.addEventListener('click', e => {
-            const countEl = e.target.closest('.cart-item').querySelector('.count');
+            const item = e.target.closest('.cart-item');
+            const countEl = item.querySelector('.count');
             let count = parseInt(countEl.innerText);
-            if (count > 1) countEl.innerText = count - 1;
-            updateSummary();
+            
+            if (count > 1) {
+                const newCount = count - 1;
+                countEl.innerText = newCount;
+                updateItemPriceDisplay(item);
+                updateSummary();
+            }
         });
     });
 
@@ -192,42 +216,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Select all functionality (top)
+    // Select all functionality
     if (selectAll) {
         selectAll.addEventListener('change', function () {
             const currentItemChecks = document.querySelectorAll('.item-check');
             currentItemChecks.forEach(cb => cb.checked = selectAll.checked);
-            if (selectAllBottom) selectAllBottom.checked = selectAll.checked;
             updateSummary();
-        });
-    }
-
-    // Select all functionality (bottom)
-    if (selectAllBottom) {
-        selectAllBottom.addEventListener('change', function () {
-            const currentItemChecks = document.querySelectorAll('.item-check');
-            currentItemChecks.forEach(cb => cb.checked = selectAllBottom.checked);
-            if (selectAll) selectAll.checked = selectAllBottom.checked;
-            updateSummary();
-        });
-    }
-
-    // Delete selected items
-    if (deleteSelectedBtn) {
-        deleteSelectedBtn.addEventListener('click', function () {
-            const selectedItems = document.querySelectorAll('.item-check:checked');
-            if (selectedItems.length === 0) {
-                alert('Please select items to delete.');
-                return;
-            }
-            
-            if (confirm(`Are you sure you want to delete ${selectedItems.length} selected item(s)?`)) {
-                selectedItems.forEach(checkbox => {
-                    checkbox.closest('.cart-item').remove();
-                });
-                updateSummary();
-                updateSelectAllState();
-            }
         });
     }
 
@@ -235,10 +229,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const currentItemChecks = document.querySelectorAll('.item-check');
         const allChecked = currentItemChecks.length > 0 && Array.from(currentItemChecks).every(c => c.checked);
         if (selectAll) selectAll.checked = allChecked;
-        if (selectAllBottom) selectAllBottom.checked = allChecked;
     }
 
-    // Initialize
+    // Initialize all item price displays and summary
+    document.querySelectorAll('.cart-item').forEach(item => {
+        updateItemPriceDisplay(item);
+    });
     updateSummary();
 });
 </script>
