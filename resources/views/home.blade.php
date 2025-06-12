@@ -24,7 +24,7 @@
 
 @section('content')
 <!-- Hero with search bar -->
-  <section class="relative max-w-7xl mx-auto mt-6 px-4 sm:px-6 lg:px-8">
+  <section class="relative max-w-7xl mx-auto mb-4 px-4 sm:px-6 lg:px-8">
     <img
       alt="hero section"
       class="w-full rounded-lg shadow-lg"
@@ -95,32 +95,7 @@
   </button>
 </form>
 
-  </section>
-
-
-{{-- Browse by Category --}}
-<section id="category" class="max-w-7xl mx-auto mt-12 px-4 mb-12 sm:px-6 lg:px-8">
-    <h2 class="text-3xl font-extrabold mb-8 text-center">Browse by Category</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
-    <a href="{{ route('catalog.electronics') }}" class="block">
-            <div class="bg-[#F8F1EE] rounded-xl shadow-md flex items-center justify-center h-40 transform hover:scale-105 transition duration-300 cursor-pointer">
-                <span class="text-[#BDB9B9] font-extrabold text-lg tracking-wide">ELECTRONIC</span>
-            </div>
-        </a>
-        <a href="{{ route('catalog.merchandise') }}" class="block">
-            <div class="bg-[#EBD7F0] rounded-xl shadow-md flex items-center justify-center h-40 transform hover:scale-105 transition duration-300 cursor-pointer">
-                <span class="text-[#BDB9B9] font-extrabold text-lg tracking-wide">MERCHANDISE</span>
-            </div>
-        </a>
-        <a href="{{ route('catalog.merchandise') }}" class="block">
-
-            <div class="bg-[#D9DFF7] rounded-xl shadow-md flex items-center justify-center h-40 transform hover:scale-105 transition duration-300 cursor-pointer">
-                <span class="text-[#BDB9B9] font-extrabold text-lg tracking-wide">OTHERS</span>
-            </div>
-        </a>
-    </div>
 </section>
-
 
 <script>
 document.getElementById("searchForm").addEventListener("submit", function (e) {
@@ -177,175 +152,19 @@ document.getElementById("searchForm").addEventListener("submit", function (e) {
     });
   </script>
 
-<!-- VIDEO PRODUK -->
- <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-  <div class="relative aspect-w-16 aspect-h-9 overflow-hidden rounded-xl group">
-    <video
-      autoplay
-      muted
-      loop
-      playsinline
-      class="w-full h-full object-cover"
-    >
-      <source src="{{ asset('videos/samsung.mp4') }}" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+{{-- MENAMPILKAN GAMBAR PADA HOMEPAGE --}}
+@include('components.images-layout')
 
-    <!-- Tombol muncul saat hover -->
-    <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-      <a href="/admin/product/samsung-smartwatch"
-         class="px-5 sm:px-6 py-2.5 sm:py-3 bg-pink-400/40 text-white font-semibold rounded-md transition duration-300 text-sm sm:text-base hover:bg-pink-700/80">
-        View Product
-      </a>
-    </div>
-  </div>
-</section>
-
+{{-- VIDEO PRODUK --}}
+@include('components.video-produk')
 
 <!-- STRIP RENT NOW (Animated) -->
 <x-marquee-rent-now />
 
-  @include('components.category-filter')
+{{-- MEMANGGIL BUTTON CATEGORY --}}
+@include('components.category-filter')
 
-<!-- Swiper -->
-<div class="swiper mySwiper mt-8 pb-8">
-  <div class="swiper-wrapper" id="productWrapper">
-    @foreach ($products as $product)
-      <div class="swiper-slide">
-        <div class="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col items-center p-4 w-64">
-          <!-- Gambar produk dari relasi 'images' -->
-          <img src="{{ asset('storage/' . ($product->images->first()->image_path ?? 'default.jpg')) }}"
-               alt="{{ $product->name }}"
-               class="h-40 object-contain mb-4" />
-
-          <!-- Nama produk -->
-          <h3 class="font-semibold text-lg text-gray-800 mb-1">{{ $product->name }}</h3>
-
-          <!-- Harga per hari -->
-          <p class="text-sm text-gray-600 mb-4">
-            Rp{{ number_format($product->price, 0, ',', '.') }}/day
-          </p>
-
-          <!-- Tombol Detail -->
-          <a href="{{ route('product.show', $product->id) }}"
-             class="bg-purple-200 text-purple-800 px-6 py-2 rounded-xl font-medium hover:bg-purple-300 transition">
-            Details
-          </a>
-        </div>
-      </div>
-    @endforeach
-  </div>
-
-  <!-- Navigasi Swiper -->
-  <div class="swiper-button-next"></div>
-  <div class="swiper-button-prev"></div>
-  <div class="swiper-pagination"></div>
-</div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-<script>
-  const products = @json($products);
-  const wrapper = document.getElementById("productWrapper");
-  let swiper; // Buat variabel global
-
-  function renderProducts(category) {
-  if (swiper) {
-    swiper.destroy(true, true);
-  }
-
-  wrapper.innerHTML = "";
-
-  let filtered;
-  if (category === 'others') {
-  filtered = products.filter(product =>
-    ['electronics', 'merchandise'].includes(product.category.name.toLowerCase())
-  );
-  } else {
-  filtered = products.filter(product =>
-    product.category.name.toLowerCase() === category.toLowerCase()
-  );
-  }
-
-  if (filtered.length === 0) {
-    wrapper.innerHTML = `
-      <div class="swiper-slide">
-        <div class="bg-white rounded-lg shadow-md p-6 text-center">
-          <p class="text-gray-500">No products available in this category.</p>
-        </div>
-      </div>
-    `;
-  } else {
-    filtered.forEach(product => {
-      const slide = document.createElement("div");
-      slide.className = "swiper-slide";
-      slide.innerHTML = `
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <<img src="/storage/${product.images[0]?.image_path || 'default.jpg'}" alt="${product.name}" ...>
-          <div class="p-4">
-            <h3 class="text-lg font-semibold">${product.name}</h3>
-          </div>
-        </div>
-      `;
-      wrapper.appendChild(slide);
-    });
-  }
-
-  swiper = new Swiper(".mySwiper", {
-  slidesPerView: 1,
-  spaceBetween: 16,
-  pagination: {
-    el: ".swiper-pagination",
-    clickable: true,
-  },
-  navigation: {
-    nextEl: ".swiper-button-next",
-    prevEl: ".swiper-button-prev",
-  },
-  breakpoints: {
-    640: { slidesPerView: 2 },
-    1024: { slidesPerView: 3 },
-  }
-});
-
-}
-
-
-  // Tampilkan default kategori pertama (misalnya electronic)
-  document.addEventListener('DOMContentLoaded', () => {
-  const buttons = document.querySelectorAll(".category-btn");
-
-  function updateActiveButton(selectedCategory) {
-    buttons.forEach(btn => {
-      const category = btn.getAttribute("data-category");
-      if (category === selectedCategory) {
-        btn.classList.remove("bg-gray-100", "text-gray-500");
-        btn.classList.add("bg-purple-200", "text-purple-800");
-      } else {
-        btn.classList.remove("bg-purple-200", "text-purple-800");
-        btn.classList.add("bg-gray-100", "text-gray-500");
-      }
-    });
-  }
-
-  // Set default
-  const defaultCategory = 'electronics';
-  renderProducts(defaultCategory);
-  updateActiveButton(defaultCategory);
-
-  // Event handler untuk semua tombol
-  buttons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const selected = btn.getAttribute("data-category");
-      renderProducts(selected);
-      updateActiveButton(selected);
-    });
-  });
-});
-
-</script>
-
-
-<x-marquee-rent-now />
+{{-- MENAMPILKAN PRODUK DARI DATABASE --}}
+@include('components.product-home')
    
 @endsection
