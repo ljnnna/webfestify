@@ -1,5 +1,27 @@
 @extends('layouts.apphome')
 
+@section('desktop-menu')
+<div class="hidden lg:flex space-x-6 items-center">
+    <a href="{{ route('home') }}"
+        class="{{ request()->routeIs('home') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+        Home
+    </a>
+    <a href="{{ route('catalog') }}"
+        class="{{ request()->routeIs('catalog') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+        Catalog
+    </a>
+    <a href="{{ route('team') }}"
+        class="{{ request()->routeIs('team') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+        Team
+    </a>
+    <a href="{{ route('contact') }}"
+        class="{{ request()->routeIs('contact') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+        Contact
+    </a>
+</div>
+
+@endsection
+
 @section('content')
 <!-- Hero with search bar -->
   <section class="relative max-w-7xl mx-auto mt-6 px-4 sm:px-6 lg:px-8">
@@ -75,10 +97,7 @@
 
   </section>
 
-<<<<<<< HEAD
 
-=======
->>>>>>> e06e8edad4d65f23718976fae0edb1fb0b208055
 {{-- Browse by Category --}}
 <section id="category" class="max-w-7xl mx-auto mt-12 px-4 mb-12 sm:px-6 lg:px-8">
     <h2 class="text-3xl font-extrabold mb-8 text-center">Browse by Category</h2>
@@ -127,20 +146,6 @@ document.getElementById("searchForm").addEventListener("submit", function (e) {
 });
 </script>
 
-<<<<<<< HEAD
-=======
-    setTimeout(() => {
-        icon.classList.remove("hidden");
-        spinner.classList.add("hidden");
-    
-        // Optional: kirim form di sini atau tampilkan hasil
-        alert("nanti user diarahkan ke product yang available, tapi nanti yaa kita hubungi ke backend duluuu 😚💜");
-      }, 2000);
-    });
-    </script> 
->>>>>>> e06e8edad4d65f23718976fae0edb1fb0b208055
-    
-  
   <!-- Flatpickr for calendar -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -198,28 +203,45 @@ document.getElementById("searchForm").addEventListener("submit", function (e) {
 
 
 <!-- STRIP RENT NOW (Animated) -->
-  <x-marquee-rent-now />
+<x-marquee-rent-now />
 
-<!-- CATEGORY FILTER -->
-<section class="mt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-  <div id="categoryButtons" class="flex justify-center gap-4 flex-wrap">
-    <button data-category="electronics" class="category-btn px-6 py-2 rounded-full bg-purple-200 text-purple-800 font-semibold shadow-md hover:bg-purple-300 transition">ELECTRONIC</button>
-    <button data-category="merchandise" class="category-btn px-6 py-2 rounded-full bg-gray-100 text-gray-500 font-semibold shadow-md hover:bg-gray-200 transition">MERCHANDISE</button>
-    <button data-category="others" class="category-btn px-6 py-2 rounded-full bg-gray-100 text-gray-500 font-semibold shadow-md hover:bg-gray-200 transition">OTHERS</button>
+  @include('components.category-filter')
+
+<!-- Swiper -->
+<div class="swiper mySwiper mt-8 pb-8">
+  <div class="swiper-wrapper" id="productWrapper">
+    @foreach ($products as $product)
+      <div class="swiper-slide">
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col items-center p-4 w-64">
+          <!-- Gambar produk dari relasi 'images' -->
+          <img src="{{ asset('storage/' . ($product->images->first()->image_path ?? 'default.jpg')) }}"
+               alt="{{ $product->name }}"
+               class="h-40 object-contain mb-4" />
+
+          <!-- Nama produk -->
+          <h3 class="font-semibold text-lg text-gray-800 mb-1">{{ $product->name }}</h3>
+
+          <!-- Harga per hari -->
+          <p class="text-sm text-gray-600 mb-4">
+            Rp{{ number_format($product->price, 0, ',', '.') }}/day
+          </p>
+
+          <!-- Tombol Detail -->
+          <a href="{{ route('product.show', $product->id) }}"
+             class="bg-purple-200 text-purple-800 px-6 py-2 rounded-xl font-medium hover:bg-purple-300 transition">
+            Details
+          </a>
+        </div>
+      </div>
+    @endforeach
   </div>
 
-  <!-- Swiper -->
-  <div class="swiper mySwiper mt-8 pb-8">
-    <div class="swiper-wrapper" id="productWrapper">
-      <!-- Slide produk akan diinject di sini -->
-    </div>
-    <!-- Navigation -->
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
-    <!-- Pagination -->
-    <div class="swiper-pagination"></div>
-  </div>
-</section>
+  <!-- Navigasi Swiper -->
+  <div class="swiper-button-next"></div>
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-pagination"></div>
+</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 <script>
@@ -259,7 +281,7 @@ document.getElementById("searchForm").addEventListener("submit", function (e) {
       slide.className = "swiper-slide";
       slide.innerHTML = `
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <img src="/storage/${product.image}" alt="${product.name}" class="w-full h-40 object-cover">
+          <<img src="/storage/${product.images[0]?.image_path || 'default.jpg'}" alt="${product.name}" ...>
           <div class="p-4">
             <h3 class="text-lg font-semibold">${product.name}</h3>
           </div>
@@ -270,17 +292,22 @@ document.getElementById("searchForm").addEventListener("submit", function (e) {
   }
 
   swiper = new Swiper(".mySwiper", {
-    slidesPerView: 3,
-    spaceBetween: 30,
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev"
-    },
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-    }
-  });
+  slidesPerView: 1,
+  spaceBetween: 16,
+  pagination: {
+    el: ".swiper-pagination",
+    clickable: true,
+  },
+  navigation: {
+    nextEl: ".swiper-button-next",
+    prevEl: ".swiper-button-prev",
+  },
+  breakpoints: {
+    640: { slidesPerView: 2 },
+    1024: { slidesPerView: 3 },
+  }
+});
+
 }
 
 

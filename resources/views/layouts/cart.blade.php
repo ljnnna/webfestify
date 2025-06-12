@@ -22,7 +22,7 @@
 </head>
 <body class="bg-gray-50">
     <!-- Include Navbar -->
-    @include('components.navbar')
+    @include('layouts.navigation')
     
     <!-- Main Content -->
     <main>
