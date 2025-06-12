@@ -57,12 +57,16 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 // ======================= SEARCH ===========================
 Route::get('/search', [SearchController::class, 'search'])->name('search');
 
+<<<<<<< HEAD
 // ======================= STATIC PAGES ===========================
 Route::get('/learnmore', fn () => view('pages.customer.learnmore'))->name('learnmore');
 Route::get('/tandc', fn () => view('pages.customer.tandc'))->name('tandc');
 Route::get('/privacypolice', fn () => view('pages.customer.privacypolice'))->name('privacypolice');
 Route::get('/team', fn () => view('team'))->name('team');
 Route::get('/contact', fn () => view('contact'))->name('contact');
+=======
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
+>>>>>>> e06e8edad4d65f23718976fae0edb1fb0b208055
 
 Route::get('/catalog/{category:slug}', [CatalogController::class, 'byCategory'])->name('catalog.category');
 
@@ -73,3 +77,25 @@ Route::get('/catalog/others', [CatalogController::class, 'others'])->name('catal
 
 // ======================= DEFAULT AUTH ROUTES (Fortify/Breeze/etc.) ===========================
 require __DIR__.'/auth.php';
+<<<<<<< HEAD
+=======
+
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+
+Route::post('/contact/send', function (Request $request) {
+    // Validasi
+    $request->validate([
+        'name' => 'required|max:255',
+        'email' => 'required|email|max:255',
+        'phone' => 'nullable|max:20',
+        'message' => 'required|max:1000',
+    ]);
+    
+    // Logic untuk mengirim email atau menyimpan ke database
+    // Contoh: Mail::to('admin@festify.com')->send(new ContactMessage($request->all()));
+    
+    return redirect()->back()->with('success', 'Thank you for your message! We will get back to you soon.');
+})->name('contact.send');
+>>>>>>> e06e8edad4d65f23718976fae0edb1fb0b208055
