@@ -126,37 +126,6 @@
     </div>
 </div>
 
-<<<<<<< HEAD
-
-
-
-  {{-- Header Kolom --}}
-  @include('components.cart-header')
-
-  @php
-    $items = [
-      ['id' => 1, 'image' => 'lightstick.png', 'name' => 'Lightstick Seventeen', 'version' => 'Ver.2', 'selected' => true],
-      ['id' => 2, 'image' => 'kursi.png', 'name' => 'Lightstick Seventeen', 'version' => 'Ver.2', 'selected' => false],
-      ['id' => 3, 'image' => 'kamera.png', 'name' => 'Lightstick Seventeen', 'version' => 'Ver.2', 'selected' => true],
-    ];
-  @endphp
-
-  @foreach($items as $item)
-    @include('components.cart-item', ['item' => $item])
-  @endforeach
-
-  <a href="/home" class="mt-6 inline-block text-sm text-black underline">
-    ← Back To Shop
-  </a>
-@endsection
-
-@section('right')
-  @include('components.cart-details')
-@endsection
-
-
-=======
->>>>>>> dea8fe3910f361fb12353f5240aa744d404f9323
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const selectAll = document.getElementById('select-all');
