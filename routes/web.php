@@ -129,3 +129,22 @@ Route::get('/team', function () {
 })->name('team');
 
 require __DIR__.'/auth.php';
+
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+
+Route::post('/contact/send', function (Request $request) {
+    // Validasi
+    $request->validate([
+        'name' => 'required|max:255',
+        'email' => 'required|email|max:255',
+        'phone' => 'nullable|max:20',
+        'message' => 'required|max:1000',
+    ]);
+    
+    // Logic untuk mengirim email atau menyimpan ke database
+    // Contoh: Mail::to('admin@festify.com')->send(new ContactMessage($request->all()));
+    
+    return redirect()->back()->with('success', 'Thank you for your message! We will get back to you soon.');
+})->name('contact.send');

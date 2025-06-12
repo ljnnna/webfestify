@@ -2,33 +2,6 @@
 
 @section('title', 'Edit Profile')
 
-{{-- Desktop Menu --}}
-@section('desktop-menu')
-<div class="hidden lg:flex space-x-6 items-center">
-    <a href="{{ route('home') }}"
-        class="{{ request()->routeIs('home') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
-        Home
-    </a>
-    <a href="{{ route('catalog') }}"
-        class="{{ request()->routeIs('catalog') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
-        Catalog
-    </a>
-    <a href="{{ route('team') }}"
-        class="{{ request()->routeIs('team') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
-        Team
-    </a>
-    <a href="{{ route('details') }}"
-        class="{{ request()->routeIs('details') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
-        Contact
-    </a>
-    <a href="{{ route('profile.edit') }}"
-         class="{{ request()->routeIs('profile.*') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
-         Profile
-    </a>
-
-</div>
-@endsection
-
 @section('content')
 <!-- CONTAINER UTAMA -->
 <div class=" flex flex-col md:flex-row bg-gray-50 min-h-[80vh]">
