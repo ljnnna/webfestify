@@ -20,9 +20,15 @@
         </style>
     </head>
 
+
+    <body class="bg-gray-100">
+        @include('layouts.navigation')
+        <main class="w-full pt-4 px-4 sm:px-6 md:px-10">
+
     <body class="bg-white">
         @include('components.navbar')
         <main class="max-w-[1280px] mx-auto py-10 px-4 sm:px-6 md:px-10">
+
             @yield('content')
         </main>
     </body>
