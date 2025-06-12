@@ -20,9 +20,9 @@
         </style>
     </head>
 
-    <body class="bg-white">
+    <body class="bg-gray-100">
         @include('layouts.navigation')
-        <main class="max-w-[1280px] mx-auto py-10 px-4 sm:px-6 md:px-10">
+        <main class="w-full pt-4 px-4 sm:px-6 md:px-10">
             @yield('content')
         </main>
     </body>

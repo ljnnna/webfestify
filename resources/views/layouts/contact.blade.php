@@ -102,12 +102,6 @@
     document.getElementById('drawer-overlay').classList.add('hidden');
   }
 
-  function toggleDarkMode() {
-    const html = document.documentElement;
-    html.classList.toggle('dark');
-    const icon = document.getElementById('theme-icon');
-    icon.textContent = html.classList.contains('dark') ? '☀️' : '🌙';
-  }
 </script>
 <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.js"></script>
 </x-app-layout>

@@ -6,6 +6,8 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
 
 class ProductController extends Controller
 {
@@ -22,7 +24,8 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.product.create');
+        return view('admin.product.create', compact('categories'));
+
     }
 
     /**
@@ -137,7 +140,14 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $product->delete();
-        return redirect()->route('admin.product.index')->with('success', 'Product deleted.');
+    foreach ($product->images as $img) {
+        Storage::disk('public')->delete($img->path);
+        $img->delete();
     }
+
+    $product->delete();
+
+    return redirect()->route('admin.product.index')->with('success', 'Product deleted.');
+    }
+
 }

@@ -13,123 +13,63 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PageController;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-// Admin ----------------------------------------------------------------
-
-Route::get('/dashboardfest', [DashboardController::class, 'index'])->name('admin.dashboard');
-
-Route::get('/userfest', [UsersController::class, 'index'])->name('admin.user');
-
-// Route::get('/userfest', function () {
-//     return view('admin.admincostumer');
-// })->name('admin.user');
-
-Route::prefix('admin')->name('admin.')->group(function () {
+// ======================= ADMIN ROUTES ===========================
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/dashboardfest', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/userfest', [UsersController::class, 'index'])->name('user');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders');
     Route::resource('product', ProductController::class);
+    Route::get('/home', function () {
+        return redirect()->route('home');
+    })->name('home');
 });
 
-Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders');
-
-// Route::get('/orders', function () {
-//     return view('admin.orders');
-// })->name('admin.orders');
-
-
-// Customer -------------------------------------------------------------
-
-// Route::get('/dashboard', [HomeController::class, 'index'])
-// ->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::get('/home', [HomeController::class, 'index'])
-    ->middleware(['auth'])
-    ->name('home');
-
-Route::get('post', [HomeController::class, 'post'])->middleware(['auth', 'admin']);
-
-Route::get('/users', [UsersController::class, 'index']);
-
+// ======================= CUSTOMER ROUTES ===========================
 Route::middleware(['auth'])->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/post', [HomeController::class, 'post'])->middleware('admin');
+
+    // Profile
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/save', [ProfileController::class, 'saveAll'])->name('profile.saveAll');
     Route::post('/profile/photo-upload', [ProfileController::class, 'uploadPicture'])->name('profile.uploadPicture');
+    Route::get('/profile/rental-information', [ProfileController::class, 'rentalInfo'])->name('profile.rentalInfo');
+    Route::get('/profile/rental-history', [ProfileController::class, 'rentalHistory'])->name('profile.rentalHistory');
+
+    // Customer pages
+    Route::get('/catalog', [CatalogController::class, 'catalog'])->name('catalog');
+    Route::get('/details', [DetailsController::class, 'details'])->name('details');
+    Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
+    Route::get('/cart', fn () => view('pages.customer.cart-page'))->name('cart');
 });
 
-Route::put('/profile/save-all', [ProfileController::class, 'saveAll'])->name('profile.saveAll');
-Route::post('/profile/picture-upload', [ProfileController::class, 'uploadPicture'])->name('profile.picture');
-Route::get('/profile/rental-information', [ProfileController::class, 'rentalInfo'])->name('profile.rentalInfo');
-Route::get('/profile/rental-history', [ProfileController::class, 'rentalHistory'])->name('profile.rentalHistory');
-
-
-// Proses login
+// ======================= AUTH ROUTES ===========================
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
-
-// Proses register
 Route::post('/register', [RegisteredUserController::class, 'store']);
-
-// Logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
-Route::get('/learnmore', function () {
-    return view('pages.customer.learnmore');
-});
-
-// Route::get('/team', function () {
-//     return view('team');
-
-// });
-
-// Route::get('/catalog', [CatalogController::class, 'catalog']);
-
-// Route::get('/home', function () {
-//     return view('homepage');
-// });
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
-
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
-
+// ======================= SEARCH ===========================
 Route::get('/search', [SearchController::class, 'search'])->name('search');
 
-Route::get('/catalog', [CatalogController::class, 'catalog'])->name('catalog');
+// ======================= STATIC PAGES ===========================
+Route::get('/learnmore', fn () => view('pages.customer.learnmore'))->name('learnmore');
+Route::get('/tandc', fn () => view('pages.customer.tandc'))->name('tandc');
+Route::get('/privacypolice', fn () => view('pages.customer.privacypolice'))->name('privacypolice');
+Route::get('/team', fn () => view('team'))->name('team');
+Route::get('/contact', fn () => view('contact'))->name('contact');
 
-Route::get('/details', [DetailsController::class, 'details'])->name('details');
+Route::get('/catalog/{category:slug}', [CatalogController::class, 'byCategory'])->name('catalog.category');
 
-Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
-
-Route::get('/cart', function () {
-    return view('pages.customer.cart-page');
-})->name('cart');
-
-Route::get('/admin/home', function () {
-    return redirect()->route('home');
-})->name('admin.home');
+Route::get('/catalog/merchandise', [CatalogController::class, 'merchandise'])->name('catalog.merchandise');
+Route::get('/catalog/electronics', [CatalogController::class, 'electronics'])->name('catalog.electronics');
+Route::get('/catalog/others', [CatalogController::class, 'others'])->name('catalog.others');
 
 
-Route::get('/tandc', function () {
-    return view('pages.customer.tandc');
-})->name('tandc');
-
-Route::get('/privacypolice', function () {
-    return view('pages.customer.privacypolice');
-})->name('privacypolice');
-
-Route::get('/team', function () {
-    return view('team');
-})->name('team');
-
+// ======================= DEFAULT AUTH ROUTES (Fortify/Breeze/etc.) ===========================
 require __DIR__.'/auth.php';
-
-Route::get('/contact', function () {
-    return view('contact');
-})->name('contact');

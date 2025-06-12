@@ -13,7 +13,6 @@ class Product extends Model
         'details',
         'price',
         'stock_quantity',
-        'image',
         'status',
     ];        
 
@@ -36,6 +35,12 @@ class Product extends Model
     {
     return $this->hasMany(ProductImage::class);
     }
+
+    public function scopeActive($query)
+    {
+    return $query->where('status', 'available'); // atau 1 kalau boolean
+    }
+
 
 
 }
