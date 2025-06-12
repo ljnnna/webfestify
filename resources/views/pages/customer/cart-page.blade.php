@@ -29,7 +29,7 @@
     @include('components.cart-item', ['item' => $item])
   @endforeach
 
-  <a href="/" class="mt-6 inline-block text-sm text-black underline">
+  <a href="/home" class="mt-6 inline-block text-sm text-black underline">
     ← Back To Shop
   </a>
 @endsection

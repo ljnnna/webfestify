@@ -101,7 +101,7 @@ Route::get('/learnmore', function () {
 
 Route::get('/search', [SearchController::class, 'search'])->name('search');
 
-Route::get('/catalog', [CatalogController::class, 'catalog'])->name('catalog');
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
 
 Route::get('/details', [DetailsController::class, 'details'])->name('details');
 

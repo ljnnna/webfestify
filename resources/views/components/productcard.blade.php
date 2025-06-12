@@ -4,18 +4,18 @@
     <div class="relative flex flex-col items-center mb-4">
         <!-- Main Image Display -->
         <div class="relative w-full h-64 rounded-xl overflow-hidden">
-            @if($product->images && count($product->images) > 0)
+            @if($product->images && $product->images->count() > 0)
                 <!-- Display multiple images if available -->
                 <div class="image-gallery relative w-full h-full">
                     @foreach($product->images as $index => $image)
-                        <img src="{{ asset('storage/' . $image) }}" 
+                        <img src="{{ asset('storage/' . $image->path) }}" 
                              alt="{{ $product->name }} - Image {{ $index + 1 }}" 
                              class="gallery-image absolute inset-0 w-full h-full object-cover transition-opacity duration-300 {{ $index === 0 ? 'opacity-100' : 'opacity-0' }}" 
                              data-index="{{ $index }}" />
                     @endforeach
                     
                     <!-- Navigation Arrows (only show if more than 1 image) -->
-                    @if(count($product->images) > 1)
+                    @if($product->images->count() > 1)
                         <button class="nav-btn prev-btn absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70 transition-all">
                             <i class="fas fa-chevron-left text-sm"></i>
                         </button>
@@ -25,20 +25,23 @@
                         
                         <!-- Image Counter -->
                         <div class="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded-full text-xs">
-                            <span class="current-image">1</span>/<span class="total-images">{{ count($product->images) }}</span>
+                            <span class="current-image">1</span>/<span class="total-images">{{ $product->images->count() }}</span>
                         </div>
                     @endif
                 </div>
             @else
-                <!-- Fallback for single image (backward compatibility) -->
-                <img src="{{ asset('storage/' . $product->image) }}" 
-                     alt="{{ $product->name }}" 
-                     class="w-full h-full object-cover" />
+                <!-- Fallback jika tidak ada gambar sama sekali -->
+                <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <div class="text-center text-gray-500">
+                        <i class="fas fa-image text-4xl mb-2"></i>
+                        <p>No Image Available</p>
+                    </div>
+                </div>
             @endif
         </div>
         
         <!-- Image Dots Indicator (only show if more than 1 image) -->
-        @if($product->images && count($product->images) > 1)
+        @if($product->images && $product->images->count() > 1)
             <div class="flex space-x-2 mt-3">
                 @foreach($product->images as $index => $image)
                     <button class="dot-indicator w-2 h-2 rounded-full transition-all {{ $index === 0 ? 'bg-[#493862]' : 'bg-gray-300' }}" 
@@ -56,7 +59,7 @@
         <!-- Harga -->
         <div class="bg-white px-4 py-2 text-center rounded-full w-[70%]">
             <p class="text-base font-medium text-gray-700">
-                Rp{{ number_format($product['price'], 0, ',', '.') }}/day
+                Rp{{ number_format($product->price, 0, ',', '.') }}/day
             </p>
         </div>
         
@@ -154,9 +157,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Auto-slide (optional - uncomment if you want auto-sliding)
-        setInterval(() => {
-            nextImage();
-        }, 5000);
+        // setInterval(() => {
+        //     nextImage();
+        // }, 5000);
     });
 });
 </script>
