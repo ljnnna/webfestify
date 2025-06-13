@@ -7,10 +7,6 @@ use App\Models\Category;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-<<<<<<< HEAD
-
-=======
->>>>>>> e06e8edad4d65f23718976fae0edb1fb0b208055
 
 class ProductController extends Controller
 {
@@ -28,10 +24,6 @@ class ProductController extends Controller
     {
         $categories = Category::all();
         return view('admin.product.create', compact('categories'));
-<<<<<<< HEAD
-
-=======
->>>>>>> e06e8edad4d65f23718976fae0edb1fb0b208055
     }
 
     /**

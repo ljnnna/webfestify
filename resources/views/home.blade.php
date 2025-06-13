@@ -75,10 +75,6 @@
 
   </section>
 
-<<<<<<< HEAD
-
-=======
->>>>>>> e06e8edad4d65f23718976fae0edb1fb0b208055
 {{-- Browse by Category --}}
 <section id="category" class="max-w-7xl mx-auto mt-12 px-4 mb-12 sm:px-6 lg:px-8">
     <h2 class="text-3xl font-extrabold mb-8 text-center">Browse by Category</h2>
@@ -126,19 +122,6 @@ document.getElementById("searchForm").addEventListener("submit", function (e) {
   }, 2000);
 });
 </script>
-
-<<<<<<< HEAD
-=======
-    setTimeout(() => {
-        icon.classList.remove("hidden");
-        spinner.classList.add("hidden");
-    
-        // Optional: kirim form di sini atau tampilkan hasil
-        alert("nanti user diarahkan ke product yang available, tapi nanti yaa kita hubungi ke backend duluuu 😚💜");
-      }, 2000);
-    });
-    </script> 
->>>>>>> e06e8edad4d65f23718976fae0edb1fb0b208055
     
   
   <!-- Flatpickr for calendar -->

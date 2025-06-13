@@ -3,13 +3,11 @@
             class="bg-white rounded-xl shadow-md shadow-gray-300 p-4 flex flex-col h-full"
         >
             <div class="flex-shrink-0 mb-4">
-                @foreach($product->images as $index => $image)
                 <img
-                    src="{{ asset('storage/' . $image->path) }}"
+                    src="{{ $product->main_image_url }}"
                     alt="{{ $product->name }}"
                     class="rounded-xl w-full h-48 object-cover"
                 />
-                @endforeach
             </div>
             <div class="flex flex-col flex-grow justify-between">
                 <div class="mb-4">

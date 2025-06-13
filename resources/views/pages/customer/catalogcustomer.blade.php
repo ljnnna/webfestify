@@ -18,15 +18,11 @@
 
 @include('components.images-layout')
 
-
-
-
-
 <!-- Product Grid -->
-<div class="w-full bg-white px-4 py-4 rounded-lg mt-6 mb-4">
-    <section class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4 flex-1">
-        @include('components.productgridcatalog')
+    <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 flex-1">
+        @foreach($products as $product)
+            <x-productgridcatalog :product="$product" />
+        @endforeach
     </section>
-</div>
 
 @endsection

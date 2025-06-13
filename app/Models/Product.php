@@ -36,6 +36,21 @@ class Product extends Model
     return $this->hasMany(ProductImage::class);
     }
 
+    // Relasi untuk gambar utama (gambar pertama)
+    public function mainImage()
+    {
+        return $this->hasOne(ProductImage::class)->oldest('created_at');
+    }
+
+    // Tambahkan accessor untuk main image URL
+    public function getMainImageUrlAttribute()
+    {
+        if ($this->mainImage) {
+            return asset('storage/' . $this->mainImage->path);
+        }
+        return asset('images/no-image.jpg'); // gambar default
+    }
+
     public function scopeActive($query)
     {
     return $query->where('status', 'available'); // atau 1 kalau boolean

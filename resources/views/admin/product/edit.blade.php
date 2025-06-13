@@ -22,11 +22,11 @@
         >
             <div        
             class="bg-white p-6 rounded-2xl w-full max-w-2xl shadow-lg relative"
-            @click.away="showModal = false"
+            @click.away="showUpdateModal = false"
             >
             <!-- Tombol close -->
                 <button
-                    @click="showModal = false"
+                    @click="showUpdateModal = false"
                     class="absolute top-3 right-3 text-gray-500 hover:text-black text-2xl"           
                 >
         
