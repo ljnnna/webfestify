@@ -32,7 +32,7 @@
 </head>
 <body class="bg-white">
     <!-- Navbar -->
-    @include('components.navbar')
+    @include('layouts.navigation')
 
     <!-- Main Content -->
     <main>

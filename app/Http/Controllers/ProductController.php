@@ -7,6 +7,8 @@ use App\Models\Category;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 
 
 
@@ -26,9 +28,6 @@ class ProductController extends Controller
     {
         $categories = Category::all();
         return view('admin.product.create', compact('categories'));
-
-
-
 
     }
 
@@ -51,6 +50,7 @@ class ProductController extends Controller
         $product = Product::create([
             'category_id' => $request->category_id,
             'name' => $request->name,
+            'slug' => Str::slug($request->name),
             'price' => $request->price,
             'description' => $request->description,
             'details' => $request->details,
@@ -75,11 +75,17 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function detailBySlug($slug)
     {
-        $product->load('images');
-        return view('product.show', compact('product'));
+        $product = Product::with('images', 'category')->where('slug', $slug)->firstOrFail();
+    
+        // Ambil path gambar dari relasi
+        $productImages = $product->images->pluck('path')->toArray();
+    
+        return view('pages.customer.detailsproductcatalogcust', compact('product', 'productImages'));
     }
+    
+    
 
     /**
      * Show the form for editing the specified resource.
@@ -110,6 +116,7 @@ class ProductController extends Controller
         $product->update([
             'category_id' => $request->category_id,
             'name' => $request->name,
+            'slug' => Str::slug($request->name),
             'price' => $request->price,
             'description' => $request->description,
             'details' => $request->details,
@@ -130,7 +137,6 @@ class ProductController extends Controller
                 ProductImage::create([
                     'product_id' => $product->id,
                     'path' => $path,
-                    // Tidak ada is_primary field
                 ]);
             }
         }
@@ -152,5 +158,7 @@ class ProductController extends Controller
 
     return redirect()->route('admin.product.index')->with('success', 'Product deleted.');
     }
+
+
 
 }

@@ -1,8 +1,8 @@
 <!-- Product Images -->
 <div class="flex flex-col items-center space-y-6">
     <div class="relative w-72 h-96">
-        <img alt="BTS Lightstick product photo" class="w-full h-full object-cover rounded-lg shadow-lg"
-            src="https://m.media-amazon.com/images/I/31CsIQnw0IL._SL500_.jpg" id="main-product-image" />
+    <img alt="Product photo" class="w-full h-full object-cover rounded-lg shadow-lg"
+        src="{{ asset('storage/' . $productImages[0]) }}" id="main-product-image" />
 
         <!-- Navigation Buttons -->
         <button id="prev-image-btn"
@@ -17,21 +17,24 @@
 
     <!-- Thumbnails -->
     <div class="flex space-x-4">
-        @foreach([
-        'https://m.media-amazon.com/images/I/31CsIQnw0IL._SL500_.jpg',
-        'https://images-cdn.ubuy.co.in/3OBSR3Q-kpop-bts-army-bomb-light-stick-ver-2.jpg',
-        'https://images-na.ssl-images-amazon.com/images/I/514NA2icOPL._AC_SL1000_.jpg',
-        'https://tse4.mm.bing.net/th/id/OIP.3H__uguti1yf6K5CsD6KbgAAAA?w=350&h=350&rs=1&pid=ImgDetMain'
-        ] as $index => $image)
-        <img class="thumbnail w-20 h-20 object-cover rounded-lg border-2 {{ $index === 0 ? 'border-[#6B549A]' : 'border-gray-200' }} cursor-pointer hover:border-[#6B549A] transition-colors"
-            src="{{ $image }}" data-index="{{ $index }}" />
-        @endforeach
+    @foreach ($productImages as $index => $image)
+    <img
+        class="thumbnail w-20 h-20 object-cover rounded-lg border-2 {{ $index === 0 ? 'border-[#6B549A]' : 'border-gray-200' }} cursor-pointer hover:border-[#6B549A] transition-colors"
+        src="{{ asset('storage/' . $image) }}"
+        data-index="{{ $index }}"
+    />
+    @endforeach
     </div>
 </div>
 
 <script>
-// Image gallery manager
-// Image gallery manager dengan navigation button yang disabled
+const PRODUCT_CONFIG = {
+    images: @json(array_map(fn($img) => asset('storage/' . $img), $productImages)),
+    maxQuantity: 10
+};
+</script>
+
+<script>
 const imageGallery = {
     currentIndex: 0,
 
@@ -44,13 +47,17 @@ const imageGallery = {
         document.getElementById('prev-image-btn')?.addEventListener('click', () => this.previous());
         document.getElementById('next-image-btn')?.addEventListener('click', () => this.next());
 
-        document.querySelectorAll('.thumbnail').forEach((thumb, index) => {
-            thumb.addEventListener('click', () => this.goTo(index));
+        document.querySelectorAll('.thumbnail').forEach((thumb) => {
+            thumb.addEventListener('click', () => {
+        const index = parseInt(thumb.dataset.index, 10);
+        this.goTo(index);
+    });
+
+
         });
     },
 
     previous() {
-        // Hanya pindah jika tidak di gambar pertama
         if (this.currentIndex > 0) {
             this.currentIndex--;
             this.updateDisplay();
@@ -58,7 +65,6 @@ const imageGallery = {
     },
 
     next() {
-        // Hanya pindah jika tidak di gambar terakhir
         if (this.currentIndex < PRODUCT_CONFIG.images.length - 1) {
             this.currentIndex++;
             this.updateDisplay();
@@ -76,13 +82,11 @@ const imageGallery = {
             mainImage.src = PRODUCT_CONFIG.images[this.currentIndex];
         }
 
-        // Update thumbnail borders
         document.querySelectorAll('.thumbnail').forEach((thumb, index) => {
             thumb.classList.toggle('border-[#6B549A]', index === this.currentIndex);
             thumb.classList.toggle('border-gray-200', index !== this.currentIndex);
         });
 
-        // Update navigation buttons
         this.updateNavigationButtons();
     },
 
@@ -91,32 +95,21 @@ const imageGallery = {
         const nextBtn = document.getElementById('next-image-btn');
 
         if (prevBtn) {
-            if (this.currentIndex === 0) {
-                // Disable prev button - di gambar pertama
-                prevBtn.disabled = true;
-                prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                prevBtn.classList.remove('hover:bg-gray-50');
-            } else {
-                // Enable prev button
-                prevBtn.disabled = false;
-                prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                prevBtn.classList.add('hover:bg-gray-50');
-            }
+            prevBtn.disabled = this.currentIndex === 0;
+            prevBtn.classList.toggle('opacity-50', this.currentIndex === 0);
+            prevBtn.classList.toggle('cursor-not-allowed', this.currentIndex === 0);
+            prevBtn.classList.toggle('hover:bg-gray-50', this.currentIndex !== 0);
         }
 
         if (nextBtn) {
-            if (this.currentIndex === PRODUCT_CONFIG.images.length - 1) {
-                // Disable next button - di gambar terakhir
-                nextBtn.disabled = true;
-                nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                nextBtn.classList.remove('hover:bg-[#1a0f3d]');
-            } else {
-                // Enable next button
-                nextBtn.disabled = false;
-                nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                nextBtn.classList.add('hover:bg-[#1a0f3d]');
-            }
+            nextBtn.disabled = this.currentIndex === PRODUCT_CONFIG.images.length - 1;
+            nextBtn.classList.toggle('opacity-50', this.currentIndex === PRODUCT_CONFIG.images.length - 1);
+            nextBtn.classList.toggle('cursor-not-allowed', this.currentIndex === PRODUCT_CONFIG.images.length - 1);
+            nextBtn.classList.toggle('hover:bg-[#1a0f3d]', this.currentIndex !== PRODUCT_CONFIG.images.length - 1);
         }
     }
 };
+
+// Panggil init terakhir, setelah semua siap
+
 </script>

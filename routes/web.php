@@ -78,7 +78,7 @@ Route::get('/catalog/others', [CatalogController::class, 'others'])->name('catal
 // ======================= DEFAULT AUTH ROUTES (Fortify/Breeze/etc.) ===========================
 require __DIR__.'/auth.php';
 
-Route::get('/product/{product}', [ProductController::class, 'show'])->name('product.show');
+Route::get('/product/{slug}', [ProductController::class, 'detailBySlug'])->name('product.show');
 
 
 Route::get('/contact', function () {

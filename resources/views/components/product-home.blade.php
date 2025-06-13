@@ -50,7 +50,11 @@
           <img src="/storage/${product.images[0]?.path}" alt="${product.name}" class="w-full h-40 object-cover rounded-lg mb-4">
           <h3 class="font-semibold text-lg text-gray-800 mb-2">${product.name}</h3>
           <p class="text-sm text-gray-600 mb-4">${formattedPrice}/day</p>
-          <a href="/product/${product.id}" class="bg-purple-200 text-purple-800 px-6 py-2 rounded-xl font-medium hover:bg-purple-300 transition">Details</a>
+          <a href="/product/${product.slug ?? ''}" 
+            class="bg-purple-200 text-purple-800 px-6 py-2 rounded-xl font-medium hover:bg-purple-300 transition">
+            Details
+          </a>
+
         `;
 
         grid.appendChild(item);
