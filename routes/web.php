@@ -63,7 +63,9 @@ Route::get('/tandc', fn () => view('pages.customer.tandc'))->name('tandc');
 Route::get('/privacypolice', fn () => view('pages.customer.privacypolice'))->name('privacypolice');
 Route::get('/team', fn () => view('team'))->name('team');
 Route::get('/contact', fn () => view('contact'))->name('contact');
+
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
+
 
 Route::get('/catalog/{category:slug}', [CatalogController::class, 'byCategory'])->name('catalog.category');
 
@@ -74,6 +76,9 @@ Route::get('/catalog/others', [CatalogController::class, 'others'])->name('catal
 
 // ======================= DEFAULT AUTH ROUTES (Fortify/Breeze/etc.) ===========================
 require __DIR__.'/auth.php';
+
+Route::get('/product/{slug}', [ProductController::class, 'detailBySlug'])->name('product.show');
+
 
 Route::get('/contact', function () {
     return view('contact');

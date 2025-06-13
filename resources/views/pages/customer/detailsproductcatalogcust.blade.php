@@ -2,6 +2,28 @@
 
 @section('title', 'Details Product')
 
+@section('desktop-menu')
+<div class="hidden lg:flex space-x-6 items-center">
+    <a href="{{ route('home') }}"
+        class="{{ request()->routeIs('home') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+        Home
+    </a>
+    <a href="{{ route('catalog') }}"
+        class="{{ request()->routeIs('catalog') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+        Catalog
+    </a>
+    <a href="{{ route('team') }}"
+        class="{{ request()->routeIs('team') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+        Team
+    </a>
+    <a href="{{ route('contact') }}"
+        class="{{ request()->routeIs('contact') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+        Contact
+    </a>
+</div>
+
+@endsection
+
 @section('content')
 <!-- Main Content -->
 <div class="flex flex-col md:flex-row gap-8 px-4 sm:px-6 md:px-10 py-10 max-w-[1280px] mx-auto">
@@ -10,8 +32,9 @@
         @include('components.thumbnails')
         <!-- Product Information -->
         <section class="flex-1 max-w-3xl">
-            <h1 class="text-[#1A0041] font-extrabold text-3xl mb-2">Lightstick - BTS</h1>
-            <p class="text-[#7F5CB2] text-2xl font-bold mb-8">Rp.250.000/day</p>
+            <h1 class="text-[#1A0041] font-extrabold text-3xl mb-2">{{ $product->name }}</h1>
+            <p class="text-[#7F5CB2] text-2xl font-bold mb-8">Rp.{{ number_format($product->price, 0, ',', '.') }}/day</p>
+
 
             <!-- Quantity & Actions -->
             <div class="mb-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -143,51 +166,17 @@
                 <div class="mt-4 sm:mt-6 relative min-h-[100px]">
                     <div id="description" class="tab-content opacity-100 transition-opacity duration-300">
                         <p class="text-[#6D5983] leading-relaxed text-sm sm:text-base">
-                            Official BTS Army Bomb Light Stick Ver. 4 with Bluetooth connectivity, synchronized lighting
-                            effects,
-                            and ergonomic design. Perfect for concerts and events.
+                             {{ $product->description }}
+                        </p>
+
+                    </div>
+
+                    <div id="details" class="tab-content opacity-0 ...">
+                        <p class="text-[#6D5983] leading-relaxed text-sm sm:text-base">
+                            {{ $product->details }}
                         </p>
                     </div>
 
-                    <div id="details"
-                        class="tab-content opacity-0 absolute inset-0 transition-opacity duration-300 pointer-events-none">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-[#6D5983]">
-                            <div>
-                                <h4 class="font-semibold text-[#2E1B5F] mb-2 text-sm sm:text-base">Rental Info</h4>
-                                <ul class="space-y-1.5 text-xs sm:text-sm">
-                                    <li class="flex items-start">
-                                        <span class="text-[#8B7CC4] mr-2 flex-shrink-0">•</span>
-                                        <span>Min rental: 1 day</span>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <span class="text-[#8B7CC4] mr-2 flex-shrink-0">•</span>
-                                        <span>Max rental: 7 days</span>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <span class="text-[#8B7CC4] mr-2 flex-shrink-0">•</span>
-                                        <span>Clean return required</span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-[#2E1B5F] mb-2 text-sm sm:text-base">Included</h4>
-                                <ul class="space-y-1.5 text-xs sm:text-sm">
-                                    <li class="flex items-start">
-                                        <span class="text-[#8B7CC4] mr-2 flex-shrink-0">•</span>
-                                        <span>Light stick</span>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <span class="text-[#8B7CC4] mr-2 flex-shrink-0">•</span>
-                                        <span>Batteries</span>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <span class="text-[#8B7CC4] mr-2 flex-shrink-0">•</span>
-                                        <span>Manual & strap</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
 
                     <div id="specifications"
                         class="tab-content opacity-0 absolute inset-0 transition-opacity duration-300 pointer-events-none">
@@ -249,22 +238,7 @@
 
 @section('scripts')
 <script>
-// Product configuration
-// Enhanced Product configuration with rental limits
-const PRODUCT_CONFIG = {
-    id: 'bts-lightstick-001',
-    name: 'Lightstick - BTS',
-    price: 250000,
-    maxQuantity: 10,
-    maxRentalDays: 7, // Maximum rental period
-    images: [
-        'https://m.media-amazon.com/images/I/31CsIQnw0IL._SL500_.jpg',
-        'https://images-cdn.ubuy.co.in/3OBSR3Q-kpop-bts-army-bomb-light-stick-ver-2.jpg',
-        'https://images-na.ssl-images-amazon.com/images/I/514NA2icOPL._AC_SL1000_.jpg',
-        'https://tse4.mm.bing.net/th/id/OIP.3H__uguti1yf6K5CsD6KbgAAAA?w=350&h=350&rs=1&pid=ImgDetMain'
-    ]
-};
-
+    
 // Enhanced Utility functions with better notifications
 const utils = {
     showNotification(message, type = 'info', duration = 5000, isInteractive = false) {
@@ -382,43 +356,61 @@ const utils = {
         return date.toISOString().split('T')[0];
     }
 };
+ 
+    const quantityController = {
+        quantity: 1,
 
-// Quantity controller (unchanged)
-const quantityController = {
-    quantity: 1,
+        init() {
+            // Cek apakah tombol dan span tersedia sebelum bind
+            if (
+                document.getElementById('decrease-qty') &&
+                document.getElementById('increase-qty') &&
+                document.getElementById('qty-display')
+            ) {
+                this.bindEvents();
+                this.updateDisplay();
+            } else {
+                console.warn('Quantity elements not found in DOM');
+            }
+        },
 
-    init() {
-        this.bindEvents();
-    },
+        bindEvents() {
+            document.getElementById('decrease-qty').addEventListener('click', () => this.decrease());
+            document.getElementById('increase-qty').addEventListener('click', () => this.increase());
+        },
 
-    bindEvents() {
-        document.getElementById('decrease-qty')?.addEventListener('click', () => this.decrease());
-        document.getElementById('increase-qty')?.addEventListener('click', () => this.increase());
-    },
+        decrease() {
+            if (this.quantity > 1) {
+                this.quantity--;
+                this.updateDisplay();
+            }
+        },
 
-    decrease() {
-        if (this.quantity > 1) {
-            this.quantity--;
-            this.updateDisplay();
+        increase() {
+            if (this.quantity < PRODUCT_CONFIG.maxQuantity) {
+                this.quantity++;
+                this.updateDisplay();
+            }
+        },
+
+        updateDisplay() {
+            const display = document.getElementById('qty-display');
+            if (display) {
+                display.textContent = this.quantity;
+            }
+        },
+
+        get() {
+            return this.quantity;
         }
-    },
+    };
 
-    increase() {
-        if (this.quantity < PRODUCT_CONFIG.maxQuantity) {
-            this.quantity++;
-            this.updateDisplay();
-        }
-    },
+    document.addEventListener('DOMContentLoaded', function () {
+    quantityController.init();
+    imageGallery.init();
+});
 
-    updateDisplay() {
-        const display = document.getElementById('qty-display');
-        if (display) display.textContent = this.quantity;
-    },
 
-    get() {
-        return this.quantity;
-    }
-};
 
 // Enhanced Date manager with 7-day limit
 const dateManager = {

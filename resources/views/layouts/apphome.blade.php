@@ -52,7 +52,7 @@
     </style>
   </head>
 
-  <body class="bg-white text-[#3E3667]">
+  <body class="bg-gray-50 text-[#3E3667]">
     <!-- Header -->
     @include('components.navhome')
 

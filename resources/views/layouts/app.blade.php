@@ -30,7 +30,7 @@
 
 <body class="flex flex-col min-h-screen">
   {{-- Navbar --}}
-  @include('components.navbar')
+  @include('layouts.navigation')
 
   
   {{-- Optional header --}}
