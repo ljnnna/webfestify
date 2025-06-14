@@ -56,7 +56,6 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 // ======================= SEARCH ===========================
 Route::get('/search', [SearchController::class, 'search'])->name('search');
 
-
 // ======================= STATIC PAGES ===========================
 Route::get('/learnmore', fn () => view('pages.customer.learnmore'))->name('learnmore');
 Route::get('/tandc', fn () => view('pages.customer.tandc'))->name('tandc');
@@ -98,4 +97,3 @@ Route::post('/contact/send', function (Request $request) {
     
     return redirect()->back()->with('success', 'Thank you for your message! We will get back to you soon.');
 })->name('contact.send');
-

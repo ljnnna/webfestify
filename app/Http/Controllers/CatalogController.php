@@ -10,8 +10,7 @@ class CatalogController extends Controller
 {
     public function index()
     {
-
-    $products = \App\Models\Product::with('images')->latest()->get();
+    $products = Product::with('mainImage')->get();
     $categories = Category::all();
 
     return view('pages.customer.catalogcustomer', compact('products', 'categories'));

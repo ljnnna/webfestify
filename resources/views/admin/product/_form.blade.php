@@ -79,12 +79,9 @@
                     </div>
                 </div>
 
-                <!-- Form Buttons -->
-                <div class="flex justify-end gap-4 mt-6 border-t pt-4">
-                    <button type="button" class="px-6 py-2 text-gray-600 hover:text-gray-800 font-semibold" onclick="closeModal()">
-                        Cancel
-                    </button>
-                    <button type="submit" class="bg-[#C8A8E7] text-[#493862] font-semibold px-6 py-2 rounded-full hover:bg-purple-600 hover:text-white transition">
+                <!-- Buttons -->
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                    <button type="submit" class="bg-[#C8A8E7] text-[#493862] font-semibold px-6 py-2 rounded-full hover:bg-purple-600 hover:text-white transition-colors">
                         Add Product
                     </button>
                 </div>
