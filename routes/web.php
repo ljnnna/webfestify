@@ -21,7 +21,6 @@ Route::get('/', function () {
 
 // ======================= ADMIN ROUTES ===========================
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/dashboardfest', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/userfest', [UsersController::class, 'index'])->name('user');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
     Route::resource('product', ProductController::class);

@@ -27,7 +27,7 @@
   <section class="relative max-w-7xl mx-auto mb-4 px-4 sm:px-6 lg:px-8">
     <img
       alt="hero section"
-      class="w-full rounded-lg shadow-lg"
+      class="w-full rounded-lg shadow"
       src="{{ asset('images/4.png') }}"
       width="1200"
       height="180"

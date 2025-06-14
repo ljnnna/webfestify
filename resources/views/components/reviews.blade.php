@@ -1,6 +1,6 @@
 <!-- Customer Reviews -->
 <section class="max-w-6xl mx-auto p-6">
-    <div class="bg-white rounded-xl p-6 shadow-md">
+    <div class="bg-white rounded p-6">
         <h2 class="text-left text-[#2E1B5F] font-extrabold text-2xl mb-6">
             Customer Reviews
         </h2>

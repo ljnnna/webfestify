@@ -45,17 +45,20 @@
         }).format(product.price || 0);
 
         const item = document.createElement("div");
-        item.className = "bg-white rounded-2xl shadow-md p-4 text-center w-full max-w-[220px]";
-        item.innerHTML = `
-          <img src="/storage/${product.images[0]?.path}" alt="${product.name}" class="w-full h-40 object-cover rounded-lg mb-4">
-          <h3 class="font-semibold text-lg text-gray-800 mb-2">${product.name}</h3>
-          <p class="text-sm text-gray-600 mb-4">${formattedPrice}/day</p>
-          <a href="/product/${product.slug ?? ''}" 
-            class="bg-purple-200 text-purple-800 px-6 py-2 rounded-xl font-medium hover:bg-purple-300 transition">
-            Details
-          </a>
+item.className = `
+  bg-white rounded shadow p-4 text-center w-full max-w-[220px]
+  transform transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl hover:border hover:border-purple-300
+`;
+item.innerHTML = `
+  <img src="/storage/${product.images[0]?.path}" alt="${product.name}" class="w-full h-40 object-cover rounded-lg mb-4">
+  <h4 class="font-semibold  text-gray-800 mb-2 overflow-hidden text-ellipsis whitespace-nowrap">${product.name}</h4>
+  <p class="text-sm text-gray-700 mb-4">${formattedPrice}/day</p>
+  <a href="/product/${product.slug ?? ''}" 
+    class="bg-purple-200 text-purple-800 px-6 py-2 rounded-xl font-medium hover:bg-purple-300 transition">
+    Details
+  </a>
+`;
 
-        `;
 
         grid.appendChild(item);
       });

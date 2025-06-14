@@ -30,7 +30,7 @@
     </style>
 
 </head>
-<body class="bg-white">
+<body class="bg-gray-100">
     <!-- Navbar -->
     @include('layouts.navigation')
 

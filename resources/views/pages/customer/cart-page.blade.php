@@ -25,21 +25,40 @@
 @section('content')
 <div class="min-h-screen bg-gray-50">
     <!-- Cart Items Section -->
-    <div class="w-full p-6 sm:p-8 bg-white">
+    <div class="w-full p-6 sm:p-8 bg-gray-50">
         <div class="flex items-center gap-3 mb-6">
             <img src="{{ asset('images/logofestify.png') }}" class="h-8 w-auto" alt="Festify Logo" />
             <h2 class="text-2xl font-semibold text-gray-800">Your Shopping Cart</h2>
         </div>
 
         <!-- Cart Header -->
-        <div class="hidden sm:grid grid-cols-5 gap-4 text-sm font-semibold text-gray-600 border-b pb-3 mb-4">
-            <div class="col-span-2 flex items-center gap-2">
-                <input type="checkbox" id="select-all" class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
-                <span class="ml-4">Product</span>
+        <div class="hidden sm:block  bg-white border border-black rounded mb-8 px-3 py-2 shadow-sm">
+            <div class="text-sm font-semibold text-gray-600">
+                <div class="whitespace-nowrap">
+                    <!-- Product (Checkbox + Label) -->
+                    <div style="display: inline-block; width: 42%; vertical-align: middle;">
+                        <label class="inline-flex items-center gap-2">
+                            <input type="checkbox" id="select-all" class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                            <span>Product</span>
+                        </label>
+                    </div>
+
+                    <!-- Price/Day -->
+                    <div style="display: inline-block; width: 18%; text-align: mr-16 center;">
+                        Price/Day
+                    </div>
+
+                    <!-- Quantity  -->
+                    <div style="display: inline-block; width: 20%; text-align: center; margin-left: 1.5rem;">
+                        Quantity 
+                    </div>
+
+                    <!-- Action -->
+                    <div style="display: inline-block; width: 18%; text-align: center; margin-left: 4rem;">
+                        Action
+                    </div>
+                </div>
             </div>
-            <div class="text-center">Quantity</div>
-            <div class="text-center">Price/Day</div>
-            <div class="text-center">Action</div>
         </div>
 
         <!-- Cart Items -->
@@ -53,46 +72,47 @@
 
         <div class="space-y-4">
             @foreach($items as $item)
-            <div class="cart-item bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-4 shadow-sm border border-purple-100" data-price="{{ $item['price'] }}" data-base-price="{{ $item['price'] }}">
-                <div class="grid sm:grid-cols-5 gap-4 items-center">
-                    <!-- Product Info -->
-                    <div class="col-span-2 flex items-center gap-3">
-                        <input type="checkbox" class="item-check w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500" checked>
+            <div class="cart-item bg-gradient-to-r from-purple-50 to-pink-50 rounded p-4 shadow" data-price="{{ $item['price'] }}" data-base-price="{{ $item['price'] }}">
+                <div class="flex flex-col sm:grid sm:grid-cols-5 gap-3 sm:gap-4">
+                    <!-- BARIS 1 -->
+                    <div class="flex items-start gap-3 sm:col-span-2 sm:items-center">
+                        <input type="checkbox" class="item-check w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 mt-1 sm:mt-0">
                         <img src="/images/{{ $item['image'] }}" alt="{{ $item['name'] }}" class="w-16 h-16 object-cover rounded-lg shadow-sm">
                         <div>
-                            <h3 class="font-semibold text-gray-800">{{ $item['name'] }}</h3>
-                            <p class="text-sm text-gray-600">{{ $item['version'] }}</p>
+                            <h3 class="font-semibold text-gray-800 text-sm sm:text-base">{{ $item['name'] }}</h3>
+                            <p class="text-xs sm:text-sm text-gray-600">{{ $item['version'] }}</p>
                         </div>
                     </div>
 
-                    <!-- Quantity -->
-                    <div class="flex justify-center">
-                        <div class="flex items-center border border-gray-300 rounded-lg bg-white">
-                            <button class="decrement px-3 py-2 text-gray-600 hover:text-purple-600 transition-colors">
-                                <i class="fas fa-minus text-sm"></i>
-                            </button>
-                            <span class="count px-4 py-2 font-semibold text-gray-800">1</span>
-                            <button class="increment px-3 py-2 text-gray-600 hover:text-purple-600 transition-colors">
-                                <i class="fas fa-plus text-sm"></i>
-                            </button>
+                    <!-- BARIS 2: Harga, Qty, Trash icon dalam satu baris di mobile -->
+                    <div class="flex flex-wrap sm:flex-row sm:col-span-3 sm:items-center sm:justify-between gap-2 sm:gap-0">
+                        <!-- Price -->
+                        <div class="text-sm text-gray-700 sm:text-center min-w-[100px]">
+                            <span class="font-semibold item-total-price block">IDR {{ number_format($item['price']) }}</span>
+                            <span class="text-xs text-gray-500">
+                                IDR {{ number_format($item['price']) }}/day × <span class="qty-display">1</span>
+                            </span>
                         </div>
-                    </div>
 
-                    <!-- Price -->
-                    <div class="text-center">
-                        <div class="item-price-display">
-                            <span class="font-semibold text-gray-800 item-total-price">IDR {{ number_format($item['price']) }}</span>
-                            <div class="text-xs text-gray-500 mt-1">
-                                <span class="base-price">IDR {{ number_format($item['price']) }}</span>/day × <span class="qty-display">1</span>
+                        <!-- Quantity Control -->
+                        <div class="flex justify-center">
+                            <div class="flex items-center border border-gray-300 rounded-lg bg-white text-sm">
+                                <button class="decrement px-3 py-1.5 text-gray-600 hover:text-purple-600 transition-colors">
+                                    <i class="fas fa-minus text-sm"></i>
+                                </button>
+                                <span class="count px-4 py-1.5 font-semibold text-gray-800">1</span>
+                                <button class="increment px-3 py-1.5 text-gray-600 hover:text-purple-600 transition-colors">
+                                    <i class="fas fa-plus text-sm"></i>
+                                </button>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Remove Button -->
-                    <div class="text-center">
-                        <button class="remove text-red-500 hover:text-red-700 transition-colors p-2">
-                            <i class="fas fa-trash text-lg"></i>
-                        </button>
+                        <!-- Trash Icon -->
+                        <div class="flex justify-end sm:justify-center min-w-[40px]">
+                            <button class="remove text-red-500 hover:text-red-700 transition-colors p-2">
+                                <i class="fas fa-trash text-lg"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -101,7 +121,7 @@
 
         <!-- Order Summary Section -->
         <div class="mt-8">
-            <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
+            <div class="bg-white rounded p-6 shadow-lg border border-black">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
                     <i class="fas fa-calculator text-purple-600"></i>
                     Order Summary
@@ -147,6 +167,7 @@
         </div>
     </div>
 </div>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

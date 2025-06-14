@@ -26,21 +26,20 @@
 
 @section('content')
 <!-- Main Content -->
-<div class="flex flex-col md:flex-row gap-8 px-4 sm:px-6 md:px-10 py-10 max-w-[1280px] mx-auto">
+<div class="bg-white max-w-[1100px] mx-auto px-4 sm:px-6 md:px-10 py-10 mt-4">
+  <div class="flex flex-col md:flex-row gap-8">
     <div class="flex flex-col lg:flex-row items-center lg:items-start gap-10">
-
-        @include('components.thumbnails')
+    @include('components.thumbnails')
         <!-- Product Information -->
-        <section class="flex-1 max-w-3xl">
+        <section class="ml-12 flex-1 max-w-3xl">
             <h1 class="text-[#1A0041] font-extrabold text-3xl mb-2">{{ $product->name }}</h1>
             <p class="text-[#7F5CB2] text-2xl font-bold mb-8">Rp.{{ number_format($product->price, 0, ',', '.') }}/day</p>
-
 
             <!-- Quantity & Actions -->
             <div class="mb-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div class="flex items-center space-x-4">
                     <label class="text-[#6D5983] font-semibold">Quantity:</label>
-                    <div class="flex items-center border-2 border-gray-300 rounded-full overflow-hidden w-32">
+                    <div class="flex items-center border-2 border-gray-200 rounded overflow-hidden w-32">
                         <button id="decrease-qty"
                             class="flex-1 py-2 text-xl text-[#6D5983] font-bold hover:bg-gray-50 transition-colors">-</button>
                         <span id="qty-display"
@@ -52,10 +51,10 @@
 
                 <div class="flex gap-3">
                     <button id="add-to-cart-btn"
-                        class="bg-[#6B549A] text-white rounded-full px-6 py-3 font-semibold hover:bg-[#5a4788] transition-colors shadow-lg">Add
+                        class="bg-purple-100 border border-purple-500 text-purple-900 rounded px-6 py-3 font-semibold hover:bg-purple-50 transition-colors shadow">Add
                         To Cart</button>
                     <button id="rent-now-btn"
-                        class="bg-[#2E1B5F] text-white rounded-full px-6 py-3 font-semibold hover:bg-[#1a0f3d] transition-colors shadow-lg">Rent
+                        class="bg-purple-900 text-white rounded px-6 py-3 font-semibold hover:bg-[#1a0f3d] transition-colors shadow-lg">Rent
                         Now</button>
                 </div>
             </div>
@@ -63,7 +62,7 @@
             <!-- Rental Date Selection -->
             <div class="mb-8">
                 <button id="select-date-btn"
-                    class="w-full bg-[#E6D9F7] text-[#6B549A] font-semibold rounded-full py-3 hover:bg-[#d4c2f0] transition-colors">Select
+                    class="w-full bg-purple-100 border border-purple-500 text-purple-900 font-semibold rounded py-3 hover:bg-purple-50 transition-colors">Select
                     Rental Date</button>
 
                 <div id="datepicker-wrapper" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
@@ -83,7 +82,7 @@
             <!-- Delivery Option -->
             <div class="mb-8">
                 <button id="select-delivery-btn"
-                    class="w-full bg-[#E6D9F7] text-[#6B549A] font-semibold rounded-full py-3 hover:bg-[#d4c2f0] transition-colors">
+                    class="w-full bg-purple-100 border border-purple-500 text-purple-900 font-semibold rounded py-3 hover:bg-purple-50 transition-colors">
                     Select Delivery Option
                 </button>
 
@@ -155,11 +154,11 @@
                 <div
                     class="flex flex-wrap sm:flex-nowrap space-x-4 sm:space-x-8 border-b border-gray-200 overflow-x-auto">
                     <button id="description-btn"
-                        class="text-[#2E1B5F] font-bold pb-3 border-b-2 border-[#2E1B5F] transition-all duration-200 hover:text-[#2E1B5F] whitespace-nowrap">Description</button>
+                        class="text-[#291757] font-bold pb-3 border-b-2 border-[#2E1B5F] transition-all duration-200 hover:text-[#291757] whitespace-nowrap">Description</button>
                     <button id="details-btn"
-                        class="text-[#8B7CC4] font-bold pb-3 border-b-2 border-transparent hover:text-[#2E1B5F] transition-all duration-200 whitespace-nowrap">Details</button>
+                        class="text-purple-900 font-bold pb-3 border-b-2 border-transparent hover:text-[#291757] transition-all duration-200 whitespace-nowrap">Details</button>
                     <button id="specifications-btn"
-                        class="text-[#8B7CC4] font-bold pb-3 border-b-2 border-transparent hover:text-[#2E1B5F] transition-all duration-200 whitespace-nowrap">Specifications</button>
+                        class="text-purple-900 font-bold pb-3 border-b-2 border-transparent hover:text-[#291757] transition-all duration-200 whitespace-nowrap">Specifications</button>
                 </div>
 
                 <!-- Tab Contents -->
@@ -168,10 +167,9 @@
                         <p class="text-[#6D5983] leading-relaxed text-sm sm:text-base">
                              {{ $product->description }}
                         </p>
-
                     </div>
 
-                    <div id="details" class="tab-content opacity-0 ...">
+                    <div id="details" class="tab-content opacity-100 transition-opacity duration-300">
                         <p class="text-[#6D5983] leading-relaxed text-sm sm:text-base">
                             {{ $product->details }}
                         </p>
@@ -227,6 +225,10 @@
                     </div>
                 </div>
             </div>
+
+
+  </div>
+</div>
 
 
         </section>
@@ -357,59 +359,65 @@ const utils = {
     }
 };
  
-    const quantityController = {
-        quantity: 1,
+const quantityController = {
+    quantity: 1,
+    decreaseBtn: null,
+    increaseBtn: null,
+    display: null,
 
-        init() {
-            // Cek apakah tombol dan span tersedia sebelum bind
-            if (
-                document.getElementById('decrease-qty') &&
-                document.getElementById('increase-qty') &&
-                document.getElementById('qty-display')
-            ) {
-                this.bindEvents();
-                this.updateDisplay();
-            } else {
-                console.warn('Quantity elements not found in DOM');
-            }
-        },
+    init() {
+        this.decreaseBtn = document.getElementById('decrease-qty');
+        this.increaseBtn = document.getElementById('increase-qty');
+        this.display = document.getElementById('qty-display');
 
-        bindEvents() {
-            document.getElementById('decrease-qty').addEventListener('click', () => this.decrease());
-            document.getElementById('increase-qty').addEventListener('click', () => this.increase());
-        },
+        if (this.decreaseBtn && this.increaseBtn && this.display) {
+            // Hapus event listener lama jika ada (opsional, tapi aman)
+            this.decreaseBtn.replaceWith(this.decreaseBtn.cloneNode(true));
+            this.increaseBtn.replaceWith(this.increaseBtn.cloneNode(true));
 
-        decrease() {
-            if (this.quantity > 1) {
-                this.quantity--;
-                this.updateDisplay();
-            }
-        },
+            // Ambil ulang elemen setelah replace
+            this.decreaseBtn = document.getElementById('decrease-qty');
+            this.increaseBtn = document.getElementById('increase-qty');
 
-        increase() {
-            if (this.quantity < PRODUCT_CONFIG.maxQuantity) {
-                this.quantity++;
-                this.updateDisplay();
-            }
-        },
-
-        updateDisplay() {
-            const display = document.getElementById('qty-display');
-            if (display) {
-                display.textContent = this.quantity;
-            }
-        },
-
-        get() {
-            return this.quantity;
+            this.bindEvents();
+            this.updateDisplay();
+        } else {
+            console.warn('Quantity elements not found in DOM');
         }
-    };
+    },
 
-    document.addEventListener('DOMContentLoaded', function () {
+    bindEvents() {
+        this.decreaseBtn.addEventListener('click', () => this.decrease());
+        this.increaseBtn.addEventListener('click', () => this.increase());
+    },
+
+    decrease() {
+        if (this.quantity > 1) {
+            this.quantity--;
+            this.updateDisplay();
+        }
+    },
+
+    increase() {
+        if (this.quantity < PRODUCT_CONFIG.maxQuantity) {
+            this.quantity++;
+            this.updateDisplay();
+        }
+    },
+
+    updateDisplay() {
+        this.display.textContent = this.quantity;
+    },
+
+    get() {
+        return this.quantity;
+    }
+};
+
+document.addEventListener('DOMContentLoaded', function () {
     quantityController.init();
     imageGallery.init();
 });
-
 
 
 // Enhanced Date manager with 7-day limit

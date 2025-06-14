@@ -4,12 +4,12 @@
   <section>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
-      <!-- OTHERS -->
+      <!-- SHOW ALL -->
       <button data-category="others" class="category-btn flex items-center bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 text-left w-full">
         <img src="{{ asset('images/kursi.jpeg') }}" alt="Others" class="w-16 h-16 object-contain mr-4">
         <div>
           <h3 class="text-md font-semibold text-gray-900">Show All</h3>
-          <p class="text-sm text-gray-500">Accessories & more</p>
+          <p class="text-sm text-gray-500">Electronic, Marchandise & more</p>
         </div>
       </button>
 
