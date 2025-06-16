@@ -51,10 +51,10 @@
                 </a>
             </div>
 
-            {{-- Section per Toko --}}
+            {{-- Section per orders --}}
             @for ($toko = 1; $toko <= 2; $toko++)
             <div class="mb-8">
-                <h3 class="text-sm font-semibold text-gray-700 mb-4">Nama Toko yang produknya di sewa</h3>
+                <h3 class="text-sm font-semibold text-gray-700 mb-4">Durasi orders dalam tanggal</h3>
 
                 {{-- Daftar Produk --}}
                 <div class="space-y-4">

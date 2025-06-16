@@ -99,48 +99,76 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function deleteImage($imageId)
+    {
+        try {
+            // Cari image berdasarkan ID
+            $image = ProductImage::findOrFail($imageId);
+            
+            // Hapus file dari storage
+            if (Storage::disk('public')->exists($image->path)) {
+                Storage::disk('public')->delete($image->path);
+            }
+            
+            // Hapus record dari database
+            $image->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Image deleted successfully'
+            ]);
+        
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete image: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    //Method update di ProductController untuk handle multiple images
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:0',
             'description' => 'required|string',
             'details' => 'required|string',
             'stock_quantity' => 'required|integer|min:0',
-            'image' => 'nullable|array|max:5',
-            'image.*' => 'image|mimes:jpg,jpeg,png|max:2048'
+            'category_id' => 'required|exists:categories,id',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-
-        $product->update([
-            'category_id' => $request->category_id,
-            'name' => $request->name,
-            'slug' => Str::slug($request->name),
-            'price' => $request->price,
-            'description' => $request->description,
-            'details' => $request->details,
-            'stock_quantity' => $request->stock_quantity,
-        ]);
-
-        // Handle new images if uploaded
-        if ($request->hasFile('image')) {
-            // Delete old images
-            foreach ($product->images as $img) {
-                Storage::disk('public')->delete($img->path);
-                $img->delete();
+    
+        try {
+            $product = Product::findOrFail($id);
+            
+            // Update product data
+            $product->update([
+                'name' => $request->name,
+                'price' => $request->price,
+                'description' => $request->description,
+                'details' => $request->details,
+                'stock_quantity' => $request->stock_quantity,
+                'category_id' => $request->category_id,
+            ]);
+        
+            // Handle new images upload
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('products', 'public');
+                    
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'path' => $path,
+                    ]);
+                }
             }
-
-            // Add new images - TANPA is_primary
-            foreach ($request->file('image') as $image) {
-                $path = $image->store('products', 'public');
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'path' => $path,
-                ]);
-            }
+        
+        return redirect()->back()->with('success', 'Product updated successfully!');
+        
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to update product: ' . $e->getMessage());
         }
-
-        return redirect()->route('admin.product.index')->with('success', 'Product updated successfully.');
     }
 
     /**
