@@ -241,6 +241,7 @@
 @section('scripts')
 <script>
     
+    
 // Enhanced Utility functions with better notifications
 const utils = {
     showNotification(message, type = 'info', duration = 5000, isInteractive = false) {
@@ -824,32 +825,52 @@ const productController = {
     },
 
     rentNow() {
-        const errors = this.validate();
-        if (errors.length > 0) {
-            errors.forEach((error, index) => {
-                setTimeout(() => {
-                    utils.showNotification(error, 'warning', 6000, true);
-                }, index * 500);
-            });
-            return;
-        }
-
-        const quantity = quantityController.get();
-        const days = dateManager.getDays();
-        const basePrice = PRODUCT_CONFIG.price * quantity * days;
-        const deliveryFee = deliveryManager.getFee();
-        const total = basePrice + deliveryFee;
-
-        utils.showNotification(
-            `Processing rental request for ${utils.formatPrice(total)}...`,
-            'info',
-            2000
-        );
-
-        setTimeout(() => {
-            window.location.href = "/payment";
-        }, 1500);
+    const errors = this.validate();
+    if (errors.length > 0) {
+        errors.forEach((error, index) => {
+            setTimeout(() => {
+                utils.showNotification(error, 'warning', 6000, true);
+            }, index * 500);
+        });
+        return;
     }
+
+    // Create and submit form with rental data
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ route("rent.now") }}';
+    form.style.display = 'none';
+
+    // Add CSRF token
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_token';
+    csrfInput.value = '{{ csrf_token() }}';
+    form.appendChild(csrfInput);
+
+    // Add form data
+    const formData = {
+        product_id: {{ $product->id }},
+        quantity: quantityController.get(),
+        start_date: document.getElementById('start-date').value,
+        end_date: document.getElementById('end-date').value,
+        delivery_option: deliveryManager.selectedOption,
+        delivery_address: deliveryManager.deliveryAddress?.address || '',
+        phone_number: deliveryManager.deliveryAddress?.phone || '',
+        recipient_name: deliveryManager.deliveryAddress?.name || ''
+    };
+
+    Object.keys(formData).forEach(key => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = formData[key];
+        form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+}
 };
 
 // Initialize when DOM loads
