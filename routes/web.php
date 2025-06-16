@@ -46,6 +46,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/catalog', [CatalogController::class, 'catalog'])->name('catalog');
     Route::get('/details', [DetailsController::class, 'details'])->name('details');
     Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
+
+    Route::post('rent-now', [ProductController::class, 'processRentNow'])->name('rent.now');
+
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -53,7 +56,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/cart/add/{slug}', [CartController::class, 'add'])->name('cart.add');
     Route::delete('/cart/remove/{slug}', [CartController::class, 'remove'])->name('cart.remove');
 });
-
 
 // ======================= AUTH ROUTES ===========================
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
@@ -71,7 +73,6 @@ Route::get('/team', fn () => view('team'))->name('team');
 Route::get('/contact', fn () => view('contact'))->name('contact');
 
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
-
 
 Route::get('/catalog/{category:slug}', [CatalogController::class, 'byCategory'])->name('catalog.category');
 

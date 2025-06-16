@@ -74,7 +74,7 @@
                 type="submit"
                 id="payButton"
             >
-                Pay Rp. 100.000
+                Pay Rp. {{ number_format($paymentData['pricing']['total'], 0, ',', '.') }}
             </button>
             
             <!-- Secondary Action Buttons -->

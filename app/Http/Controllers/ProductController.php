@@ -159,5 +159,54 @@ class ProductController extends Controller
     }
 
 
+    public function processRentNow(Request $request)
+{
+    $request->validate([
+        'product_id' => 'required|exists:products,id',
+        'quantity' => 'required|integer|min:1',
+        'start_date' => 'required|date|after_or_equal:today',
+        'end_date' => 'required|date|after:start_date',
+        'delivery_option' => 'required|in:pickup,delivery',
+        'delivery_address' => 'required_if:delivery_option,delivery',
+        'phone_number' => 'required_if:delivery_option,delivery',
+        'recipient_name' => 'required_if:delivery_option,delivery'
+    ]);
+
+    // Validate rental period (max 7 days)
+    $startDate = new \Carbon\Carbon($request->start_date);
+    $endDate = new \Carbon\Carbon($request->end_date);
+    $rentalDays = $startDate->diffInDays($endDate) + 1;
+    
+    if ($rentalDays > 7) {
+        return back()->withErrors(['end_date' => 'Maximum rental period is 7 days'])->withInput();
+    }
+
+    // Store rental data in session
+    session([
+        'rental_data' => [
+            'product_id' => $request->product_id,
+            'quantity' => $request->quantity,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'rental_days' => $this->calculateDays($request->start_date, $request->end_date),
+            'delivery_option' => $request->delivery_option,
+            'delivery_address' => $request->delivery_address,
+            'phone_number' => $request->phone_number,
+            'recipient_name' => $request->recipient_name
+        ]
+    ]);
+
+    return redirect()->route('payment');
+}
+
+private function calculateDays($startDate, $endDate)
+{
+    $start = new \Carbon\Carbon($startDate);
+    $end = new \Carbon\Carbon($endDate);
+    return $start->diffInDays($end) + 1;
+}
+
+
+
 
 }
