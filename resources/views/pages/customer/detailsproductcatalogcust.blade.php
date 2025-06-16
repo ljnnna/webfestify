@@ -49,10 +49,24 @@
                     </div>
                 </div>
 
+
                 <div class="flex gap-3">
-                    <button id="add-to-cart-btn"
-                        class="bg-purple-100 border border-purple-500 text-purple-900 rounded px-6 py-3 font-semibold hover:bg-purple-50 transition-colors shadow">Add
-                        To Cart</button>
+<form action="{{ route('cart.add', $product->slug) }}" method="POST" class="flex gap-4 items-center" id="add-to-cart-form">
+    @csrf
+    <input type="hidden" name="quantity" id="quantity-input" value="1">
+    <input type="hidden" name="start_date" id="form-start-date">
+    <input type="hidden" name="end_date" id="form-end-date">
+    <input type="hidden" name="delivery_option" id="form-delivery-option">
+
+    <button id="add-to-cart-btn" type="submit"
+    class="bg-purple-100 border border-purple-500 text-purple-900 rounded px-6 py-3 font-semibold hover:bg-purple-50 transition-colors shadow">
+    Add To Cart
+    </button>
+</form>
+
+
+
+                
                     <button id="rent-now-btn"
                         class="bg-purple-900 text-white rounded px-6 py-3 font-semibold hover:bg-[#1a0f3d] transition-colors shadow-lg">Rent
                         Now</button>
@@ -238,127 +252,14 @@
 @include('components.reviews')
 @endsection
 
+@push('scripts')
+<script src="{{ asset('js/product-detail.js') }}"></script>
+@endpush
 @section('scripts')
 <script>
     
 // Enhanced Utility functions with better notifications
-const utils = {
-    showNotification(message, type = 'info', duration = 5000, isInteractive = false) {
-        // Remove existing notifications if interactive
-        if (isInteractive) {
-            document.querySelectorAll('.notification-alert').forEach(n => n.remove());
-        }
-
-        const notification = document.createElement('div');
-        notification.className = `notification-alert fixed top-20 right-4 z-50 max-w-sm p-4 rounded-lg shadow-xl transform transition-all duration-500 ease-out ${
-            type === 'success' ? 'bg-gradient-to-r from-green-500 to-green-600 text-white' :
-            type === 'error' ? 'bg-gradient-to-r from-red-500 to-red-600 text-white' :
-            type === 'warning' ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white' :
-            'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
-        } animate-slide-in`;
-
-        const iconMap = {
-            success: 'fas fa-check-circle',
-            error: 'fas fa-exclamation-triangle',
-            warning: 'fas fa-exclamation-circle',
-            info: 'fas fa-info-circle'
-        };
-
-        notification.innerHTML = `
-            <div class="flex items-start gap-3">
-                <div class="flex-shrink-0 mt-0.5">
-                    <i class="${iconMap[type]} text-lg"></i>
-                </div>
-                <div class="flex-1">
-                    <div class="text-sm font-semibold mb-1">${this.getNotificationTitle(type)}</div>
-                    <div class="text-sm opacity-90 leading-relaxed">${message}</div>
-                </div>
-                <button onclick="this.parentElement.parentElement.remove()" 
-                        class="flex-shrink-0 ml-2 text-white hover:text-gray-200 transition-colors">
-                    <i class="fas fa-times text-sm"></i>
-                </button>
-            </div>
-            ${isInteractive ? `
-                <div class="mt-3 pt-3 border-t border-white border-opacity-30">
-                    <div class="flex gap-2">
-                        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
-                                class="flex-1 bg-white bg-opacity-20 hover:bg-opacity-30 text-white text-xs font-medium py-2 px-3 rounded-md transition-colors">
-                            Dismiss
-                        </button>
-                        ${type === 'warning' ? `
-                            <button onclick="dateManager.showDateHelper(); this.parentElement.parentElement.parentElement.remove()" 
-                                    class="flex-1 bg-white text-gray-800 hover:bg-gray-100 text-xs font-medium py-2 px-3 rounded-md transition-colors">
-                                Fix Dates
-                            </button>
-                        ` : ''}
-                    </div>
-                </div>
-            ` : ''}
-        `;
-
-        // Add CSS animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-            .animate-slide-in {
-                animation: slideIn 0.5s ease-out;
-            }
-            .notification-alert {
-                backdrop-filter: blur(10px);
-            }
-        `;
-        document.head.appendChild(style);
-
-        document.body.appendChild(notification);
-
-        // Auto remove after duration
-        if (duration > 0) {
-            setTimeout(() => {
-                notification.style.transform = 'translateX(100%)';
-                notification.style.opacity = '0';
-                setTimeout(() => notification.remove(), 300);
-            }, duration);
-        }
-    },
-
-    getNotificationTitle(type) {
-        const titles = {
-            success: 'Success!',
-            error: 'Error!',
-            warning: 'Warning!',
-            info: 'Information'
-        };
-        return titles[type] || 'Notification';
-    },
-
-    formatPrice(price) {
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0
-        }).format(price);
-    },
-
-    getTodayDate() {
-        return new Date().toISOString().split('T')[0];
-    },
-
-    addDaysToDate(dateString, days) {
-        const date = new Date(dateString);
-        date.setDate(date.getDate() + days);
-        return date.toISOString().split('T')[0];
-    }
-};
- 
+// Enhanced Utility functions with better notifications
 const quantityController = {
     quantity: 1,
     decreaseBtn: null,
@@ -479,46 +380,60 @@ const dateManager = {
     },
 
     setStart(dateString) {
-        this.startDate = new Date(dateString);
-        const endInput = document.getElementById('end-date');
-        
-        if (endInput) {
-            endInput.min = dateString;
-            
-            // Auto-set max end date to 7 days from start
-            const maxEndDate = utils.addDaysToDate(dateString, PRODUCT_CONFIG.maxRentalDays - 1);
-            endInput.max = maxEndDate;
-            
-            // Reset end date if it exceeds the limit
-            if (this.endDate && this.getDays() > PRODUCT_CONFIG.maxRentalDays) {
-                endInput.value = maxEndDate;
-                this.setEnd(maxEndDate);
-                utils.showNotification(
-                    `End date adjusted to maximum ${PRODUCT_CONFIG.maxRentalDays} days rental period`,
-                    'warning',
-                    4000,
-                    true
-                );
-            }
-        }
-        
-        this.updateRentalSummary();
-    },
+    if (!dateString) return; // << tambahkan pengecekan awal
 
-    setEnd(dateString) {
-        this.endDate = new Date(dateString);
-        
-        // Validate rental period
-        const days = this.getDays();
-        if (days > PRODUCT_CONFIG.maxRentalDays) {
-            const maxEndDate = utils.addDaysToDate(
-                document.getElementById('start-date').value, 
-                PRODUCT_CONFIG.maxRentalDays - 1
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return; // << pastikan valid
+
+    this.startDate = date;
+    const endInput = document.getElementById('end-date');
+
+    if (endInput) {
+        endInput.min = dateString;
+
+        const maxEndDate = utils.addDaysToDate(dateString, PRODUCT_CONFIG.maxRentalDays - 1);
+        endInput.max = maxEndDate;
+
+        if (this.endDate && this.getDays() > PRODUCT_CONFIG.maxRentalDays) {
+            endInput.value = maxEndDate;
+            this.setEnd(maxEndDate);
+            utils.showNotification(
+                `End date adjusted to maximum ${PRODUCT_CONFIG.maxRentalDays} days rental period`,
+                'warning',
+                4000,
+                true
             );
-            
+        }
+    }
+
+    this.updateRentalSummary();
+},
+
+
+setEnd(dateString) {
+    if (!dateString) return;
+
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return;
+
+    this.endDate = date;
+
+    // Validasi: jangan lanjut jika startDate belum dipilih
+    if (!this.startDate) return;
+
+    // Hitung durasi sewa
+    const days = this.getDays();
+
+    if (days > PRODUCT_CONFIG.maxRentalDays) {
+        const maxEndDate = utils.addDaysToDate(
+            document.getElementById('start-date').value,
+            PRODUCT_CONFIG.maxRentalDays - 1
+        );
+
+        if (maxEndDate) {
             document.getElementById('end-date').value = maxEndDate;
             this.endDate = new Date(maxEndDate);
-            
+
             utils.showNotification(
                 `Maximum rental period is ${PRODUCT_CONFIG.maxRentalDays} days. End date has been adjusted automatically.`,
                 'warning',
@@ -526,9 +441,10 @@ const dateManager = {
                 true
             );
         }
-        
-        this.updateRentalSummary();
-    },
+    }
+
+    this.updateRentalSummary();
+},
 
     updateRentalSummary() {
         const summary = document.getElementById('rental-summary');
@@ -628,36 +544,42 @@ const deliveryManager = {
     },
 
     select(option) {
-        this.selectedOption = option;
+    this.selectedOption = option;
 
-        // Update button states
-        document.querySelectorAll('.delivery-option-btn').forEach(btn => {
-            btn.classList.remove('border-[#6B549A]', 'bg-[#F8F4FF]');
-            btn.classList.add('border-gray-300');
-        });
+    // Update hidden field untuk delivery option
+    const deliveryField = document.getElementById('form-delivery-option');
+    if (deliveryField) {
+        deliveryField.value = option;
+    }
 
-        const selectedBtn = document.getElementById(`${option}-option-btn`);
-        selectedBtn?.classList.remove('border-gray-300');
-        selectedBtn?.classList.add('border-[#6B549A]', 'bg-[#F8F4FF]');
+    // Update button states
+    document.querySelectorAll('.delivery-option-btn').forEach(btn => {
+        btn.classList.remove('border-[#6B549A]', 'bg-[#F8F4FF]');
+        btn.classList.add('border-gray-300');
+    });
 
-        // Show relevant sections
-        const pickupInfo = document.getElementById('pickup-info');
-        const deliveryForm = document.getElementById('delivery-address-form');
+    const selectedBtn = document.getElementById(`${option}-option-btn`);
+    selectedBtn?.classList.remove('border-gray-300');
+    selectedBtn?.classList.add('border-[#6B549A]', 'bg-[#F8F4FF]');
 
-        if (option === 'pickup') {
-            pickupInfo?.classList.remove('hidden');
-            deliveryForm?.classList.add('hidden');
-            utils.showNotification('Pickup option selected. Please note store hours!', 'success', 3000);
-        } else {
-            pickupInfo?.classList.add('hidden');
-            deliveryForm?.classList.remove('hidden');
-            utils.showNotification('Please fill in your delivery address below', 'info', 3000);
-        }
+    // Show relevant sections
+    const pickupInfo = document.getElementById('pickup-info');
+    const deliveryForm = document.getElementById('delivery-address-form');
 
-        // Update button text
-        const mainBtn = document.getElementById('select-delivery-btn');
-        if (mainBtn) {
-            mainBtn.textContent = `${option === 'pickup' ? 'Pick Up' : 'Delivery'} Selected`;
+    if (option === 'pickup') {
+        pickupInfo?.classList.remove('hidden');
+        deliveryForm?.classList.add('hidden');
+        utils.showNotification('Pickup option selected. Please note store hours!', 'success', 3000);
+    } else {
+        pickupInfo?.classList.add('hidden');
+        deliveryForm?.classList.remove('hidden');
+        utils.showNotification('Please fill in your delivery address below', 'info', 3000);
+    }
+
+    // Update button text
+    const mainBtn = document.getElementById('select-delivery-btn');
+    if (mainBtn) {
+        mainBtn.textContent = `${option === 'pickup' ? 'Pick Up' : 'Delivery'} Selected`;
         }
     },
 
@@ -717,6 +639,7 @@ const deliveryManager = {
     getFee() {
         return this.selectedOption === 'delivery' ? 15000 : 0;
     }
+
 };
 
 // Tab manager (unchanged)
@@ -783,17 +706,11 @@ const productController = {
     validate() {
         const errors = [];
 
-        // Validate dates
         const dateError = dateManager.getValidationError();
-        if (dateError) {
-            errors.push(dateError);
-        }
+        if (dateError) errors.push(dateError);
 
-        // Validate delivery
         const deliveryError = deliveryManager.getValidationError();
-        if (deliveryError) {
-            errors.push(deliveryError);
-        }
+        if (deliveryError) errors.push(deliveryError);
 
         return errors;
     },
@@ -812,6 +729,12 @@ const productController = {
         const quantity = quantityController.get();
         const days = dateManager.getDays();
 
+        document.getElementById('quantity-input').value = quantityController.get();
+        document.getElementById('form-start-date').value = utils.formatToDateString(dateManager.startDate);
+        document.getElementById('form-end-date').value = utils.formatToDateString(dateManager.endDate);
+        document.getElementById('form-delivery-option').value = deliveryManager.selectedOption; // 'pickup' atau 'delivery'
+
+
         utils.showNotification(
             `${quantity} item(s) added to cart for ${days} day(s)! Redirecting to cart...`,
             'success',
@@ -819,8 +742,8 @@ const productController = {
         );
 
         setTimeout(() => {
-            window.location.href = "/cart";
-        }, 2000);
+            document.getElementById('add-to-cart-form').submit();
+        }, 1000);
     },
 
     rentNow() {
@@ -856,5 +779,6 @@ const productController = {
 document.addEventListener('DOMContentLoaded', () => {
     productController.init();
 });
+
 </script>
 @endsection
