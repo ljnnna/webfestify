@@ -21,7 +21,7 @@ class PaymentController extends Controller
         $subtotal = $product->price * $rentalData['quantity'] * $rentalData['rental_days'];
         $serviceFee = 5000; // Fixed service fee
         $deposit = $subtotal * 0.5; // 50% deposit
-        $shippingCost = $rentalData['delivery_option'] === 'delivery' ? 20000 : 0;
+        $shippingCost = $rentalData['delivery_option'] === 'delivery' ? 10000 : 0;
         $total = $subtotal + $serviceFee + $deposit + $shippingCost;
 
         $paymentData = [
