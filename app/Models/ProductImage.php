@@ -19,14 +19,9 @@ class ProductImage extends Model
         return $this->belongsTo(Product::class);
     }
 
+    // Akses: $image->image_url
     public function getImageUrlAttribute()
     {
-        return asset('storage/' . $this->image_path);
-    }
-
-    public function firstImage()
-    {
-        return $this->images()->first();
+        return asset('storage/product_images/' . $this->path);
     }
 }
-

@@ -14,6 +14,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\CartController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -45,7 +46,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/catalog', [CatalogController::class, 'catalog'])->name('catalog');
     Route::get('/details', [DetailsController::class, 'details'])->name('details');
     Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
-    Route::get('/cart', fn () => view('pages.customer.cart-page'))->name('cart');
+
+    Route::post('rent-now', [ProductController::class, 'processRentNow'])->name('rent.now');
+
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart');
+    Route::post('/cart/add/{slug}', [CartController::class, 'add'])->name('cart.add');
+    Route::delete('/cart/remove/{slug}', [CartController::class, 'remove'])->name('cart.remove');
 });
 
 // ======================= AUTH ROUTES ===========================
@@ -64,7 +73,6 @@ Route::get('/team', fn () => view('team'))->name('team');
 Route::get('/contact', fn () => view('contact'))->name('contact');
 
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
-
 
 Route::get('/catalog/{category:slug}', [CatalogController::class, 'byCategory'])->name('catalog.category');
 
