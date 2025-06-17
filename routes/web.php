@@ -44,11 +44,29 @@ Route::middleware(['auth'])->group(function () {
 
     // Customer pages
     Route::get('/catalog', [CatalogController::class, 'catalog'])->name('catalog');
-    Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
-
     Route::post('rent-now', [ProductController::class, 'processRentNow'])->name('rent.now');
-
+        // Display payment page
+    Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
+    
+    // Process payment (create Midtrans transaction)
+    Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+    
+    // Payment finish redirect
+    Route::get('/payment/finish', [PaymentController::class, 'paymentFinish'])->name('payment.finish');
 });
+
+// Payment notification from Midtrans (webhook)
+// This should be outside auth middleware as Midtrans will call it directly
+Route::post('/payment/notification', [PaymentController::class, 'paymentNotification'])->name('payment.notification');
+
+Route::get('/order/success/{orderCode}', function($orderCode) {
+    $order = \App\Models\Order::where('order_code', $orderCode)->first();
+    if (!$order) {
+        return redirect()->route('home')->with('error', 'Order not found');
+    }
+    return view('pages.customer.order-success', compact('order'));
+})->name('order.success')->middleware('auth');
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
