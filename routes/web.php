@@ -44,7 +44,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Customer pages
     Route::get('/catalog', [CatalogController::class, 'catalog'])->name('catalog');
-    Route::get('/details/id/{id}', [DetailsController::class, 'detailsById'])->name('details');
+    Route::get('/details', [DetailsController::class, 'details'])->name('details');
     Route::post('rent-now', [ProductController::class, 'processRentNow'])->name('rent.now');
         // Display payment page
     Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
