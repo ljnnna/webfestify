@@ -65,4 +65,17 @@ class CartController extends Controller
 
         return redirect()->route('cart')->with('success', 'Product removed from cart.');
     }
+
+    public function updateDelivery(Request $request, $slug)
+    {
+    $cart = session()->get('cart', []);
+
+    if (isset($cart[$slug])) {
+        $cart[$slug]['delivery_option'] = $request->input('delivery_option', 'pickup');
+        session()->put('cart', $cart);
+    }
+
+    return redirect()->back()->with('success', 'Delivery option updated.');
+}
+
 }

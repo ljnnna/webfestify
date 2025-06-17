@@ -44,7 +44,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Customer pages
     Route::get('/catalog', [CatalogController::class, 'catalog'])->name('catalog');
-    Route::get('/details', [DetailsController::class, 'details'])->name('details');
     Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
 
     Route::post('rent-now', [ProductController::class, 'processRentNow'])->name('rent.now');
@@ -55,6 +54,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
     Route::post('/cart/add/{slug}', [CartController::class, 'add'])->name('cart.add');
     Route::delete('/cart/remove/{slug}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/cart/update/{slug}', [CartController::class, 'update'])->name('cart.update');
+
 });
 
 // ======================= AUTH ROUTES ===========================

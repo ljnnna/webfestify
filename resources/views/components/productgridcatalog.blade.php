@@ -17,10 +17,11 @@
                 </p>
             </div>
             <a
-                href="{{ route('details', ['id' => $product->id]) }}"
-                class="bg-[#E6C7E9] text-[#6B5B8A] text-sm rounded-lg py-2 px-8 w-full max-w-[140px] text-center mx-auto"
-            >
-                Details
-            </a>
+    href="{{ route('product.show', $product->slug) }}"
+    class="bg-[#E6C7E9] text-[#6B5B8A] text-sm rounded-lg py-2 px-8 w-full max-w-[140px] text-center mx-auto"
+>
+    Details
+</a>
+
         </div>
     </article>
