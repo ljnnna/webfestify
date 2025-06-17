@@ -100,6 +100,19 @@
     </form>
 </section>
 
+<!-- Loading Modal -->
+<div id="loadingModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-xl">
+        <div class="flex items-center space-x-3">
+            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-[#5B4B7A]"></div>
+            <span class="text-[#5B4B7A] font-semibold">Processing payment...</span>
+        </div>
+    </div>
+</div>
+
+<!-- Include Midtrans Snap JS -->
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.clientKey') }}"></script>
+
 <style>
 /* Custom Transitions */
 .transition-smooth {
@@ -116,6 +129,11 @@
 .hover-lift:hover {
     transform: translateY(-2px);
 }
+
+/* Loading animation */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
 </style>
 
 <script>
@@ -123,6 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Payment method selection handling
     const paymentMethodBtns = document.querySelectorAll('.payment-method-btn');
     const selectedPaymentInput = document.getElementById('selectedPaymentMethod');
+    const loadingModal = document.getElementById('loadingModal');
     
     paymentMethodBtns.forEach(button => {
         button.addEventListener('click', function() {
@@ -159,12 +178,63 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Handle payment processing
-        console.log('Processing payment with method:', selectedMethod);
-        alert('Payment processing... This is a demo.');
+        // Show loading modal
+        loadingModal.classList.remove('hidden');
+        loadingModal.classList.add('flex');
         
-        // Here you would typically submit the form to your Laravel backend
-        // this.submit();
+        // Prepare form data
+        const formData = new FormData(this);
+        
+        // Send request to create payment
+        fetch('{{ route("payment.process") }}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value,
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Hide loading modal
+            loadingModal.classList.add('hidden');
+            loadingModal.classList.remove('flex');
+            
+            if (data.success) {
+                // Open Midtrans Snap popup
+                snap.pay(data.snap_token, {
+                    onSuccess: function(result) {
+                        console.log('Payment success:', result);
+                        // Redirect to success page
+                        window.location.href = '{{ route("payment.finish") }}';
+                    },
+                    onPending: function(result) {
+                        console.log('Payment pending:', result);
+                        // Show pending message
+                        alert('Payment is pending. Please complete your payment.');
+                        window.location.href = '{{ route("payment.finish") }}';
+                    },
+                    onError: function(result) {
+                        console.log('Payment error:', result);
+                        alert('Payment failed. Please try again.');
+                    },
+                    onClose: function() {
+                        console.log('Payment popup closed');
+                        // Optional: show message or redirect
+                    }
+                });
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            // Hide loading modal
+            loadingModal.classList.add('hidden');
+            loadingModal.classList.remove('flex');
+            
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
     });
 });
 
@@ -179,7 +249,7 @@ function cancelOrder() {
 
 function goBackToCart() {
     console.log('Navigating back to cart');
-    // Redirect to home using Laravel named route
+    // Redirect to cart using Laravel named route
     window.location.href = "{{ route('cart') }}";
 }
 </script>
