@@ -205,17 +205,17 @@ class PaymentController extends Controller
                 'gross_amount' => $total
             ];
 
-            // Set enabled payments based on selected method
+            // Set enabled payments based on selected method (DANA removed)
             $enabledPayments = [];
             switch ($request->payment_method) {
                 case 'bank':
                     $enabledPayments = ['bank_transfer'];
                     break;
                 case 'ewallet':
-                    $enabledPayments = ['gopay', 'shopeepay', 'dana'];
+                    $enabledPayments = ['gopay', 'shopeepay'];
                     break;
                 default:
-                    $enabledPayments = ['bank_transfer', 'gopay', 'shopeepay', 'dana'];
+                    $enabledPayments = ['bank_transfer', 'gopay', 'shopeepay'];
             }
 
             // Midtrans transaction parameters
