@@ -29,7 +29,7 @@
 <div class="bg-white max-w-[1100px] mx-auto px-4 sm:px-6 md:px-10 py-10 mt-4">
   <div class="flex flex-col md:flex-row gap-8">
     <div class="flex flex-col lg:flex-row items-center lg:items-start gap-10">
-    @include('components.thumbnails')
+    @include('components.thumbnails', ['productImages' => $productImages])
         <!-- Product Information -->
         <section class="ml-12 flex-1 max-w-3xl">
             <h1 class="text-[#1A0041] font-extrabold text-3xl mb-2">{{ $product->name }}</h1>
