@@ -12,10 +12,15 @@
 <main class="pt-4 container mx-auto px-4 py-8">
     <div class="max-w-6xl mx-auto">
         <div class="bg-white/90 rounded-xl shadow-lg p-6 sm:p-8 lg:p-10 backdrop-blur-sm">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 lg:items-stretch">
 
-                @include('components.orderdetailssection')
-                @include('components.paymentsection')
+                <div class="flex flex-col">
+                    @include('components.orderdetailssection')
+                </div>
+                
+                <div class="flex flex-col">
+                    @include('components.paymentsection')
+                </div>
 
             </div>
         </div>
