@@ -1,6 +1,11 @@
-<!-- Modal Structure - Simple Scrollable for UPDATE -->
-<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" id="productUpdateModal">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+<!-- Modal Structure - Working Version -->
+<div x-show="editId === {{ $product->id }}" 
+     x-transition 
+     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+     style="display: none;"
+     x-data="productUpdateModal({{ $product->id }})">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+         @click.away="editId = false">
         
         <!-- All content in one scrollable container -->
         <div class="p-6">
@@ -20,53 +25,86 @@
                 <div class="flex gap-8 mb-3">
                     <!-- Upload beberapa gambar -->
                     <div class="w-48 space-y-3 flex-shrink-0">
-                        <div class="w-48 h-64 bg-purple-200 rounded-2xl flex flex-col items-center justify-center p-4 relative">
+                        <div class="w-48 max-h-fit overflow-y-auto bg-purple-200 rounded-2xl flex flex-col items-center justify-center p-4 relative">
                             <label class="text-purple-700 font-semibold text-sm text-center mb-2">Update Product Images (optional)</label>
-                            <input
-                                type="file"
-                                name="images[]"
-                                id="imageInputUpdate"
-                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                multiple accept="image/*">
-                            <div class="text-center">
-                                <svg class="w-12 h-12 text-purple-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                </svg>
-                                <small class="text-purple-600 text-xs">Click to upload new images</small>
+                            <div class="relative w-full overflow-y-auto bg-purple-100 rounded-xl flex items-center justify-center cursor-pointer">
+                                <input
+                                    type="file"
+                                    name="images[]"
+                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    multiple 
+                                    accept="image/*"
+                                    @change="handleFileSelect($event)">
+                                <div class="text-center">
+                                    <svg class="w-12 h-12 text-purple-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                    <small class="text-purple-600 text-xs">Click to upload new images</small>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <!-- Current Images Display -->
-                        <div>
-                            <p class="text-purple-700 font-semibold text-sm mb-2">Current Images:</p>
-                            <div class="grid grid-cols-2 gap-2">
-                                @foreach ($product->images as $image)
-                                    <div class="relative">
-                                        <img src="{{ asset('storage/' . $image->path) }}" alt="Product Image" class="w-20 h-20 object-cover border-2 border-purple-300 rounded-lg">
-                                        <div class="absolute top-1 left-1 bg-purple-600 text-white text-xs px-1.5 py-0.5 rounded-full font-semibold">
-                                            {{ $loop->iteration }}
+
+                            <!-- Current Images Display -->
+                            <div>
+                                <p class="text-purple-700 font-semibold text-sm mb-2">Current Images:</p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    @foreach ($product->images as $image)
+                                        <div class="relative">
+                                            <img src="{{ asset('storage/' . $image->path) }}" alt="Product Image" class="w-20 h-20 object-cover border-2 border-purple-300 rounded-lg">
+                                            <button type="button" class="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full p-1" onclick="removeExistingImage('{{ $image->id }}')">X</button>
+                                            <div class="absolute top-1 left-1 bg-purple-600 text-white text-xs px-1.5 py-0.5 rounded-full font-semibold">
+                                                {{ $loop->iteration }}
+                                            </div>
                                         </div>
-                                    </div>
-                                @endforeach
+                                    @endforeach
+                                </div>
+                            </div>
+    
+                            <!-- Preview Container for new images -->
+                            <div x-show="selectedFiles.length > 0" class="mt-2">
+                                <div class="flex items-center justify-between mb-2 gap-2">
+                                    <span class="text-purple-700 font-semibold text-xs">
+                                        New Images (<span x-text="selectedFiles.length"></span>/5)
+                                    </span>
+                                    <button type="button" 
+                                            class="text-red-500 hover:text-red-700 text-xs" 
+                                            @click="clearAllFiles()">
+                                        Clear All
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <template x-for="(fileData, index) in selectedFiles" :key="index">
+                                        <div class="relative group">
+                                            <div class="relative w-20 h-20 rounded-lg overflow-hidden border-2 border-purple-300 hover:border-purple-500 transition-all duration-200">
+                                                <img :src="fileData.preview" class="w-full h-full object-cover" alt="Preview">
+                                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 flex items-center justify-center">
+                                                    <button type="button" 
+                                                            @click="removeFile(index)" 
+                                                            class="opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold transition-all duration-200">
+                                                        ×
+                                                    </button>
+                                                </div>
+                                                <div class="absolute top-1 left-1 bg-green-600 text-white text-xs px-1.5 py-0.5 rounded-full font-semibold">
+                                                    NEW
+                                                </div>
+                                            </div>
+                                            <p class="text-xs text-gray-600 mt-1 truncate text-center" 
+                                               :title="fileData.name" 
+                                               x-text="fileData.name.length > 10 ? fileData.name.substring(0, 8) + '...' : fileData.name">
+                                            </p>
+                                        </div>
+                                    </template>
+                                </div>
                             </div>
                         </div>
-                        
-                        <!-- Preview Container for new images -->
-                        <div id="image-preview-info-update" class="hidden">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-purple-700 font-semibold text-xs">New Images (<span id="image-count-update">0</span>/5)</span>
-                                <button type="button" id="clear-all-btn-update" class="text-red-500 hover:text-red-700 text-xs">Clear All</button>
-                            </div>
-                        </div>
-                        <div id="image-preview-update" class="grid grid-cols-2 gap-2"></div>
                     </div>
+
                     
                     <div class="flex-1 space-y-3">
                         <!-- Pilih kategori -->
                         <div>
-                            <label for="category_id" class="block text-purple-700 font-semibold mb-2">Category</label>
-                            <select name="category_id" id="category_id" class="w-full border rounded-lg px-4 py-2">
-                                <option value="" disabled selected>-- Choose Category --</option>
+                            <label for="category_id_{{ $product->id }}" class="block text-purple-700 font-semibold mb-2">Category</label>
+                            <select name="category_id" id="category_id_{{ $product->id }}" class="w-full border rounded-lg px-4 py-2">
+                                <option value="" disabled>-- Choose Category --</option>
                                 @foreach ($categories as $category)
                                 <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
                                     {{ $category->name }}
@@ -92,13 +130,13 @@
                 <!-- Input description product -->
                 <div class="mb-4">
                     <label class="block text-purple-700 font-semibold mb-2">Description</label>
-                    <input type="text" name="description" class="w-full bg-purple-100 rounded-full px-6 py-3 text-gray-500 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-purple-300" value="{{ old('description', $product->description) }}" required>
+                    <textarea name="description" cols="10" rows="3" class="overflow-y-auto w-full bg-purple-100 rounded-lg px-6 py-3 text-gray-500 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-purple-300" required>{{ old('description', $product->description) }}</textarea>
                 </div>
 
                 <!-- Input details rental product -->
                 <div class="mb-4">
                     <label class="block text-purple-700 font-semibold mb-2">Details</label>
-                    <input type="text" name="details" class="w-full bg-purple-100 rounded-full px-6 py-3 text-gray-500 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-purple-300" value="{{ old('details', $product->details) }}" required>
+                    <textarea name="details" cols="10" rows="3" class="overflow-y-auto w-full bg-purple-100 rounded-lg px-6 py-3 text-gray-500 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-purple-300" required>{{ old('details', $product->details) }}</textarea>
                 </div>
 
                 <!-- Input jumlah ketersediaan product -->
@@ -119,163 +157,118 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Global variables for update form
-    let selectedFilesUpdate = [];
-
-    function resetUpdateForm() {
-        selectedFilesUpdate = [];
-        const previewContainer = document.getElementById('image-preview-update');
-        const previewInfo = document.getElementById('image-preview-info-update');
-        const imageInput = document.getElementById('imageInputUpdate');
+// Define Alpine component untuk setiap product
+document.addEventListener('alpine:init', () => {
+    Alpine.data('productUpdateModal', (productId) => ({
+        selectedFiles: [],
         
-        if (previewContainer) previewContainer.innerHTML = '';
-        if (previewInfo) previewInfo.classList.add('hidden');
-        if (imageInput) imageInput.value = '';
-        updateImageCountUpdate();
-    }
-
-    // Update image count display
-    function updateImageCountUpdate() {
-        const countElement = document.getElementById('image-count-update');
-        if (countElement) {
-            countElement.textContent = selectedFilesUpdate.length;
-        }
-    }
-
-    // Remove image from selection
-    function removeImageUpdate(index) {
-        selectedFilesUpdate.splice(index, 1);
-        updatePreviewUpdate();
-        updateImageCountUpdate();
-        
-        if (selectedFilesUpdate.length === 0) {
-            const previewInfo = document.getElementById('image-preview-info-update');
-            if (previewInfo) previewInfo.classList.add('hidden');
-        }
-        
-        // Update the file input
-        updateFileInputUpdate();
-    }
-
-    // Update file input with current selected files
-    function updateFileInputUpdate() {
-        const imageInput = document.getElementById('imageInputUpdate');
-        if (!imageInput) return;
-        
-        const dt = new DataTransfer();
-        selectedFilesUpdate.forEach(file => {
-            dt.items.add(file);
-        });
-        imageInput.files = dt.files;
-    }
-
-    // Update preview display
-    function updatePreviewUpdate() {
-        const preview = document.getElementById('image-preview-update');
-        if (!preview) return;
-        
-        preview.innerHTML = '';
-        
-        selectedFilesUpdate.forEach((file, index) => {
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                const imgContainer = document.createElement('div');
-                imgContainer.className = 'relative group';
-                
-                imgContainer.innerHTML = `
-                    <div class="relative w-20 h-20 rounded-lg overflow-hidden border-2 border-purple-300 hover:border-purple-500 transition-all duration-200">
-                        <img src="${e.target.result}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-200 flex items-center justify-center">
-                            <button type="button" onclick="removeImageUpdate(${index})" class="opacity-0 group-hover:opacity-100 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold transition-all duration-200">
-                                ×
-                            </button>
-                        </div>
-                        <div class="absolute top-1 left-1 bg-green-600 text-white text-xs px-1.5 py-0.5 rounded-full font-semibold">
-                            NEW
-                        </div>
-                    </div>
-                    <p class="text-xs text-gray-600 mt-1 truncate text-center" title="${file.name}">${file.name.length > 10 ? file.name.substring(0, 8) + '...' : file.name}</p>
-                `;
-                
-                preview.appendChild(imgContainer);
-            };
-            
-            reader.readAsDataURL(file);
-        });
-    }
-
-    // Image input change handler for update
-    const imageInputUpdate = document.getElementById('imageInputUpdate');
-    if (imageInputUpdate) {
-        imageInputUpdate.addEventListener('change', function(e) {
-            console.log('File input changed:', e.target.files); // Debug log
-            
-            const files = Array.from(e.target.files);
+        handleFileSelect(event) {
+            const files = Array.from(event.target.files);
             
             if (!files || files.length === 0) return;
             
-            // Filter valid image files
+            // Filter hanya file gambar
             const validFiles = files.filter(file => file.type.startsWith('image/'));
             
             if (validFiles.length === 0) {
                 alert('Please select valid image files (PNG, JPG, JPEG)');
+                event.target.value = '';
                 return;
             }
             
-            console.log('Valid files:', validFiles); // Debug log
+            const maxNewImages = 5;
+            const currentCount = this.selectedFiles.length;
+            const availableSlots = maxNewImages - currentCount;
             
-            // Check total count
-            const totalFiles = selectedFilesUpdate.length + validFiles.length;
-            if (totalFiles > 5) {
-                const remainingSlots = 5 - selectedFilesUpdate.length;
-                if (remainingSlots > 0) {
-                    selectedFilesUpdate = selectedFilesUpdate.concat(validFiles.slice(0, remainingSlots));
-                    alert(`Maximum 5 images allowed. Only first ${remainingSlots} images were added.`);
-                } else {
-                    alert('Maximum 5 images already selected. Please remove some images first.');
-                    return;
-                }
-            } else {
-                selectedFilesUpdate = selectedFilesUpdate.concat(validFiles);
+            if (availableSlots <= 0) {
+                alert('Maximum 5 new images can be selected at once.');
+                event.target.value = '';
+                return;
             }
             
-            console.log('Selected files:', selectedFilesUpdate); // Debug log
+            let filesToAdd = validFiles;
+            if (validFiles.length > availableSlots) {
+                filesToAdd = validFiles.slice(0, availableSlots);
+                alert(`Only ${availableSlots} more images can be added.`);
+            }
             
-            // Show preview info
-            const previewInfo = document.getElementById('image-preview-info-update');
-            if (previewInfo) previewInfo.classList.remove('hidden');
+            // Process each file
+            filesToAdd.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.selectedFiles.push({
+                        file: file,
+                        preview: e.target.result,
+                        name: file.name
+                    });
+                    
+                    // Update file input setelah semua file diproses
+                    this.$nextTick(() => {
+                        this.updateFileInput(event.target);
+                    });
+                };
+                reader.readAsDataURL(file);
+            });
             
-            // Update preview and count
-            updatePreviewUpdate();
-            updateImageCountUpdate();
-            
+            // Clear input value
+            event.target.value = '';
+        },
+        
+        removeFile(index) {
+            this.selectedFiles.splice(index, 1);
             // Update file input
-            updateFileInputUpdate();
-        });
-    }
-
-    // Clear all images for update
-    const clearAllBtn = document.getElementById('clear-all-btn-update');
-    if (clearAllBtn) {
-        clearAllBtn.addEventListener('click', function() {
-            if (confirm('Are you sure you want to remove all selected new images?')) {
-                resetUpdateForm();
+            const fileInput = this.$el.querySelector('input[type="file"]');
+            if (fileInput) {
+                this.updateFileInput(fileInput);
             }
+        },
+        
+        clearAllFiles() {
+            if (confirm('Are you sure you want to remove all selected new images?')) {
+                this.selectedFiles = [];
+                const fileInput = this.$el.querySelector('input[type="file"]');
+                if (fileInput) {
+                    fileInput.value = '';
+                }
+            }
+        },
+        
+        updateFileInput(fileInput) {
+            const dt = new DataTransfer();
+            this.selectedFiles.forEach(item => {
+                dt.items.add(item.file);
+            });
+            fileInput.files = dt.files;
+        }
+    }));
+});
+
+// Function untuk menghapus gambar existing (AJAX call ke backend)
+function removeExistingImage(imageId) {
+    if (confirm('Are you sure you want to remove this image?')) {
+        // Kirim AJAX request untuk hapus gambar dari database
+        fetch(`/admin/product/image/${imageId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Hapus element dari DOM
+                const imageElement = document.querySelector(`button[onclick="removeExistingImage('${imageId}')"]`).closest('.relative');
+                imageElement.remove();
+                alert('Image removed successfully');
+            } else {
+                alert('Failed to remove image');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error removing image');
         });
     }
-
-    // Make removeImageUpdate function globally accessible
-    window.removeImageUpdate = removeImageUpdate;
-    
-    // Close update modal function
-    window.closeUpdateModal = function() {
-        const modal = document.getElementById('productUpdateModal');
-        if (modal) {
-            modal.style.display = 'none';
-            resetUpdateForm();
-        }
-    };
-});
+}
 </script>

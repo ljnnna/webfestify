@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <title>@yield('title')</title>
+    
 
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,6 +23,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
+        <!-- Alpine JS -->
+        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <!-- Custom Styles -->
     <style>
         body {
@@ -38,6 +42,9 @@
     <main>
         @yield('content')
     </main>
+
+    {{-- Global JS --}}
+    <script src="{{ asset('js/utils.js') }}"></script>
 
     <!-- Scripts -->
     @yield('scripts')

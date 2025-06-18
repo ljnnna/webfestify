@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 
 class Product extends Model
 {
+    
     protected $fillable = [
         'category_id',
         'name',
@@ -16,7 +17,6 @@ class Product extends Model
         'price',
         'stock_quantity',
         'status',
-        'images',
     ];        
 
     protected static function boot()
@@ -78,4 +78,13 @@ class Product extends Model
     {
         return $query->where('status', 'available');
     }
+
+    // Di App\Models\Product.php
+public function getFirstImageUrlAttribute()
+{
+    return $this->images->first()?->path 
+        ? asset('storage/' . $this->images->first()->path)
+        : asset('images/default.png');
+}
+
 }
