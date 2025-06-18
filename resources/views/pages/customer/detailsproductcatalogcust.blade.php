@@ -57,6 +57,10 @@
     <input type="hidden" name="start_date" id="form-start-date">
     <input type="hidden" name="end_date" id="form-end-date">
     <input type="hidden" name="delivery_option" id="form-delivery-option">
+    <input type="hidden" name="recipient_name" id="form-recipient-name">
+    <input type="hidden" name="phone" id="form-phone-number">
+    <input type="hidden" name="address" id="form-address">
+
 
     <button id="add-to-cart-btn" type="submit"
     class="bg-purple-100 border border-purple-500 text-purple-900 rounded px-6 py-3 font-semibold hover:bg-purple-50 transition-colors shadow">
@@ -619,6 +623,10 @@ const deliveryManager = {
             saveBtn.classList.replace('bg-[#6B549A]', 'bg-green-600');
             saveBtn.classList.replace('hover:bg-[#5a4788]', 'hover:bg-green-700');
         }
+
+        document.getElementById('form-recipient-name').value = name;
+        document.getElementById('form-phone-number').value = phone;
+        document.getElementById('form-address').value = address;
     },
 
     isValid() {

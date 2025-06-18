@@ -16,6 +16,7 @@ class CartController extends Controller
 
     public function add(Request $request, $slug)
     {
+
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'You must login to add items to cart.');
         }
@@ -27,13 +28,35 @@ class CartController extends Controller
             'delivery_option' => 'required|in:pickup,delivery',
         ]);
 
+        if ($validated['delivery_option'] === 'delivery') {
+            $request->validate([
+                'recipient_name' => 'required|string|max:100',
+                'phone' => 'required|digits_between:10,13',
+                'address' => 'required|string|max:255',
+            ]);
+        }
+
         $product = Product::with('images')->where('slug', $slug)->firstOrFail();
         $quantity = (int) $validated['quantity'];
 
         $cart = session()->get('cart', []);
 
         if (isset($cart[$slug])) {
-            $cart[$slug]['quantity'] += $quantity;
+            // Update all necessary fields
+            $cart[$slug]['quantity'] = $quantity;
+            $cart[$slug]['start_date'] = $validated['start_date'];
+            $cart[$slug]['end_date'] = $validated['end_date'];
+            $cart[$slug]['delivery_option'] = $validated['delivery_option'];
+        
+            if ($validated['delivery_option'] === 'delivery') {
+                $cart[$slug]['delivery_details'] = [
+                    'recipient_name' => $request->input('recipient_name'),
+                    'phone' => $request->input('phone'),
+                    'address' => $request->input('address'),
+                ];
+            } else {
+                unset($cart[$slug]['delivery_details']);
+            }
         } else {
             $cart[$slug] = [
                 'name' => $product->name,
@@ -45,12 +68,24 @@ class CartController extends Controller
                 'end_date' => $validated['end_date'],
                 'delivery_option' => $validated['delivery_option'],
             ];
+        
+            if ($validated['delivery_option'] === 'delivery') {
+                $cart[$slug]['delivery_details'] = [
+                    'recipient_name' => $request->input('recipient_name'),
+                    'phone' => $request->input('phone'),
+                    'address' => $request->input('address'),
+                ];
+            }
         }
+        
 
+        $message = isset($cart[$slug]) ? 'Cart updated successfully.' : 'Product added to cart.';
         session()->put('cart', $cart);
+        return redirect()->route('cart')->with('success', $message);
 
-        return redirect()->route('cart')->with('success', 'Product added to cart.');
     }
+
+    
 
     public function remove($slug)
     {

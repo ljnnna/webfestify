@@ -142,33 +142,35 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateSummary() {
-        let items = document.querySelectorAll('.cart-item');
-        let subtotal = 0, itemCount = 0, deliveryCount = 0;
+    let items = document.querySelectorAll('.cart-item');
+    let subtotal = 0, itemCount = 0;
+    let hasDelivery = false;
 
-        items.forEach(item => {
-            const checkbox = item.querySelector('.item-check');
-            const count = parseInt(item.querySelector('.count').innerText);
-            const basePrice = parseInt(item.getAttribute('data-base-price'));
-            const deliveryOption = item.getAttribute('data-delivery');
+    items.forEach(item => {
+        const checkbox = item.querySelector('.item-check');
+        const count = parseInt(item.querySelector('.count').innerText);
+        const basePrice = parseInt(item.getAttribute('data-base-price'));
+        const deliveryOption = item.getAttribute('data-delivery');
 
-            if (checkbox.checked) {
-                subtotal += basePrice * count;
-                itemCount += count;
-                if (deliveryOption === 'delivery') {
-                    deliveryCount++;
-                }
+        if (checkbox.checked) {
+            subtotal += basePrice * count;
+            itemCount += count;
+            if (deliveryOption === 'delivery') {
+                hasDelivery = true;
             }
-        });
+        }
+    });
 
-        const serviceFee = 5000;
-        const deliveryFee = deliveryCount * 10000;
-        const total = subtotal + serviceFee + deliveryFee;
+    const serviceFee = 5000;
+    const deliveryFee = hasDelivery ? 10000 : 0;
+    const total = subtotal + serviceFee + deliveryFee;
 
-        document.getElementById('item-count').innerText = `${itemCount} items`;
-        document.getElementById('item-subtotal').innerText = `IDR ${subtotal.toLocaleString()}`;
-        document.getElementById('delivery-fee-display').innerText = `IDR ${deliveryFee.toLocaleString()}`;
-        document.getElementById('total-price').innerText = `IDR ${total.toLocaleString()}`;
-    }
+    document.getElementById('item-count').innerText = `${itemCount} items`;
+    document.getElementById('item-subtotal').innerText = `IDR ${subtotal.toLocaleString()}`;
+    document.getElementById('delivery-fee-display').innerText = `IDR ${deliveryFee.toLocaleString()}`;
+    document.getElementById('total-price').innerText = `IDR ${total.toLocaleString()}`;
+}
+
 
     document.querySelectorAll('.increment').forEach(btn => {
         btn.addEventListener('click', e => {
@@ -203,7 +205,15 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    itemChecks.forEach(cb => cb.addEventListener('change', updateSummary));
+    itemChecks.forEach(cb => cb.addEventListener('change', function () {
+    updateSummary();
+
+    // Sync status selectAll berdasarkan semua item
+    const allChecked = Array.from(itemChecks).every(item => item.checked);
+    if (selectAll) {
+        selectAll.checked = allChecked;
+    }
+    }));
 
     if (selectAll) {
         selectAll.addEventListener('change', () => {
@@ -220,4 +230,5 @@ document.addEventListener('DOMContentLoaded', function () {
     updateSummary();
 });
 </script>
+
 @endsection

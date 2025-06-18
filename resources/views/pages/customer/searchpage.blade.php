@@ -11,7 +11,7 @@
     <!-- Header dengan jumlah hasil -->
     <div class="mb-6">
         <h1 class="text-[#34006C] font-semibold text-xl mb-1">Search Results</h1>
-        <p class="text-[#493862] text-sm">6 products found</p>
+        <p class="text-[#493862] text-sm">{{ $results->count() }} products found</p>
     </div>
 
     <!-- Product Grid -->

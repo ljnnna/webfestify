@@ -33,7 +33,7 @@
       height="180"
     />
   
-  <form id="searchForm"
+  <form id="searchForm" action="{{ route('search') }}" method="GET" ...
   class="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-[95%] sm:w-[90%] max-w-3xl
          bg-[#E9DFF7] bg-opacity-80 backdrop-blur-sm rounded-xl shadow-md
          flex flex-nowrap items-center overflow-x-auto divide-x divide-[#3E3667]
@@ -99,26 +99,22 @@
 
 <script>
 document.getElementById("searchForm").addEventListener("submit", function (e) {
-  e.preventDefault(); // mencegah submit langsung
+  e.preventDefault(); // Mencegah submit default
 
+  const form = this;
   const btn = document.getElementById("searchBtn");
   const icon = document.getElementById("searchIcon");
   const spinner = document.getElementById("loadingSpinner");
 
-  // Tampilkan spinner, sembunyikan icon
   icon.classList.add("hidden");
   spinner.classList.remove("hidden");
 
-  // Simulasikan loading 2 detik (misalnya fetching data)
+  // Setelah 2 detik, submit form manual
   setTimeout(() => {
-    // Reset tampilan ke awal
-    icon.classList.remove("hidden");
-    spinner.classList.add("hidden");
-
-    // Optional: tampilkan alert / redirect
-    alert("nanti user diarahkan ke product yang available, tapi nanti yaa kita hubungi ke backend duluuu 😚💜");
+    form.submit();
   }, 2000);
 });
+
 </script>
 
   <!-- Flatpickr for calendar -->
