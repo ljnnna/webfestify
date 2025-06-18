@@ -14,16 +14,7 @@
         <div class="space-y-4">
             <h3 class="text-lg font-semibold text-[#5B4B7A]">Select Payment Method</h3>
             
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <button 
-                    type="button"
-                    class="payment-method-btn p-3 border-2 border-gray-300 rounded-lg hover:border-[#B6B0F7] transition-all duration-200 hover:scale-105"
-                    data-method="qris"
-                >
-                    <i class="fas fa-qrcode text-2xl text-[#5B4B7A] mb-2"></i>
-                    <p class="text-xs font-semibold text-[#5B4B7A]">QRIS</p>
-                </button>
-                
+            <div class="grid grid-cols-2 gap-3">
                 <button 
                     type="button"
                     class="payment-method-btn p-3 border-2 border-gray-300 rounded-lg hover:border-[#B6B0F7] transition-all duration-200 hover:scale-105"

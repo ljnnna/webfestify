@@ -208,9 +208,6 @@ class PaymentController extends Controller
             // Set enabled payments based on selected method
             $enabledPayments = [];
             switch ($request->payment_method) {
-                case 'qris':
-                    $enabledPayments = ['qris'];
-                    break;
                 case 'bank':
                     $enabledPayments = ['bank_transfer'];
                     break;
@@ -218,7 +215,7 @@ class PaymentController extends Controller
                     $enabledPayments = ['gopay', 'shopeepay', 'dana'];
                     break;
                 default:
-                    $enabledPayments = ['qris', 'bank_transfer', 'gopay', 'shopeepay', 'dana'];
+                    $enabledPayments = ['bank_transfer', 'gopay', 'shopeepay', 'dana'];
             }
 
             // Midtrans transaction parameters

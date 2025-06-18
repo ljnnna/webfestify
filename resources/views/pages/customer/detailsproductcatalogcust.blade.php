@@ -150,7 +150,7 @@
                         <div class="space-y-3">
                             <textarea id="delivery-address" rows="3"
                                 class="w-full border-2 border-gray-300 rounded-lg p-3 text-[#6D5983] focus:border-[#6B549A] transition-colors resize-none"
-                                placeholder="Enter complete address..."></textarea>
+                                placeholder="Enter complete address: street, district, city, province, postal code"></textarea>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 <input type="tel" id="phone-number"
                                     class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-[#6D5983] focus:border-[#6B549A] transition-colors"
