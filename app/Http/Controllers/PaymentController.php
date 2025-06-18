@@ -21,6 +21,49 @@ class PaymentController extends Controller
         Config::$is3ds = config('midtrans.is3ds');
     }
 
+    // Tambahkan method rent now
+    public function rentNow(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+            'start_date' => 'required|date|after_or_equal:today',
+            'end_date' => 'required|date|after:start_date',
+            'delivery_option' => 'required|in:pickup,delivery',
+            'delivery_address' => 'required_if:delivery_option,delivery',
+            'phone_number' => 'required_if:delivery_option,delivery',
+            'recipient_name' => 'required_if:delivery_option,delivery'
+        ]);
+
+        // Hitung rental days
+        $startDate = \Carbon\Carbon::parse($request->start_date);
+        $endDate = \Carbon\Carbon::parse($request->end_date);
+        $rentalDays = $startDate->diffInDays($endDate) + 1;
+
+        // Validasi maksimal 7 hari
+        if ($rentalDays > 7) {
+            return back()->with('error', 'Maximum rental period is 7 days.');
+        }
+
+        // Simpan data rental ke session
+        $rentalData = [
+            'product_id' => $request->product_id,
+            'quantity' => $request->quantity,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'rental_days' => $rentalDays,
+            'delivery_option' => $request->delivery_option,
+            'delivery_address' => $request->delivery_address,
+            'phone_number' => $request->phone_number,
+            'recipient_name' => $request->recipient_name,
+            'notes' => $request->notes
+        ];
+
+        session(['rental_data' => $rentalData]);
+
+        return redirect()->route('payment');
+    }
+
     public function payment()
     {
         $rentalData = session('rental_data');
@@ -92,6 +135,10 @@ class PaymentController extends Controller
                 'start_date' => $rentalData['start_date'],
                 'end_date' => $rentalData['end_date'],
                 'payment_status' => 'unpaid',
+                'delivery_option' => $rentalData['delivery_option'],
+                'delivery_address' => $rentalData['delivery_address'] ?? null,
+                'phone_number' => $rentalData['phone_number'] ?? null,
+                'recipient_name' => $rentalData['recipient_name'] ?? null,
                 'notes' => $rentalData['notes'] ?? null
             ]);
 
