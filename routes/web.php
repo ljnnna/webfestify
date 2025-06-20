@@ -58,7 +58,9 @@ Route::middleware(['auth'])->group(function () {
 
 // Payment notification from Midtrans (webhook)
 // This should be outside auth middleware as Midtrans will call it directly
-Route::post('/payment/notification', [PaymentController::class, 'paymentNotification'])->name('payment.notification');
+Route::post('/payment/notification', [PaymentController::class, 'paymentNotification'])
+    ->name('payment.notification')
+    ->withoutMiddleware(['web']); // Remove CSRF protection for webhook
 
 Route::get('/order/success/{orderCode}', function($orderCode) {
     $order = \App\Models\Order::where('order_code', $orderCode)->first();

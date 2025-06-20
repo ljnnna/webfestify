@@ -271,18 +271,35 @@ class PaymentController extends Controller
     public function paymentNotification(Request $request)
     {
         try {
+            // Log incoming notification for debugging
+            \Log::info('Midtrans Notification Received:', $request->all());
+
             $notification = new Notification();
             
             $transactionStatus = $notification->transaction_status;
-            $fraudStatus = $notification->fraud_status;
+            $fraudStatus = $notification->fraud_status ?? 'accept'; // Default to accept if not present
             $orderId = $notification->order_id;
+            $statusCode = $notification->status_code;
+            $grossAmount = $notification->gross_amount;
 
             // Find order by order_code
             $order = Order::where('order_code', $orderId)->first();
             
             if (!$order) {
+                \Log::error('Order not found for order_id: ' . $orderId);
                 return response()->json(['message' => 'Order not found'], 404);
             }
+
+            // Verify signature key for security
+            $serverKey = config('midtrans.serverKey');
+            $expectedSignature = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
+            
+            if ($notification->signature_key !== $expectedSignature) {
+                \Log::error('Invalid signature key for order: ' . $orderId);
+                return response()->json(['message' => 'Invalid signature'], 400);
+            }
+
+            \Log::info("Processing notification for order: {$orderId}, status: {$transactionStatus}, fraud: {$fraudStatus}");
 
             // Handle different transaction statuses
             if ($transactionStatus == 'capture') {
@@ -291,42 +308,52 @@ class PaymentController extends Controller
                         'payment_status' => 'partial',
                         'status' => 'pending'
                     ]);
+                    \Log::info("Order {$orderId} marked as partial/pending due to fraud challenge");
                 } else if ($fraudStatus == 'accept') {
                     $order->update([
                         'payment_status' => 'paid',
                         'status' => 'confirmed'
                     ]);
+                    \Log::info("Order {$orderId} marked as paid/confirmed");
                 }
             } else if ($transactionStatus == 'settlement') {
+                // This is the most common success status for non-card payments
                 $order->update([
                     'payment_status' => 'paid',
                     'status' => 'confirmed'
                 ]);
+                \Log::info("Order {$orderId} settled - marked as paid/confirmed");
             } else if ($transactionStatus == 'pending') {
                 $order->update([
                     'payment_status' => 'unpaid',
                     'status' => 'pending'
                 ]);
+                \Log::info("Order {$orderId} is pending payment");
             } else if ($transactionStatus == 'deny') {
                 $order->update([
                     'payment_status' => 'unpaid',
                     'status' => 'cancelled'
                 ]);
+                \Log::info("Order {$orderId} denied - cancelled");
             } else if ($transactionStatus == 'expire') {
                 $order->update([
                     'payment_status' => 'unpaid',
                     'status' => 'cancelled'
                 ]);
+                \Log::info("Order {$orderId} expired - cancelled");
             } else if ($transactionStatus == 'cancel') {
                 $order->update([
                     'payment_status' => 'unpaid',
                     'status' => 'cancelled'
                 ]);
+                \Log::info("Order {$orderId} cancelled");
             }
 
             return response()->json(['message' => 'Notification handled successfully']);
 
         } catch (\Exception $e) {
+            \Log::error('Midtrans notification error: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
             return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
         }
     }
