@@ -21,7 +21,8 @@
 <script>
 const PRODUCT_CONFIG = {
     images: @json(array_map(fn($img) => asset('storage/' . $img), $productImages)),
-    maxQuantity: 10
+    maxQuantity: {{ $product->stock_quantity }},
+    maxRentalDays: {{ $product->max_rent_duration ?? 7 }}
 };
 
 const imageGallery = {

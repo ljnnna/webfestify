@@ -29,292 +29,240 @@
 <div class="bg-white max-w-[1100px] mx-auto px-4 sm:px-6 md:px-10 py-10 mt-4">
   <div class="flex flex-col md:flex-row gap-8">
     <div class="flex flex-col lg:flex-row items-center lg:items-start gap-10">
-    @include('components.thumbnails', ['productImages' => $productImages])
-        <!-- Product Information -->
-        <section class="ml-12 flex-1 max-w-3xl">
-            <h1 class="text-[#1A0041] font-extrabold text-3xl mb-2">{{ $product->name }}</h1>
-            <p class="text-[#7F5CB2] text-2xl font-bold mb-8">Rp.{{ number_format($product->price, 0, ',', '.') }}/day</p>
+      @include('components.thumbnails')
+      <!-- Product Information -->
+      <section class="ml-12 flex-1 max-w-3xl">
+        <h1 class="text-[#1A0041] font-extrabold text-3xl mb-2">{{ $product->name }}</h1>
+        <p class="text-[#7F5CB2] text-2xl font-bold mb-8">Rp.{{ number_format($product->price, 0, ',', '.') }}/day</p>
 
-            <!-- Quantity & Actions -->
-            <div class="mb-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div class="flex items-center space-x-4">
-                    <label class="text-[#6D5983] font-semibold">Quantity:</label>
-                    <div class="flex items-center border-2 border-gray-200 rounded overflow-hidden w-32">
-                        <button id="decrease-qty"
-                            class="flex-1 py-2 text-xl text-[#6D5983] font-bold hover:bg-gray-50 transition-colors">-</button>
-                        <span id="qty-display"
-                            class="w-12 text-center py-2 text-lg font-semibold text-[#6D5983] border-x border-gray-300">1</span>
-                        <button id="increase-qty"
-                            class="flex-1 py-2 text-xl text-[#6D5983] font-bold hover:bg-gray-50 transition-colors">+</button>
-                    </div>
+        <!-- Quantity & Actions -->
+        <div class="mb-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div class="flex items-center space-x-4">
+            <label class="text-[#6D5983] font-semibold">Quantity:</label>
+            <div class="flex items-center border-2 border-gray-200 rounded overflow-hidden w-32">
+              <button id="decrease-qty"
+                class="flex-1 py-2 text-xl text-[#6D5983] font-bold hover:bg-gray-50 transition-colors">-</button>
+              <span id="qty-display"
+                class="w-12 text-center py-2 text-lg font-semibold text-[#6D5983] border-x border-gray-300">1</span>
+              <button id="increase-qty"
+                class="flex-1 py-2 text-xl text-[#6D5983] font-bold hover:bg-gray-50 transition-colors">+</button>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+          <form action="{{ route('cart.add', $product->slug) }}" method="POST"
+            class="flex gap-4 items-center" id="add-to-cart-form"
+            data-stock="{{ $product->stock_quantity }}">
+              @csrf
+              <input type="hidden" name="quantity" id="quantity-input" value="1">
+              <input type="hidden" name="start_date" id="form-start-date">
+              <input type="hidden" name="end_date" id="form-end-date">
+              <input type="hidden" name="delivery_option" id="form-delivery-option">
+              <input type="hidden" name="recipient_name" id="form-recipient-name">
+              <input type="hidden" name="phone" id="form-phone-number">
+              <input type="hidden" name="address" id="form-address">
+
+              <button id="add-to-cart-btn" type="submit"
+                class="bg-purple-100 border border-purple-500 text-purple-900 rounded px-6 py-3 font-semibold hover:bg-purple-50 transition-colors shadow">
+                Add To Cart
+              </button>
+            </form>
+
+            <button id="rent-now-btn"
+              class="bg-purple-900 text-white rounded px-6 py-3 font-semibold hover:bg-[#1a0f3d] transition-colors shadow-lg">
+              Rent Now
+            </button>
+          </div>
+        </div>
+
+        <!-- ⚠️ Stock Warning Notification Centered -->
+        <div class="text-center mb-6">
+          <small id="stockWarning" class="text-sm text-red-600 hidden">
+            ⚠️ Melebihi stok produk yang tersedia.
+          </small>
+        </div>
+
+        <!-- Rental Date Selection -->
+        <div class="mb-8">
+          <button id="select-date-btn"
+            class="w-full bg-purple-100 border border-purple-500 text-purple-900 font-semibold rounded py-3 hover:bg-purple-50 transition-colors">Select
+            Rental Date</button>
+
+          <div id="datepicker-wrapper" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
+            <div>
+              <label class="block text-[#6D5983] font-semibold mb-2">Start Date</label>
+              <input id="start-date" type="date"
+                class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 text-[#6D5983] focus:border-[#6B549A] transition-colors" />
+            </div>
+            <div>
+              <label class="block text-[#6D5983] font-semibold mb-2">End Date</label>
+              <input id="end-date" type="date"
+                class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 text-[#6D5983] focus:border-[#6B549A] transition-colors" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Delivery Option -->
+        <div class="mb-8">
+          <button id="select-delivery-btn"
+            class="w-full bg-purple-100 border border-purple-500 text-purple-900 font-semibold rounded py-3 hover:bg-purple-50 transition-colors">
+            Select Delivery Option
+          </button>
+
+          <div id="delivery-options-wrapper" class="mt-6 space-y-4 hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Pick Up -->
+              <button id="pickup-option-btn"
+                class="delivery-option-btn border-2 border-gray-300 rounded-lg p-4 text-left hover:border-[#6B549A] transition-colors">
+                <div class="flex items-center gap-3">
+                  <i class="fas fa-store text-[#6B549A]"></i>
+                  <div>
+                    <div class="font-medium text-[#2E1B5F]">Pick Up</div>
+                    <div class="text-sm text-[#6D5983]">Free - Pick up at store</div>
+                  </div>
                 </div>
+              </button>
 
-
-                <div class="flex gap-3">
-<form action="{{ route('cart.add', $product->slug) }}" method="POST" class="flex gap-4 items-center" id="add-to-cart-form">
-    @csrf
-    <input type="hidden" name="quantity" id="quantity-input" value="1">
-    <input type="hidden" name="start_date" id="form-start-date">
-    <input type="hidden" name="end_date" id="form-end-date">
-    <input type="hidden" name="delivery_option" id="form-delivery-option">
-    <input type="hidden" name="recipient_name" id="form-recipient-name">
-    <input type="hidden" name="phone" id="form-phone-number">
-    <input type="hidden" name="address" id="form-address">
-
-
-    <button id="add-to-cart-btn" type="submit"
-    class="bg-purple-100 border border-purple-500 text-purple-900 rounded px-6 py-3 font-semibold hover:bg-purple-50 transition-colors shadow">
-    Add To Cart
-    </button>
-</form>
-
-
-
-                
-                    <button id="rent-now-btn"
-                        class="bg-purple-900 text-white rounded px-6 py-3 font-semibold hover:bg-[#1a0f3d] transition-colors shadow-lg">Rent
-                        Now</button>
+              <!-- Delivery -->
+              <button id="delivery-option-btn"
+                class="delivery-option-btn border-2 border-gray-300 rounded-lg p-4 text-left hover:border-[#6B549A] transition-colors">
+                <div class="flex items-center gap-3">
+                  <i class="fas fa-truck text-[#6B549A]"></i>
+                  <div>
+                    <div class="font-medium text-[#2E1B5F]">Delivery</div>
+                    <div class="text-sm text-[#6D5983]">Rp.10.000 - Delivered to address</div>
+                  </div>
                 </div>
+              </button>
             </div>
 
-            <!-- Rental Date Selection -->
-            <div class="mb-8">
-                <button id="select-date-btn"
-                    class="w-full bg-purple-100 border border-purple-500 text-purple-900 font-semibold rounded py-3 hover:bg-purple-50 transition-colors">Select
-                    Rental Date</button>
-
-                <div id="datepicker-wrapper" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
-                    <div>
-                        <label class="block text-[#6D5983] font-semibold mb-2">Start Date</label>
-                        <input id="start-date" type="date"
-                            class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 text-[#6D5983] focus:border-[#6B549A] transition-colors" />
-                    </div>
-                    <div>
-                        <label class="block text-[#6D5983] font-semibold mb-2">End Date</label>
-                        <input id="end-date" type="date"
-                            class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 text-[#6D5983] focus:border-[#6B549A] transition-colors" />
-                    </div>
-                </div>
+            <!-- Pickup Info -->
+            <div id="pickup-info" class="bg-[#F8F4FF] border border-[#E6D9F7] p-4 rounded-lg hidden">
+              <h4 class="font-semibold text-[#2E1B5F] mb-2">Store Information</h4>
+              <p class="text-sm text-[#6D5983] mb-1">
+                <i class="fas fa-map-marker-alt mr-2 text-[#6B549A]"></i>
+                Jl. Ahmad Yani, Batam Center, Batam
+              </p>
+              <p class="text-sm text-[#6D5983]">
+                <i class="fas fa-clock mr-2 text-[#6B549A]"></i>
+                Open: Monday - Friday, 08:00 - 17:00
+              </p>
             </div>
 
-            <!-- Delivery Option -->
-            <div class="mb-8">
-                <button id="select-delivery-btn"
-                    class="w-full bg-purple-100 border border-purple-500 text-purple-900 font-semibold rounded py-3 hover:bg-purple-50 transition-colors">
-                    Select Delivery Option
-                </button>
-
-                <div id="delivery-options-wrapper" class="mt-6 space-y-4 hidden">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Pick Up -->
-                        <button id="pickup-option-btn"
-                            class="delivery-option-btn border-2 border-gray-300 rounded-lg p-4 text-left hover:border-[#6B549A] transition-colors">
-                            <div class="flex items-center gap-3">
-                                <i class="fas fa-store text-[#6B549A]"></i>
-                                <div>
-                                    <div class="font-medium text-[#2E1B5F]">Pick Up</div>
-                                    <div class="text-sm text-[#6D5983]">Free - Pick up at store</div>
-                                </div>
-                            </div>
-                        </button>
-
-                        <!-- Delivery -->
-                        <button id="delivery-option-btn"
-                            class="delivery-option-btn border-2 border-gray-300 rounded-lg p-4 text-left hover:border-[#6B549A] transition-colors">
-                            <div class="flex items-center gap-3">
-                                <i class="fas fa-truck text-[#6B549A]"></i>
-                                <div>
-                                    <div class="font-medium text-[#2E1B5F]">Delivery</div>
-                                    <div class="text-sm text-[#6D5983]">Rp.10.000 - Delivered to address</div>
-                                </div>
-                            </div>
-                        </button>
-                    </div>
-
-                    <!-- Pickup Info -->
-                    <div id="pickup-info" class="bg-[#F8F4FF] border border-[#E6D9F7] p-4 rounded-lg hidden">
-                        <h4 class="font-semibold text-[#2E1B5F] mb-2">Store Information</h4>
-                        <p class="text-sm text-[#6D5983] mb-1">
-                            <i class="fas fa-map-marker-alt mr-2 text-[#6B549A]"></i>
-                            Jl. Ahmad Yani, Batam Center, Batam
-                        </p>
-                        <p class="text-sm text-[#6D5983]">
-                            <i class="fas fa-clock mr-2 text-[#6B549A]"></i>
-                            Open: Monday - Friday, 08:00 - 17:00
-                        </p>
-                    </div>
-
-                    <!-- Delivery Address Form -->
-                    <div id="delivery-address-form" class="bg-[#F8F4FF] border border-[#E6D9F7] p-4 rounded-lg hidden">
-                        <h4 class="font-semibold text-[#2E1B5F] mb-3">Delivery Address</h4>
-                        <div class="space-y-3">
-                            <textarea id="delivery-address" rows="3"
-                                class="w-full border-2 border-gray-300 rounded-lg p-3 text-[#6D5983] focus:border-[#6B549A] transition-colors resize-none"
-                                placeholder="Enter complete address..."></textarea>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <input type="tel" id="phone-number"
-                                    class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-[#6D5983] focus:border-[#6B549A] transition-colors"
-                                    placeholder="Phone number" />
-                                <input type="text" id="recipient-name"
-                                    class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-[#6D5983] focus:border-[#6B549A] transition-colors"
-                                    placeholder="Recipient name" />
-                            </div>
-                            <button id="save-delivery-address-btn"
-                                class="w-full bg-[#6B549A] text-white rounded-full py-2 font-semibold hover:bg-[#5a4788] transition-colors">Save
-                                Address</button>
-                        </div>
-                    </div>
+            <!-- Delivery Address Form -->
+            <div id="delivery-address-form" class="bg-[#F8F4FF] border border-[#E6D9F7] p-4 rounded-lg hidden">
+              <h4 class="font-semibold text-[#2E1B5F] mb-3">Delivery Address</h4>
+              <div class="space-y-3">
+                <textarea id="delivery-address" rows="3"
+                  class="w-full border-2 border-gray-300 rounded-lg p-3 text-[#6D5983] focus:border-[#6B549A] transition-colors resize-none"
+                  placeholder="Enter complete address..."></textarea>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <input type="tel" id="phone-number"
+                    class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-[#6D5983] focus:border-[#6B549A] transition-colors"
+                    placeholder="Phone number" />
+                  <input type="text" id="recipient-name"
+                    class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-[#6D5983] focus:border-[#6B549A] transition-colors"
+                    placeholder="Recipient name" />
                 </div>
+                <button id="save-delivery-address-btn"
+                  class="w-full bg-[#6B549A] text-white rounded-full py-2 font-semibold hover:bg-[#5a4788] transition-colors">Save
+                  Address</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product Tabs -->
+        <div class="mt-6 sm:mt-10 border-t border-gray-300 pt-4 sm:pt-6">
+          <div class="flex flex-wrap sm:flex-nowrap space-x-4 sm:space-x-8 border-b border-gray-200 overflow-x-auto">
+            <button id="description-btn"
+              class="text-[#291757] font-bold pb-3 border-b-2 border-[#2E1B5F] transition-all duration-200 hover:text-[#291757] whitespace-nowrap">Description</button>
+            <button id="details-btn"
+              class="text-purple-900 font-bold pb-3 border-b-2 border-transparent hover:text-[#291757] transition-all duration-200 whitespace-nowrap">Details</button>
+          </div>
+
+          <!-- Tab Contents -->
+          <div class="mt-4 sm:mt-6 relative min-h-[100px]">
+            <div id="description" class="tab-content opacity-100 transition-opacity duration-300">
+              <p class="text-[#6D5983] leading-relaxed text-sm sm:text-base">
+                {{ $product->description }}
+              </p>
             </div>
 
-            <!-- Product Tabs -->
-            <div class="mt-6 sm:mt-10 border-t border-gray-300 pt-4 sm:pt-6">
-                <div
-                    class="flex flex-wrap sm:flex-nowrap space-x-4 sm:space-x-8 border-b border-gray-200 overflow-x-auto">
-                    <button id="description-btn"
-                        class="text-[#291757] font-bold pb-3 border-b-2 border-[#2E1B5F] transition-all duration-200 hover:text-[#291757] whitespace-nowrap">Description</button>
-                    <button id="details-btn"
-                        class="text-purple-900 font-bold pb-3 border-b-2 border-transparent hover:text-[#291757] transition-all duration-200 whitespace-nowrap">Details</button>
-                    <button id="specifications-btn"
-                        class="text-purple-900 font-bold pb-3 border-b-2 border-transparent hover:text-[#291757] transition-all duration-200 whitespace-nowrap">Specifications</button>
-                </div>
-
-                <!-- Tab Contents -->
-                <div class="mt-4 sm:mt-6 relative min-h-[100px]">
-                    <div id="description" class="tab-content opacity-100 transition-opacity duration-300">
-                        <p class="text-[#6D5983] leading-relaxed text-sm sm:text-base">
-                             {{ $product->description }}
-                        </p>
-                    </div>
-
-                    <div id="details" class="tab-content opacity-100 transition-opacity duration-300">
-                        <p class="text-[#6D5983] leading-relaxed text-sm sm:text-base">
-                            {{ $product->details }}
-                        </p>
-                    </div>
-
-
-                    <div id="specifications"
-                        class="tab-content opacity-0 absolute inset-0 transition-opacity duration-300 pointer-events-none">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-[#6D5983]">
-                            <div>
-                                <h4 class="font-semibold text-[#2E1B5F] mb-2 text-sm sm:text-base">Technical Specs</h4>
-                                <ul class="space-y-1.5 text-xs sm:text-sm">
-                                    <li class="flex items-start">
-                                        <span class="font-medium flex-shrink-0 mr-3 w-20 sm:w-24">Model:</span>
-                                        <span>Army Bomb Ver. 4</span>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <span class="font-medium flex-shrink-0 mr-3 w-20 sm:w-24">Connectivity:</span>
-                                        <span>Bluetooth 5.0</span>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <span class="font-medium flex-shrink-0 mr-3 w-20 sm:w-24">Battery:</span>
-                                        <span>2x AAA (8hr life)</span>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <span class="font-medium flex-shrink-0 mr-3 w-20 sm:w-24">Size:</span>
-                                        <span>24 x 8 x 8 cm</span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h4 class="font-semibold text-[#2E1B5F] mb-2 text-sm sm:text-base">Features</h4>
-                                <ul class="space-y-1.5 text-xs sm:text-sm">
-                                    <li class="flex items-start">
-                                        <span class="text-[#8B7CC4] mr-2 flex-shrink-0">•</span>
-                                        <span>Synchronized lighting</span>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <span class="text-[#8B7CC4] mr-2 flex-shrink-0">•</span>
-                                        <span>Multiple color modes</span>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <span class="text-[#8B7CC4] mr-2 flex-shrink-0">•</span>
-                                        <span>App connectivity</span>
-                                    </li>
-                                    <li class="flex items-start">
-                                        <span class="text-[#8B7CC4] mr-2 flex-shrink-0">•</span>
-                                        <span>Ergonomic design</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div id="details" class="tab-content opacity-100 transition-opacity duration-300">
+              <p class="text-[#6D5983] leading-relaxed text-sm sm:text-base">
+                {{ $product->details }}
+              </p>
             </div>
-
-
-  </div>
-</div>
-
-
-        </section>
+          </div>
+        </div>
+      </section>
     </div>
+  </div>
 </div>
 
 @include('components.reviews')
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/product-detail.js') }}"></script>
-@endpush
-@section('scripts')
+
+
 <script>
-    
-    
-// Enhanced Utility functions with better notifications
-// Enhanced Utility functions with better notifications
+
+
+// Seluruh JS-mu (quantityController dan lainnya) di sini saja
 const quantityController = {
     quantity: 1,
     decreaseBtn: null,
     increaseBtn: null,
     display: null,
-
+    warning: null,
     init() {
         this.decreaseBtn = document.getElementById('decrease-qty');
         this.increaseBtn = document.getElementById('increase-qty');
         this.display = document.getElementById('qty-display');
+        this.warning = document.getElementById('stockWarning');
 
         if (this.decreaseBtn && this.increaseBtn && this.display) {
-            // Hapus event listener lama jika ada (opsional, tapi aman)
             this.decreaseBtn.replaceWith(this.decreaseBtn.cloneNode(true));
             this.increaseBtn.replaceWith(this.increaseBtn.cloneNode(true));
-
-            // Ambil ulang elemen setelah replace
             this.decreaseBtn = document.getElementById('decrease-qty');
             this.increaseBtn = document.getElementById('increase-qty');
-
             this.bindEvents();
             this.updateDisplay();
         } else {
             console.warn('Quantity elements not found in DOM');
         }
     },
-
     bindEvents() {
         this.decreaseBtn.addEventListener('click', () => this.decrease());
         this.increaseBtn.addEventListener('click', () => this.increase());
     },
-
     decrease() {
         if (this.quantity > 1) {
             this.quantity--;
             this.updateDisplay();
         }
     },
-
     increase() {
         if (this.quantity < PRODUCT_CONFIG.maxQuantity) {
             this.quantity++;
             this.updateDisplay();
+        } else {
+            this.showWarning(true);
         }
     },
-
     updateDisplay() {
         this.display.textContent = this.quantity;
+        const input = document.getElementById('quantity-input');
+        if (input) input.value = this.quantity;
+        this.showWarning(this.quantity >= PRODUCT_CONFIG.maxQuantity);
     },
-
+    showWarning(show) {
+        if (!this.warning) return;
+        this.warning.classList.toggle('hidden', !show);
+        this.display.classList.toggle('text-red-500', show);
+    },
     get() {
         return this.quantity;
     }
@@ -322,11 +270,10 @@ const quantityController = {
 
 document.addEventListener('DOMContentLoaded', function () {
     quantityController.init();
-    imageGallery.init();
 });
 
 
-// Enhanced Date manager with 7-day limit
+
 const dateManager = {
     startDate: null,
     endDate: null,
@@ -385,10 +332,10 @@ const dateManager = {
     },
 
     setStart(dateString) {
-    if (!dateString) return; // << tambahkan pengecekan awal
+    if (!dateString) return;
 
     const date = new Date(dateString);
-    if (isNaN(date.getTime())) return; // << pastikan valid
+    if (isNaN(date.getTime())) return;
 
     this.startDate = date;
     const endInput = document.getElementById('end-date');
@@ -399,20 +346,25 @@ const dateManager = {
         const maxEndDate = utils.addDaysToDate(dateString, PRODUCT_CONFIG.maxRentalDays - 1);
         endInput.max = maxEndDate;
 
-        if (this.endDate && this.getDays() > PRODUCT_CONFIG.maxRentalDays) {
-            endInput.value = maxEndDate;
-            this.setEnd(maxEndDate);
-            utils.showNotification(
-                `End date adjusted to maximum ${PRODUCT_CONFIG.maxRentalDays} days rental period`,
-                'warning',
-                4000,
-                true
-            );
+        // Jika endDate sudah dipilih dan melebihi batas, sesuaikan
+        if (this.endDate) {
+            const currentEnd = new Date(endInput.value);
+            if (currentEnd > new Date(maxEndDate)) {
+                endInput.value = maxEndDate;
+                this.setEnd(maxEndDate);
+                utils.showNotification(
+                    `Maximum rental period is ${PRODUCT_CONFIG.maxRentalDays} days. End date adjusted.`,
+                    'warning',
+                    5000,
+                    true
+                );
+            }
         }
     }
 
     this.updateRentalSummary();
 },
+
 
 
 setEnd(dateString) {
@@ -423,10 +375,8 @@ setEnd(dateString) {
 
     this.endDate = date;
 
-    // Validasi: jangan lanjut jika startDate belum dipilih
     if (!this.startDate) return;
 
-    // Hitung durasi sewa
     const days = this.getDays();
 
     if (days > PRODUCT_CONFIG.maxRentalDays) {
@@ -440,7 +390,7 @@ setEnd(dateString) {
             this.endDate = new Date(maxEndDate);
 
             utils.showNotification(
-                `Maximum rental period is ${PRODUCT_CONFIG.maxRentalDays} days. End date has been adjusted automatically.`,
+                `Maximum rental period is ${PRODUCT_CONFIG.maxRentalDays} days. End date adjusted.`,
                 'warning',
                 6000,
                 true
@@ -448,8 +398,20 @@ setEnd(dateString) {
         }
     }
 
+    if (this.getDays() <= 0) {
+        utils.showNotification(
+            `End date must be after start date.`,
+            'error',
+            4000,
+            true
+        );
+        this.endDate = null;
+        document.getElementById('end-date').value = '';
+    }
+
     this.updateRentalSummary();
 },
+
 
     updateRentalSummary() {
         const summary = document.getElementById('rental-summary');
@@ -810,4 +772,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 </script>
-@endsection
+@endpush

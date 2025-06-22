@@ -5,29 +5,29 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; // ← WAJIB ini
 use App\Models\Product;
+use App\Models\Cart;
 
 class CartController extends Controller
 {
     public function index()
     {
-        $cart = session()->get('cart', []);
+        $cart = Cart::with('product')->where('user_id', Auth::id())->get();
         return view('pages.customer.cart-page', compact('cart'));
     }
 
     public function add(Request $request, $slug)
     {
-
         if (!Auth::check()) {
             return redirect()->route('login')->with('error', 'You must login to add items to cart.');
         }
-
+    
         $validated = $request->validate([
             'quantity' => 'required|integer|min:1',
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after_or_equal:start_date',
             'delivery_option' => 'required|in:pickup,delivery',
         ]);
-
+    
         if ($validated['delivery_option'] === 'delivery') {
             $request->validate([
                 'recipient_name' => 'required|string|max:100',
@@ -35,72 +35,47 @@ class CartController extends Controller
                 'address' => 'required|string|max:255',
             ]);
         }
-
-        $product = Product::with('images')->where('slug', $slug)->firstOrFail();
-        $quantity = (int) $validated['quantity'];
-
-        $cart = session()->get('cart', []);
-
-        if (isset($cart[$slug])) {
-            // Update all necessary fields
-            $cart[$slug]['quantity'] = $quantity;
-            $cart[$slug]['start_date'] = $validated['start_date'];
-            $cart[$slug]['end_date'] = $validated['end_date'];
-            $cart[$slug]['delivery_option'] = $validated['delivery_option'];
-        
-            if ($validated['delivery_option'] === 'delivery') {
-                $cart[$slug]['delivery_details'] = [
-                    'recipient_name' => $request->input('recipient_name'),
-                    'phone' => $request->input('phone'),
-                    'address' => $request->input('address'),
-                ];
-            } else {
-                unset($cart[$slug]['delivery_details']);
-            }
-        } else {
-            $cart[$slug] = [
-                'name' => $product->name,
-                'price' => $product->price,
-                'image' => $product->first_image_url,
-                'quantity' => $quantity,
-                'slug' => $slug,
+    
+        $product = Product::where('slug', $slug)->firstOrFail();
+    
+        // Update jika cart sudah ada
+        $cartItem = Cart::updateOrCreate(
+            [
+                'user_id' => Auth::id(),
+                'product_id' => $product->id,
+            ],
+            [
+                'quantity' => $validated['quantity'],
                 'start_date' => $validated['start_date'],
                 'end_date' => $validated['end_date'],
                 'delivery_option' => $validated['delivery_option'],
-            ];
-        
-            if ($validated['delivery_option'] === 'delivery') {
-                $cart[$slug]['delivery_details'] = [
-                    'recipient_name' => $request->input('recipient_name'),
-                    'phone' => $request->input('phone'),
-                    'address' => $request->input('address'),
-                ];
-            }
-        }
-        
-
-        $message = isset($cart[$slug]) ? 'Cart updated successfully.' : 'Product added to cart.';
-        session()->put('cart', $cart);
-        return redirect()->route('cart')->with('success', $message);
-
+                'delivery_details' => $validated['delivery_option'] === 'delivery' ? json_encode([
+                    'recipient_name' => $request->recipient_name,
+                    'phone' => $request->phone,
+                    'address' => $request->address,
+                ]) : null,
+            ]
+        );
+    
+        return redirect()->route('cart')->with('success', 'Cart updated successfully.');
     }
-
     
 
     public function remove($slug)
     {
-        $cart = session()->get('cart', []);
-
-        if (isset($cart[$slug])) {
-            unset($cart[$slug]);
-            session()->put('cart', $cart);
-        }
-
-        logger()->info('Cart after remove:', $cart);
-
+        $user = Auth::user();
+    
+        // Cari product berdasarkan slug
+        $product = Product::where('slug', $slug)->firstOrFail();
+    
+        // Hapus cart item berdasarkan user_id dan product_id
+        Cart::where('user_id', $user->id)
+            ->where('product_id', $product->id)
+            ->delete();
+    
         return redirect()->route('cart')->with('success', 'Product removed from cart.');
     }
-
+    
     public function updateDelivery(Request $request, $slug)
     {
     $cart = session()->get('cart', []);

@@ -76,6 +76,11 @@
                         <label class="block text-purple-700 font-semibold mb-2">Rental Price</label>
                         <input type="number" name="price" placeholder="e.g. 75000" class="w-full bg-purple-100 rounded-full px-6 py-3 text-gray-500 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-purple-300" required>
                     </div>
+                    <div>
+                        <label class="block text-purple-700 font-semibold mb-2">Max Rent Duration (days)</label>
+                        <input type="number" name="max_rent_duration" min="1" placeholder="e.g. 3" class="w-full bg-purple-100 rounded-full px-6 py-3 text-gray-500 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-purple-300" required>
+                    </div>
+
                 </div>
 
                 <!-- Buttons -->

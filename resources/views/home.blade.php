@@ -33,7 +33,7 @@
       height="180"
     />
   
-  <form id="searchForm" action="{{ route('search') }}" method="GET" ...
+  <form id="searchForm" action="{{ route('search.result') }}" method="GET" ...
   class="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-[95%] sm:w-[90%] max-w-3xl
          bg-[#E9DFF7] bg-opacity-80 backdrop-blur-sm rounded-xl shadow-md
          flex flex-nowrap items-center overflow-x-auto divide-x divide-[#3E3667]
@@ -43,7 +43,7 @@
   <div class="flex-1 min-w-[70px] px-2 sm:px-4 py-2 sm:py-3">
     <input
       type="text"
-      name="product"
+      name="query"
       placeholder="PRODUCT"
       class="w-full font-semibold text-[#3E3667] bg-transparent
              focus:outline-none placeholder:text-[#3E3667] border-b-2 border-transparent
