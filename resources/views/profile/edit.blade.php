@@ -117,6 +117,58 @@
                 </button>
             </div>
         </form>
+        
     </main>
 </div>
+
+<div id="notification-card"
+    class="fixed top-5 right-[-400px] w-72 p-4 bg-purple-50 border rounded-lg shadow-lg transition-all duration-500 ease-in-out z-50 hidden">
+    <p class="text-sm text-gray-800" id="notification-message">Pesan notifikasi</p>
+</div>
+
+<style>
+    #notification-card.show {
+        right: 20px;
+    }
+</style>
 @endsection
+
+@push('scripts')
+<script>
+    function showNotification(message) {
+        const card = document.getElementById('notification-card');
+        const text = document.getElementById('notification-message');
+
+        text.textContent = message;
+        card.classList.remove('hidden');
+        card.classList.add('show');
+
+        // Sembunyikan setelah 4 detik
+        setTimeout(() => {
+            card.classList.remove('show');
+            setTimeout(() => {
+                card.classList.add('hidden');
+            }, 500); // biar animasi keluar selesai dulu
+        }, 4000);
+    }
+
+    // Contoh penggunaan otomatis dari validasi file
+    document.addEventListener('DOMContentLoaded', function () {
+        window.checkFileSize = function (input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            if (file.size > 1024 * 1024) {
+                showNotification("Ukuran gambar tidak boleh lebih dari 1MB.");
+                input.value = ""; // reset file input
+            } else {
+                input.form.submit(); // auto submit jika valid
+            }
+        };
+    });
+</script>
+
+@endpush
+
+
+

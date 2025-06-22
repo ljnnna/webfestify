@@ -42,9 +42,13 @@
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button class="flex items-center focus:outline-none">
-                                <img class="h-10 w-10 rounded-full object-cover border-2 border-purple-400"
-                                 src="{{ Auth::user()->profile ? asset('storage/' . Auth::user()->profile) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=8b5cf6&color=fff' }}"
-                                 alt="User Avatar">
+                            <img class="h-10 w-10 rounded-full object-cover border-2 border-purple-400"
+     src="{{ Auth::user()->picture 
+              ? asset('storage/' . Auth::user()->picture) . '?' . now()->timestamp 
+              : asset('images/default-user.png') }}"
+     alt="User Avatar">
+
+
                             </button>
                         </x-slot>
 

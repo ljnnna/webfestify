@@ -32,15 +32,24 @@ class ProfileController extends Controller
     public function uploadPicture(Request $request)
     {
         $request->validate([
-            'picture' => 'required|image|max:2048',
+            'picture' => 'required|image|mimes:jpg,jpeg,png,webp|max:1024', // 1024 KB = 1 MB
+        ], [
+            'picture.max' => 'Ukuran gambar tidak boleh melebihi 1MB.',
+            'picture.mimes' => 'Format gambar harus jpg, jpeg, png, atau webp.',
         ]);
-
-        $path = $request->file('picture')->store('profile-picture', 'public');
-
+    
         $user = $request->user();
+    
+        // Hapus gambar lama jika ada
+        if ($user->picture && Storage::disk('public')->exists($user->picture)) {
+            Storage::disk('public')->delete($user->picture);
+        }
+    
+        // Simpan gambar baru
+        $path = $request->file('picture')->store('profile-pictures', 'public');
         $user->picture = $path;
         $user->save();
-
+    
         return back()->with('status', 'Foto profil diperbarui.');
     }
 
