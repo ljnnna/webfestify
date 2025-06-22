@@ -79,12 +79,11 @@ class Product extends Model
         return $query->where('status', 'available');
     }
 
-    // Di App\Models\Product.php
-public function getFirstImageUrlAttribute()
-{
-    return $this->images->first()?->path 
-        ? asset('storage/' . $this->images->first()->path)
-        : asset('images/default.png');
-}
+    public function getFirstImageUrlAttribute()
+    {
+        return $this->images->first()?->path 
+            ? asset('storage/' . $this->images->first()->path)
+            : asset('images/default.png');
+    }
 
 }
