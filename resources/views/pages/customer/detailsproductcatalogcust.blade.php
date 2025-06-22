@@ -82,95 +82,95 @@
           </small>
         </div>
 
-        <!-- Rental Date Selection -->
-        <div class="mb-8">
-          <button id="select-date-btn"
-            class="w-full bg-purple-100 border border-purple-500 text-purple-900 font-semibold rounded py-3 hover:bg-purple-50 transition-colors">Select
-            Rental Date</button>
+<!-- Rental Date Selection -->
+<div class="mb-8">
+  <button id="select-date-btn"
+    class="w-full bg-purple-100 border border-purple-500 text-purple-900 font-semibold rounded py-3 hover:bg-purple-50 transition-colors">Select Rental Date</button>
 
-          <div id="datepicker-wrapper" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
-            <div>
-              <label class="block text-[#6D5983] font-semibold mb-2">Start Date</label>
-              <input id="start-date" type="date"
-                class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 text-[#6D5983] focus:border-[#6B549A] transition-colors" />
-            </div>
-            <div>
-              <label class="block text-[#6D5983] font-semibold mb-2">End Date</label>
-              <input id="end-date" type="date"
-                class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 text-[#6D5983] focus:border-[#6B549A] transition-colors" />
-            </div>
+  <div id="datepicker-wrapper" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
+    <div>
+      <label class="block text-[#6D5983] font-semibold mb-2">Start Date</label>
+      <input id="start-date" type="date"
+        class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 text-[#6D5983] focus:border-[#6B549A] transition-colors" />
+    </div>
+    <div>
+      <label class="block text-[#6D5983] font-semibold mb-2">End Date</label>
+      <input id="end-date" type="date"
+        class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 text-[#6D5983] focus:border-[#6B549A] transition-colors" />
+    </div>
+  </div>
+</div>
+
+<!-- Delivery Option -->
+<div class="mb-8">
+  <button id="select-delivery-btn"
+    class="w-full bg-purple-100 border border-purple-500 text-purple-900 font-semibold rounded py-3 hover:bg-purple-50 transition-colors">
+    Select Delivery Option
+  </button>
+
+  <div id="delivery-options-wrapper" class="mt-6 space-y-4 hidden">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Pick Up -->
+      <button id="pickup-option-btn"
+        class="delivery-option-btn border-2 border-gray-300 rounded-lg p-4 text-left hover:border-[#6B549A] transition-colors">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-store text-[#6B549A]"></i>
+          <div>
+            <div class="font-medium text-[#2E1B5F]">Pick Up</div>
+            <div class="text-sm text-[#6D5983]">Free - Pick up at store</div>
           </div>
         </div>
+      </button>
 
-        <!-- Delivery Option -->
-        <div class="mb-8">
-          <button id="select-delivery-btn"
-            class="w-full bg-purple-100 border border-purple-500 text-purple-900 font-semibold rounded py-3 hover:bg-purple-50 transition-colors">
-            Select Delivery Option
-          </button>
-
-          <div id="delivery-options-wrapper" class="mt-6 space-y-4 hidden">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Pick Up -->
-              <button id="pickup-option-btn"
-                class="delivery-option-btn border-2 border-gray-300 rounded-lg p-4 text-left hover:border-[#6B549A] transition-colors">
-                <div class="flex items-center gap-3">
-                  <i class="fas fa-store text-[#6B549A]"></i>
-                  <div>
-                    <div class="font-medium text-[#2E1B5F]">Pick Up</div>
-                    <div class="text-sm text-[#6D5983]">Free - Pick up at store</div>
-                  </div>
-                </div>
-              </button>
-
-              <!-- Delivery -->
-              <button id="delivery-option-btn"
-                class="delivery-option-btn border-2 border-gray-300 rounded-lg p-4 text-left hover:border-[#6B549A] transition-colors">
-                <div class="flex items-center gap-3">
-                  <i class="fas fa-truck text-[#6B549A]"></i>
-                  <div>
-                    <div class="font-medium text-[#2E1B5F]">Delivery</div>
-                    <div class="text-sm text-[#6D5983]">Rp.10.000 - Delivered to address</div>
-                  </div>
-                </div>
-              </button>
-            </div>
-
-            <!-- Pickup Info -->
-            <div id="pickup-info" class="bg-[#F8F4FF] border border-[#E6D9F7] p-4 rounded-lg hidden">
-              <h4 class="font-semibold text-[#2E1B5F] mb-2">Store Information</h4>
-              <p class="text-sm text-[#6D5983] mb-1">
-                <i class="fas fa-map-marker-alt mr-2 text-[#6B549A]"></i>
-                Jl. Ahmad Yani, Batam Center, Batam
-              </p>
-              <p class="text-sm text-[#6D5983]">
-                <i class="fas fa-clock mr-2 text-[#6B549A]"></i>
-                Open: Monday - Friday, 08:00 - 17:00
-              </p>
-            </div>
-
-            <!-- Delivery Address Form -->
-            <div id="delivery-address-form" class="bg-[#F8F4FF] border border-[#E6D9F7] p-4 rounded-lg hidden">
-              <h4 class="font-semibold text-[#2E1B5F] mb-3">Delivery Address</h4>
-              <div class="space-y-3">
-                <textarea id="delivery-address" rows="3"
-                  class="w-full border-2 border-gray-300 rounded-lg p-3 text-[#6D5983] focus:border-[#6B549A] transition-colors resize-none"
-                  placeholder="Enter complete address..."></textarea>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <input type="tel" id="phone-number"
-                    class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-[#6D5983] focus:border-[#6B549A] transition-colors"
-                    placeholder="Phone number" />
-                  <input type="text" id="recipient-name"
-                    class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-[#6D5983] focus:border-[#6B549A] transition-colors"
-                    placeholder="Recipient name" />
-                </div>
-                <button id="save-delivery-address-btn"
-                  class="w-full bg-[#6B549A] text-white rounded-full py-2 font-semibold hover:bg-[#5a4788] transition-colors">Save
-                  Address</button>
-              </div>
-            </div>
+      <!-- Delivery -->
+      <button id="delivery-option-btn"
+        class="delivery-option-btn border-2 border-gray-300 rounded-lg p-4 text-left hover:border-[#6B549A] transition-colors">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-truck text-[#6B549A]"></i>
+          <div>
+            <div class="font-medium text-[#2E1B5F]">Delivery</div>
+            <div class="text-sm text-[#6D5983]">Rp.10.000 - Delivered to address</div>
           </div>
         </div>
+      </button>
+    </div>
+
+    <!-- Pickup Info -->
+    <div id="pickup-info" class="bg-[#F8F4FF] border border-[#E6D9F7] p-4 rounded-lg hidden">
+      <h4 class="font-semibold text-[#2E1B5F] mb-2">Store Information</h4>
+      <p class="text-sm text-[#6D5983] mb-1">
+        <i class="fas fa-map-marker-alt mr-2 text-[#6B549A]"></i>
+        Jl. Ahmad Yani, Batam Center, Batam
+      </p>
+      <p class="text-sm text-[#6D5983]">
+        <i class="fas fa-clock mr-2 text-[#6B549A]"></i>
+        Open: Monday - Friday, 08:00 - 17:00
+      </p>
+    </div>
+
+    <!-- Delivery Address Form -->
+    <div id="delivery-address-form" class="bg-[#F8F4FF] border border-[#E6D9F7] p-4 rounded-lg hidden">
+      <h4 class="font-semibold text-[#2E1B5F] mb-3">Delivery Address</h4>
+      <div class="space-y-3">
+        <textarea id="delivery-address" rows="3"
+          class="w-full border-2 border-gray-300 rounded-lg p-3 text-[#6D5983] focus:border-[#6B549A] transition-colors resize-none"
+          placeholder="Enter complete address..."></textarea>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <input type="tel" id="phone-number"
+            class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-[#6D5983] focus:border-[#6B549A] transition-colors"
+            placeholder="Phone number" />
+          <input type="text" id="recipient-name"
+            class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-[#6D5983] focus:border-[#6B549A] transition-colors"
+            placeholder="Recipient name" />
+        </div>
+        <button id="save-delivery-address-btn"
+          class="w-full bg-[#6B549A] text-white rounded-full py-2 font-semibold hover:bg-[#5a4788] transition-colors">
+          Save Address
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
         <!-- Product Tabs -->
         <div class="mt-6 sm:mt-10 border-t border-gray-300 pt-4 sm:pt-6">
