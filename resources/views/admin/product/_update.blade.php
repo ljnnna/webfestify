@@ -1,4 +1,4 @@
-<!-- Modal Structure - Working Version -->
+<!-- Modal Structure - Fixed Version -->
 <div x-show="editId === {{ $product->id }}" 
      x-transition 
      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
@@ -43,14 +43,14 @@
                                 </div>
                             </div>
 
-                            <!-- Current Images Display -->
+                            <!-- Current Images Display - FIXED -->
                             <div>
                                 <p class="text-purple-700 font-semibold text-sm mb-2">Current Images:</p>
                                 <div class="grid grid-cols-2 gap-2">
                                     @foreach ($product->images as $image)
-                                        <div class="relative">
+                                        <div class="relative current-image" data-image-id="{{ $image->id }}">
                                             <img src="{{ asset('storage/' . $image->path) }}" alt="Product Image" class="w-20 h-20 object-cover border-2 border-purple-300 rounded-lg">
-                                            <button type="button" class="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full p-1" onclick="removeExistingImage('{{ $image->id }}')">X</button>
+                                            <button type="button" class="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full p-1" onclick="removeExistingImage({{ $product->id }}, {{ $image->id }})">×</button>
                                             <div class="absolute top-1 left-1 bg-purple-600 text-white text-xs px-1.5 py-0.5 rounded-full font-semibold">
                                                 {{ $loop->iteration }}
                                             </div>
@@ -243,32 +243,66 @@ document.addEventListener('alpine:init', () => {
     }));
 });
 
-// Function untuk menghapus gambar existing (AJAX call ke backend)
-function removeExistingImage(imageId) {
-    if (confirm('Are you sure you want to remove this image?')) {
-        // Kirim AJAX request untuk hapus gambar dari database
-        fetch(`/admin/product/image/${imageId}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'Content-Type': 'application/json',
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Hapus element dari DOM
-                const imageElement = document.querySelector(`button[onclick="removeExistingImage('${imageId}')"]`).closest('.relative');
-                imageElement.remove();
-                alert('Image removed successfully');
-            } else {
-                alert('Failed to remove image');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error removing image');
-        });
+// FIXED: Function untuk menghapus gambar existing
+function removeExistingImage(productId, imageId) {
+    if (!confirm('Are you sure you want to remove this image?')) {
+        return; // Return hanya jika user cancel
     }
+
+    console.log('Removing image:', imageId, 'from product:', productId);
+
+    const url = `/admin/product/${productId}/image/${imageId}`;
+    
+    fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        if (data.success) {
+            const imageElement = document.querySelector(`[data-image-id="${imageId}"]`);
+            console.log('Found image element:', imageElement);
+            if (imageElement) {
+                // Hapus gambar preview jika ada
+                const previewImage = document.querySelector(`img[src*="${imageElement.querySelector('img').src}"]`);
+                console.log('Found preview image:', previewImage);
+                if (previewImage) {
+                    previewImage.remove();
+                }
+
+                // Animasi fade out sebelum remove
+                imageElement.style.transition = 'opacity 0.3s';
+                imageElement.style.opacity = '0';
+                
+                setTimeout(() => {
+                    imageElement.remove();
+                    console.log('Image element removed from DOM');
+                }, 300);
+            } else {
+                console.log('Image element not found');
+            }
+            
+            alert('Image deleted successfully');
+        } else {
+            throw new Error(data.message || 'Unknown error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error removing image: ' + error.message);
+    });
 }
+
 </script>

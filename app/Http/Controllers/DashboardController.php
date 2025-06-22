@@ -15,7 +15,7 @@ class DashboardController extends Controller
 
         $order_new = Order::where('status', 'new')->count();
         $order_progress = Order::where('status', 'progress')->count();
-        $order_done = Order::where('status', 'done')->count();
+        $order_done = Order::where('status', 'completed')->count();
 
         $product_available = Product::where('status', 'available')->count();
         $product_rented = Product::where('status', 'rented')->count();

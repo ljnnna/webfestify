@@ -79,15 +79,18 @@ class ProductController extends Controller
         return view('admin.product.edit', compact('product', 'categories'));
     }
 
-    public function deleteImage($imageId)
+    public function deleteImage(Product $product, $imageId)
     {
         try {
-            $image = ProductImage::findOrFail($imageId);
+            // Cari image berdasarkan ID hanya dalam relasi milik product ini
+            $image = $product->images()->findOrFail($imageId);
 
+            // Hapus dari storage jika file-nya ada
             if (Storage::disk('public')->exists($image->path)) {
                 Storage::disk('public')->delete($image->path);
             }
 
+            // Hapus record dari database
             $image->delete();
 
             return response()->json([
@@ -95,12 +98,19 @@ class ProductController extends Controller
                 'message' => 'Image deleted successfully'
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to delete image:', [
+                'error' => $e->getMessage(),
+                'product_id' => $product->id,
+                'image_id' => $imageId
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete image: ' . $e->getMessage()
             ], 500);
         }
     }
+
 
     public function update(Request $request, $id)
     {
