@@ -20,6 +20,4 @@
             Edit
         </span> 
     </label>
-
-    <p id="image-error" class="text-sm text-red-600 mt-2 hidden"></p>
 </form>
