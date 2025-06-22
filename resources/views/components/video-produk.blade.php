@@ -1,5 +1,5 @@
 <!-- VIDEO PRODUK -->
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+<section class="w-full">
   <div class="relative aspect-w-16 aspect-h-9 overflow-hidden rounded-xl group">
     <video
       autoplay

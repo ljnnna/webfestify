@@ -43,7 +43,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/rental-history', [ProfileController::class, 'rentalHistory'])->name('profile.rentalHistory');
 
     // Customer pages
-    Route::get('/catalog', [CatalogController::class, 'catalog'])->name('catalog');
+
     Route::get('/details', [DetailsController::class, 'details'])->name('details');
     Route::post('rent-now', [ProductController::class, 'processRentNow'])->name('rent.now');
         // Display payment page
@@ -84,8 +84,14 @@ Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 Route::post('/register', [RegisteredUserController::class, 'store']);
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
+Route::middleware('guest')->group(function () {
+    Route::get('/login', fn () => view('auth.login'))->name('login');
+    Route::get('/register', fn () => view('auth.register'))->name('register');
+});
+
 // ======================= SEARCH ===========================
-Route::get('/search', [SearchController::class, 'search'])->name('search');
+Route::get('/search/name', [SearchController::class, 'searchByName'])->name('search.name');
+Route::get('/search/result', [SearchController::class, 'search'])->name('search.result');
 
 // ======================= STATIC PAGES ===========================
 Route::get('/learnmore', fn () => view('pages.customer.learnmore'))->name('learnmore');

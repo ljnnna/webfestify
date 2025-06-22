@@ -1,4 +1,5 @@
     <!-- Product Card -->
+    @foreach ($products as $product)
     <article
         class="bg-white rounded-xl shadow-md shadow-gray-300 p-4 flex flex-col h-full"
     >
@@ -25,4 +26,4 @@
 
         </div>
     </article>
-
+    @endforeach

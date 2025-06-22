@@ -17,22 +17,46 @@ class Product extends Model
         'price',
         'stock_quantity',
         'status',
+        'available_from',           
+        'available_until',          
+        'max_rent_duration',        
     ];        
 
     protected static function boot()
     {
         parent::boot();
-
+    
         static::creating(function ($product) {
-            $product->slug = Str::slug($product->name);
+            if (!$product->slug) {
+                $product->slug = Str::slug($product->name);
+            }
+        
+            // Fallback jika controller tidak set
+            if (!$product->available_from) {
+                $product->available_from = now();
+            }
+        
+            if (!$product->available_until && $product->max_rent_duration) {
+                $product->available_until = $product->available_from
+                    ? \Carbon\Carbon::parse($product->available_from)->copy()->addDays($product->max_rent_duration)
+                    : now()->addDays($product->max_rent_duration);
+            }
         });
-
+        
+    
         static::updating(function ($product) {
             if ($product->isDirty('name')) {
                 $product->slug = Str::slug($product->name);
             }
+    
+            // Jika max_rent_duration diubah, update juga available_until
+            if ($product->isDirty('max_rent_duration') && $product->available_from) {
+                $product->available_until = \Carbon\Carbon::parse($product->available_from)
+                    ->addDays($product->max_rent_duration);
+            }
         });
     }
+    
 
     public function getRouteKeyName()
     {

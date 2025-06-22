@@ -41,44 +41,44 @@
         </div>
 
         {{-- Cart Items --}}
-        @php $cart = session('cart', []); @endphp
-
-        @if(count($cart) > 0)
-        <div class="space-y-4">
-    @foreach($cart as $slug => $item)
+        @php $cart = $cart ?? collect(); @endphp
+        @if($cart->count() > 0)
+<div class="space-y-4">
+    @foreach($cart as $item)
+        @php
+            $product = $item->product;
+            $slug = $product->slug;
+        @endphp
     <div class="relative group cart-item bg-gradient-to-r from-purple-50 to-pink-50 rounded p-4 shadow overflow-hidden"
-        data-price="{{ $item['price'] }}" data-base-price="{{ $item['price'] }}" data-delivery="{{ $item['delivery_option'] }}">
+        data-price="{{ $product->price }}" data-base-price="{{ $product->price }}" data-delivery="{{ $item->delivery_option }}">
 
         {{-- Link overlay seluruh card --}}
         <a href="{{ route('product.show', $slug) }}" class="absolute inset-0 z-0"></a>
 
-
-        {{-- Konten card --}}
         <div class="relative z-10 flex flex-col sm:grid sm:grid-cols-5 gap-3 sm:gap-4">
             <div class="flex items-start gap-3 sm:col-span-2 sm:items-center">
                 <input type="checkbox"
                     class="item-check relative z-20 w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500 mt-1 sm:mt-0">
-                <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}"
+                <img src="{{ $product->main_image_url }}" alt="{{ $product->name }}"
                     class="relative z-10 w-24 h-24 object-cover rounded pointer-events-none" />
                 <div>
-                    <h3 class="font-semibold text-gray-800 text-sm sm:text-base">{{ $item['name'] }}</h3>
-                    <p class="text-xs sm:text-sm text-gray-600">{{ $item['version'] ?? '' }}</p>
+                    <h3 class="font-semibold text-gray-800 text-sm sm:text-base">{{ $product->name }}</h3>
+                    <p class="text-xs sm:text-sm text-gray-600">{{ $product->version ?? '' }}</p>
                 </div>
             </div>
 
             <div class="flex flex-wrap sm:flex-row sm:col-span-3 sm:items-center sm:justify-between gap-2 sm:gap-0">
                 <div class="text-sm text-gray-700 sm:text-center min-w-[100px]">
-                    <span class="font-semibold item-total-price block">IDR {{ number_format($item['price']) }}</span>
+                    <span class="font-semibold item-total-price block">IDR {{ number_format($product->price) }}</span>
                     <span class="text-xs text-gray-500">
-                        IDR {{ number_format($item['price']) }}/day × {{ $item['quantity'] }}
+                        IDR {{ number_format($product->price) }}/day × {{ $item->quantity }}
                     </span>
                 </div>
 
-                <div class="flex justify-center items-center gap-2 z-20">
-                    <button class="decrement bg-gray-300 text-black px-2 py-1 rounded hover:bg-gray-400">-</button>
-                    <span class="count">{{ $item['quantity'] }}</span>
-                    <button class="increment bg-gray-300 text-black px-2 py-1 rounded hover:bg-gray-400">+</button>
+                <div class="flex justify-center items-center z-20">
+                    <span class="count text-sm text-gray-800 font-medium">{{ $item->quantity }}</span>
                 </div>
+
 
                 <div class="flex justify-end sm:justify-center min-w-[40px] z-20">
                     <form action="{{ route('cart.remove', $slug) }}" method="POST">
@@ -94,10 +94,10 @@
     </div>
     @endforeach
 </div>
+@else
+    <div class="text-center py-10 text-gray-500">Your cart is empty.</div>
+@endif
 
-        @else
-        <div class="text-center py-10 text-gray-500">Your cart is empty.</div>
-        @endif
 
         {{-- Order Summary --}}
         <div class="mt-8">
@@ -172,29 +172,29 @@ document.addEventListener('DOMContentLoaded', function () {
 }
 
 
-    document.querySelectorAll('.increment').forEach(btn => {
-        btn.addEventListener('click', e => {
-            const item = e.target.closest('.cart-item');
-            const countEl = item.querySelector('.count');
-            let count = parseInt(countEl.innerText) + 1;
-            countEl.innerText = count;
-            updateItemPriceDisplay(item);
-            updateSummary();
-        });
-    });
+    // document.querySelectorAll('.increment').forEach(btn => {
+    //     btn.addEventListener('click', e => {
+    //         const item = e.target.closest('.cart-item');
+    //         const countEl = item.querySelector('.count');
+    //         let count = parseInt(countEl.innerText) + 1;
+    //         countEl.innerText = count;
+    //         updateItemPriceDisplay(item);
+    //         updateSummary();
+    //     });
+    // });
 
-    document.querySelectorAll('.decrement').forEach(btn => {
-        btn.addEventListener('click', e => {
-            const item = e.target.closest('.cart-item');
-            const countEl = item.querySelector('.count');
-            let count = parseInt(countEl.innerText);
-            if (count > 1) {
-                countEl.innerText = count - 1;
-                updateItemPriceDisplay(item);
-                updateSummary();
-            }
-        });
-    });
+    // document.querySelectorAll('.decrement').forEach(btn => {
+    //     btn.addEventListener('click', e => {
+    //         const item = e.target.closest('.cart-item');
+    //         const countEl = item.querySelector('.count');
+    //         let count = parseInt(countEl.innerText);
+    //         if (count > 1) {
+    //             countEl.innerText = count - 1;
+    //             updateItemPriceDisplay(item);
+    //             updateSummary();
+    //         }
+    //     });
+    // });
 
     document.querySelectorAll('.remove').forEach(btn => {
         btn.addEventListener('click', function (e) {
