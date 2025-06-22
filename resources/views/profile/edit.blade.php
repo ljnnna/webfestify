@@ -117,6 +117,33 @@
                 </button>
             </div>
         </form>
+        
     </main>
 </div>
+
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        window.checkFileSize = function (input) {
+            const file = input.files[0];
+            const errorElement = document.getElementById('image-error');
+
+            if (!file) return;
+
+            if (file.size > 1024 * 1024) {
+                errorElement.textContent = "Ukuran gambar tidak boleh lebih dari 1MB.";
+                errorElement.classList.remove("hidden");
+                input.value = ""; // reset file input
+            } else {
+                errorElement.classList.add("hidden");
+                input.form.submit(); // submit otomatis kalau ukuran valid
+            }
+        };
+    });
+</script>
+@endpush
+
+
+

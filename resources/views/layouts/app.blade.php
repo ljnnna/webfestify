@@ -49,5 +49,7 @@
 
   {{-- Footer stays at the bottom --}}
   @include('components.footer')
+
+  @stack('scripts')
 </body>
 </html>
