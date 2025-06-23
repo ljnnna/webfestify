@@ -31,7 +31,6 @@
     <!-- SIDEBAR -->
     <x-sidebar-profile :user="auth()->user()" />
 
-
     <!-- ISI HALAMAN -->
     <div class="flex-1 min-h-screen bg-gray-50 p-6">
         <div class="bg-white rounded-2xl shadow-lg p-8 max-w-3xl w-full mx-auto mb-10">
@@ -57,20 +56,46 @@
                 </div>
 
                 {{-- Informasi Produk & Riwayat --}}
-                <div class="flex-1 text-sm text-gray-700">
-                    <p class="text-red-600 font-semibold mb-1">Informasi Produk:</p>
-                    <p class="mb-4">Iphone &nbsp; <strong>16 Pro</strong></p>
+<div class="flex-1 text-sm text-gray-700">
+    <p class="text-red-600 font-semibold mb-1">Informasi Produk:</p>
+    <p class="mb-4">Iphone &nbsp; <strong>16 Pro</strong></p>
 
-                    <p class="text-red-600 font-semibold mb-1">Riwayat Pemesanan:</p>
-                    <ul class="list-disc list-inside mb-6">
-                        <li>Pesanan Masih Dalam Sewaan</li>
-                        <li>Pesanan Telah selesai.</li>
-                    </ul>
+    <p class="text-red-600 font-semibold mb-1">Riwayat Pemesanan:</p>
+    <ul class="list-disc list-inside mb-6">
+        <li>Pesanan Masih Dalam Sewaan</li>
+        <li>Pesanan Telah selesai.</li>
+    </ul>
 
-                    <a href="#" class="text-red-500 font-medium hover:underline text-sm">Lihat Konfirmasi Pengembalian</a>
+    <a href="#" class="text-red-500 font-medium hover:underline text-sm">Lihat Konfirmasi Pengembalian</a>
+    @foreach ($rentalList as $rental)
+      @foreach ($rental->rentalItems as $item)
+        {{-- Informasi Produk --}}
+        <div class="mb-6 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+            <div class="flex justify-between items-center mb-2">
+                <h4 class="font-semibold text-lg text-purple-800">{{ $item->product->name }}</h4>
+                <span class="text-xs text-gray-500">{{ $item->product->category->name ?? '' }}</span>
+            </div>
+            <p class="text-sm text-gray-600 mb-2">
+                Durasi Sewa: {{ $item->rental_days }} hari<br>
+                Harga Sewa: Rp{{ number_format($item->price, 0, ',', '.') }}
+            </p>
+
+            {{-- Jika status Completed dan belum di-review --}}
+            @if($rental->status === 'Completed' && !$item->review)
+                <div class="mt-4">
+                    <x-add-review :rentalItem="$item" />
+                </div>
+            @elseif($item->review)
+                <p class="text-green-600 text-sm font-medium mt-2">✅ Review submitted</p>
+            @endif
+        </div>
+      @endforeach
+    @endforeach
+
+</div>
+
                 </div>
             </div>
-
         </div>
     </div>
 </div>
