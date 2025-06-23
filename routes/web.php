@@ -15,10 +15,9 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\WelcomeController;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+Route::get('/', [WelcomeController::class, 'welcome'])->name('welcome');
 
 // ======================= ADMIN ROUTES ===========================
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
