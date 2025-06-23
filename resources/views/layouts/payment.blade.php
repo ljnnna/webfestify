@@ -64,6 +64,9 @@
     @yield('extra-css')
 </head>
 <body class="@yield('body-class', 'bg-gray-100 min-h-screen')">
+
+<!-- Include Navbar -->
+@include('layouts.navigation')
     <main>
         @yield('content')
     </main>

@@ -41,10 +41,13 @@
 @include('components.images-layout')
 
 <!-- Product Grid -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 flex-1">
-        @foreach($products as $product)
-            <x-productgridcatalog :product="$product" />
-        @endforeach
-    </section>
+<section class="mb-20 max-w-7xl mx-auto px-6 sm:px-10 bg-white py-10"> 
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        <!-- Card -->
+        @include('components.product-new')
+    </div>
+</section>
+
+
 
 @endsection
