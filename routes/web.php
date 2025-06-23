@@ -23,7 +23,12 @@ Route::get('/', [WelcomeController::class, 'welcome'])->name('welcome');
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/userfest', [UsersController::class, 'index'])->name('user');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+    Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::post('/orders/{id}/condition', [OrderController::class, 'uploadCondition'])->name('orders.uploadCondition');
     Route::resource('product', ProductController::class);
+    Route::delete('/product/{product}/image/{imageId}', [ProductController::class, 'deleteImage'])
+    ->name('product.image.destroy');
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::get('/home', function () {
         return redirect()->route('home');
     })->name('home');

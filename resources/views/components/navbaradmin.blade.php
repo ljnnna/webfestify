@@ -9,7 +9,11 @@
             <button @click="openNotification = !openNotification" class="focus:outline-none relative">
                 <x-icon name="bell" class="text-[#493862] text-xl hover:text-purple-300 transition duration-200" />
                 <!-- Badge notifikasi (opsional) -->
-                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+                 @if($newOrderCount > 0)
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                    {{ $newOrderCount }}
+                </span>
+                @endif
             </button>
 
             <!-- Modal Notifikasi -->
@@ -27,6 +31,7 @@
                 <!-- List Notifikasi -->
                 <div class="divide-y divide-gray-200">
                     <!-- Notifikasi 1 -->
+                    @foreach($orders as $order)
                     <div class="px-4 py-3 hover:bg-gray-50">
                         <div class="flex items-start">
                             <div class="flex-shrink-0">
@@ -36,43 +41,16 @@
                             </div>
                             <div class="ml-3 flex-1">
                                 <p class="text-sm font-medium text-gray-900">Penyewaan Baru</p>
-                                <p class="text-sm text-gray-600">John Doe menyewa paket Wedding Premium untuk tanggal 15 Juni 2025</p>
-                                <p class="text-xs text-gray-400 mt-1">2 jam yang lalu</p>
+                                <p class="text-sm text-gray-600">
+                                    {{ $order->order_code }}, {{ $order->user->name }} menyewa untuk tanggal {{ \Carbon\Carbon::parse($order->start_date)->translatedFormat('d F Y') }}
+                                </p>
+                                <p class="text-xs text-gray-400 mt-1">
+                                    {{ $order->created_at->diffForHumans() }}
+                                </p>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Notifikasi 2 -->
-                    <div class="px-4 py-3 hover:bg-gray-50">
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                    <x-icon name="calendar" class="w-4 h-4 text-green-600" />
-                                </div>
-                            </div>
-                            <div class="ml-3 flex-1">
-                                <p class="text-sm font-medium text-gray-900">Penyewaan Baru</p>
-                                <p class="text-sm text-gray-600">Sarah Wilson menyewa paket Birthday Deluxe untuk tanggal 20 Juni 2025</p>
-                                <p class="text-xs text-gray-400 mt-1">5 jam yang lalu</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Notifikasi 3 -->
-                    <div class="px-4 py-3 hover:bg-gray-50">
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                                    <x-icon name="calendar" class="w-4 h-4 text-purple-600" />
-                                </div>
-                            </div>
-                            <div class="ml-3 flex-1">
-                                <p class="text-sm font-medium text-gray-900">Penyewaan Baru</p>
-                                <p class="text-sm text-gray-600">Michael Chen menyewa paket Corporate Event untuk tanggal 25 Juni 2025</p>
-                                <p class="text-xs text-gray-400 mt-1">1 hari yang lalu</p>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
 
                 <!-- Footer Modal -->

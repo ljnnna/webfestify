@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function getOrdersData()
     {
         $totalOrders = Order::count();
         $completedOrders = Order::where('status', 'completed')->count();
@@ -21,13 +21,19 @@ class OrderController extends Controller
                        ->orderBy('created_at', 'desc')
                        ->get();
 
-        return view('admin.orders', compact(
-            'totalOrders',
-            'completedOrders',
-            'onProgressOrders',
-            'canceledOrders',
-            'orders'
-        ));
+        return [
+            'totalOrders' => $totalOrders,
+            'completedOrders' => $completedOrders,
+            'onProgressOrders' => $onProgressOrders,
+            'canceledOrders' => $canceledOrders,
+            'orders' => $orders,
+        ];
+    }
+
+    public function index()
+    {
+        $data = self::getOrdersData();
+        return view('admin.orders', $data);
     }
 
     public function show($id)
@@ -123,4 +129,29 @@ class OrderController extends Controller
 
         return redirect()->back()->with('success', 'Status order berhasil diupdate');
     }
+
+    public function uploadCondition(Request $request, $id)
+    {
+        $request->validate([
+            'condition_before' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'condition_after' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $order = Order::findOrFail($id);
+
+        if ($request->hasFile('condition_before')) {
+            $beforePath = $request->file('condition_before')->store('condition_images', 'public');
+            $order->condition_before = $beforePath;
+        }
+
+        if ($request->hasFile('condition_after')) {
+            $afterPath = $request->file('condition_after')->store('condition_images', 'public');
+            $order->condition_after = $afterPath;
+        }
+
+        $order->save();
+
+        return back()->with('success', 'Foto kondisi berhasil diupload');
+    }
+
 }
