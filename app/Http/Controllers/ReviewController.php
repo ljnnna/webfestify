@@ -28,8 +28,24 @@ class ReviewController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'review' => 'required|string',
+            'product_id' => 'required|exists:products,id',
+            'rental_id' => 'required|exists:rentals,id',
+        ]);
+    
+        Review::create([
+            'user_id' => auth()->id(),
+            'product_id' => $request->product_id,
+            'rental_id' => $request->rental_id,
+            'rating' => $request->rating,
+            'review' => $request->review,
+        ]);
+    
+        return back()->with('success', 'Review berhasil dikirim.');
     }
+    
 
     /**
      * Display the specified resource.

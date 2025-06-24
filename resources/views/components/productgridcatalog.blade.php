@@ -1,6 +1,7 @@
     <!-- Product Card -->
+    @foreach ($products as $product)
     <article
-        class="bg-white rounded-xl shadow-md shadow-gray-300 p-4 flex flex-col h-full"
+         class="bg-white rounded-l shadow p-4 flex flex-col h-full transition duration-200 hover:shadow-xl hover:border hover:border-purple-400"
     >
         <div class="flex-shrink-0 mb-4">
             <img
@@ -11,7 +12,7 @@
         </div>
         <div class="flex flex-col flex-grow justify-between">
             <div class="mb-4">
-                <h3 class="text-[#493862] font-semibold text-sm mb-2">{{ $product->name }}</h3>
+                <h3 class="text-[#493862] font-semibold text-xl mb-2">{{ $product->name }}</h3>
                 <p class="text-[#493862] text-xs">
                     Rp{{ number_format($product->price, 0, ',', '.') }}/day
                 </p>
@@ -25,4 +26,4 @@
 
         </div>
     </article>
-
+    @endforeach

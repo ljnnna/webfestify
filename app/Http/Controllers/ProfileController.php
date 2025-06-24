@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Rental;
 
 class ProfileController extends Controller
 {
@@ -63,9 +64,17 @@ class ProfileController extends Controller
         return view('profile.rental-information');
     }
 
-        public function rentalHistory()
+    public function rentalHistory()
     {
-        return view('profile.rental-history'); // Ganti sesuai nama file Blade kamu
+        $rentalList = Rental::with(['rentalItems.product.category', 'rentalItems.review'])
+        ->where('user_id', auth()->id())
+        ->where('status', 'Completed')
+        ->get();
+    
+    return view('profile.rental-history', compact('rentalList'));
+    
     }
+    
+    
 
 }
