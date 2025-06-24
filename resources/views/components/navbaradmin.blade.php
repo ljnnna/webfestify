@@ -1,5 +1,13 @@
-<div class="fixed top-0 left-0 right-0 h-16 flex justify-between items-center p-4 border-b bg-white z-20">
-    <div class="flex-1 text-center">
+<div class="fixed top-0 left-0 right-0 h-16 flex items-center justify-between p-4 bg-white border-b z-30">
+    <!-- Tombol toggle hamburger -->
+    <button id="sidebarToggle" class="text-2xl text-[#493862] z-50 focus:outline-none">
+        ☰
+    </button>
+    <div class="flex text-center items-center justify-between ml-6">
+        <h1 class="text-[#493862] text-xl font-bold">Hi, Admin!</h1>
+    </div>
+
+    <div class="flex-1 ml-10 text-center">
         <img src="{{ asset('images/logofestify.png') }}" alt="Logo" class="mx-auto h-10" />
     </div>
     <div class="flex items-center gap-6 mr-8">
@@ -61,33 +69,31 @@
         </div>
 
         <div x-data="{ open: false }" class="relative">
-    <!-- Icon user -->
-    <button @click="open = !open" class="focus:outline-none">
-        <x-icon name="user" class="text-[#493862] text-xl hover:text-purple-300 transition duration-200" />
-    </button>
+            <!-- Icon user -->
+            <button @click="open = !open" class="focus:outline-none">
+                <x-icon name="user" class="text-[#493862] text-xl hover:text-purple-300 transition duration-200" />
+            </button>
 
-    <!-- Pop-out menu -->
-    <div 
-        x-show="open" 
-        @click.away="open = false" 
-        x-transition 
-        class="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg border border-black-700 outline outline-1 outline-black-500 z-50"
-    >
-        <a href="{{ route('logout') }}"
-           onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-           class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-        >
-            <x-icon name="fa-solid fa-right-from-bracket" class="w-4 h-4 mr-2" />
-            Logout
-        </a>
+            <!-- Pop-out menu -->
+            <div 
+                x-show="open" 
+                @click.away="open = false" 
+                x-transition 
+                class="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg border border-black-700 outline outline-1 outline-black-500 z-50"
+            >
+                <a href="{{ route('logout') }}"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                    <x-icon name="fa-solid fa-right-from-bracket" class="w-4 h-4 mr-2" />
+                    Logout
+                </a>
 
-        <!-- Form untuk logout -->
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-            @csrf
-        </form>
+                <!-- Form untuk logout -->
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                    @csrf
+                </form>
+            </div>
+        </div>
     </div>
 </div>
-    </div>
-</div>
-
-<!-- 493862 -->

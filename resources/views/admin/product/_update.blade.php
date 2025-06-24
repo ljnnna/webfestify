@@ -145,6 +145,12 @@
                     <input type="number" name="stock_quantity" class="w-full bg-purple-100 rounded-full px-6 py-3 text-gray-500 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-purple-300" value="{{ old('stock_quantity', $product->stock_quantity) }}" required min="0">
                 </div>
 
+                <!-- Input jumlah ketersediaan product -->
+                <div class="mb-6">
+                    <label class="block text-purple-700 font-semibold mb-2">Max Rent Duration (Days)</label>
+                    <input type="number" name="max_rent_duration" class="w-full bg-purple-100 rounded-full px-6 py-3 text-gray-500 placeholder-gray-400 border-none outline-none focus:ring-2 focus:ring-purple-300" value="{{ old('max_rent_duration', $product->max_rent_duration) }}" required min="1">
+                </div>
+
                 <!-- Buttons -->
                 <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
                     <button type="submit" class="bg-[#C8A8E7] text-[#493862] font-semibold px-6 py-2 rounded-full hover:bg-purple-600 hover:text-white transition-colors">

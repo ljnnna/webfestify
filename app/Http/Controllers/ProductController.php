@@ -123,6 +123,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'images' => 'nullable|array|max:5',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'max_rent_duration' => 'required|integer|min:1|max:30'
         ]);
 
         try {
@@ -142,6 +143,7 @@ class ProductController extends Controller
                 'details' => $request->details,
                 'stock_quantity' => $request->stock_quantity,
                 'category_id' => $request->category_id,
+                'max_rent_duration' => (int) $request->max_rent_duration,
             ]);
 
             if ($request->hasFile('images')) {
