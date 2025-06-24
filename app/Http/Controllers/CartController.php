@@ -86,6 +86,31 @@ class CartController extends Controller
     }
 
     return redirect()->back()->with('success', 'Delivery option updated.');
+    }
+
+    public function paymentPage()
+{
+    $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
+
+    if ($cartItems->isEmpty()) {
+        return redirect()->route('cart')->with('error', 'Keranjang kosong.');
+    }
+
+    // Hitung total harga
+    $total = 0;
+    foreach ($cartItems as $item) {
+        $days = \Carbon\Carbon::parse($item->start_date)->diffInDays(\Carbon\Carbon::parse($item->end_date)) + 1;
+        $total += $item->product->price * $item->quantity * $days;
+    }
+
+    $paymentData = [
+        'cart_items' => $cartItems,
+        'pricing' => [
+            'total' => $total,
+        ],
+    ];
+
+    return view('pages.customer.paymentcust', compact('paymentData'));
 }
 
 }

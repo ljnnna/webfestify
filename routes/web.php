@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('rent-now', [ProductController::class, 'processRentNow'])->name('rent.now');
         // Display payment page
     Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
+    Route::get('/payment', [CartController::class, 'paymentPage'])->name('payment');
     
     // Process payment (create Midtrans transaction)
     Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
