@@ -117,9 +117,17 @@
                     </div>
                 </div>
                 <div class="mt-6">
-                    <a href="{{ route('payment') }}" class="block w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-4 rounded-lg font-semibold text-center hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                        <i class="fas fa-shopping-cart mr-2"></i> Proceed to Checkout
-                    </a>
+                <form method="POST" action="{{ route('checkout.process') }}" id="checkout-form">
+
+    @csrf
+    <input type="hidden" name="selected_cart_ids" id="selected_cart_ids">
+    <button type="submit"
+        class="block w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-4 rounded-lg font-semibold text-center hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+        <i class="fas fa-shopping-cart mr-2"></i> Proceed to Checkout
+    </button>
+</form>
+
+
                 </div>
             </div>
         </div>

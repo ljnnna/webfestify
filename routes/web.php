@@ -49,10 +49,14 @@ Route::middleware(['auth'])->group(function () {
     // Customer pages
 
     Route::get('/details', [DetailsController::class, 'details'])->name('details');
-    Route::post('rent-now', [ProductController::class, 'processRentNow'])->name('rent.now');
+    Route::post('rent-now', [PaymentController::class, 'rentNow'])->name('rent.now');
+
         // Display payment page
     Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
-    Route::get('/payment', [CartController::class, 'paymentPage'])->name('payment');
+
+    Route::get('/checkout', [PaymentController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout', [CartController::class, 'paymentPage'])->name('checkout.process');
+
     
     // Process payment (create Midtrans transaction)
     Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
