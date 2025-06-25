@@ -18,21 +18,6 @@ class CartController extends Controller
     public function add(Request $request, $slug)
     {
         if (!Auth::check()) {
-            // Simpan data form ke session sebelum redirect ke login
-            session()->flash('pending_cart_data', [
-                'slug' => $slug,
-                'quantity' => $request->quantity,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'delivery_option' => $request->delivery_option,
-                'recipient_name' => $request->recipient_name,
-                'phone' => $request->phone,
-                'address' => $request->address,
-            ]);
-            
-            // Simpan URL tujuan setelah login
-            session()->put('url.intended', route('cart.add', $slug));
-            
             return redirect()->route('login')->with('error', 'You must login to add items to cart.');
         }
     
@@ -74,7 +59,6 @@ class CartController extends Controller
     
         return redirect()->route('cart')->with('success', 'Cart updated successfully.');
     }
-
 
     // Method baru untuk handle data yang pending setelah login
     public function processPendingCart()
