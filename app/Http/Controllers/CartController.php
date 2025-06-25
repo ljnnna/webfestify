@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // ← WAJIB ini
+use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Cart;
 
@@ -18,6 +18,21 @@ class CartController extends Controller
     public function add(Request $request, $slug)
     {
         if (!Auth::check()) {
+            // Simpan data form ke session sebelum redirect ke login
+            session()->flash('pending_cart_data', [
+                'slug' => $slug,
+                'quantity' => $request->quantity,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'delivery_option' => $request->delivery_option,
+                'recipient_name' => $request->recipient_name,
+                'phone' => $request->phone,
+                'address' => $request->address,
+            ]);
+            
+            // Simpan URL tujuan setelah login
+            session()->put('url.intended', route('cart.add', $slug));
+            
             return redirect()->route('login')->with('error', 'You must login to add items to cart.');
         }
     
@@ -59,7 +74,29 @@ class CartController extends Controller
     
         return redirect()->route('cart')->with('success', 'Cart updated successfully.');
     }
-    
+
+    // Method baru untuk handle data yang pending setelah login
+    public function processPendingCart()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+        
+        $pendingData = session()->get('pending_cart_data');
+        
+        if (!$pendingData) {
+            return redirect()->route('catalog');
+        }
+        
+        // Buat request object dari data yang tersimpan
+        $request = new Request($pendingData);
+        
+        // Hapus data pending dari session
+        session()->forget('pending_cart_data');
+        
+        // Proses add to cart
+        return $this->add($request, $pendingData['slug']);
+    }
 
     public function remove($slug)
     {
@@ -78,39 +115,38 @@ class CartController extends Controller
     
     public function updateDelivery(Request $request, $slug)
     {
-    $cart = session()->get('cart', []);
+        $cart = session()->get('cart', []);
 
-    if (isset($cart[$slug])) {
-        $cart[$slug]['delivery_option'] = $request->input('delivery_option', 'pickup');
-        session()->put('cart', $cart);
-    }
+        if (isset($cart[$slug])) {
+            $cart[$slug]['delivery_option'] = $request->input('delivery_option', 'pickup');
+            session()->put('cart', $cart);
+        }
 
-    return redirect()->back()->with('success', 'Delivery option updated.');
+        return redirect()->back()->with('success', 'Delivery option updated.');
     }
 
     public function paymentPage()
-{
-    $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
+    {
+        $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
 
-    if ($cartItems->isEmpty()) {
-        return redirect()->route('cart')->with('error', 'Keranjang kosong.');
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart')->with('error', 'Keranjang kosong.');
+        }
+
+        // Hitung total harga
+        $total = 0;
+        foreach ($cartItems as $item) {
+            $days = \Carbon\Carbon::parse($item->start_date)->diffInDays(\Carbon\Carbon::parse($item->end_date)) + 1;
+            $total += $item->product->price * $item->quantity * $days;
+        }
+
+        $paymentData = [
+            'cart_items' => $cartItems,
+            'pricing' => [
+                'total' => $total,
+            ],
+        ];
+
+        return view('pages.customer.paymentcust', compact('paymentData'));
     }
-
-    // Hitung total harga
-    $total = 0;
-    foreach ($cartItems as $item) {
-        $days = \Carbon\Carbon::parse($item->start_date)->diffInDays(\Carbon\Carbon::parse($item->end_date)) + 1;
-        $total += $item->product->price * $item->quantity * $days;
-    }
-
-    $paymentData = [
-        'cart_items' => $cartItems,
-        'pricing' => [
-            'total' => $total,
-        ],
-    ];
-
-    return view('pages.customer.paymentcust', compact('paymentData'));
-}
-
 }
