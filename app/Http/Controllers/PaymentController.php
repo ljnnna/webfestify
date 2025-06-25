@@ -9,6 +9,8 @@ use App\Models\OrderProduct;
 use Midtrans\Snap;
 use Midtrans\Config;
 use Midtrans\Notification;
+use App\Models\Cart;
+
 
 class PaymentController extends Controller
 {
@@ -356,5 +358,125 @@ class PaymentController extends Controller
             \Log::error('Stack trace: ' . $e->getTraceAsString());
             return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
         }
+
     }
+
+    
+public function checkoutFromCart(Request $request)
+{
+    $user = auth()->user();
+    $cartItems = Cart::with('product')->where('user_id', $user->id)->get();
+
+    if ($cartItems->isEmpty()) {
+        return redirect()->route('cart')->with('error', 'Your cart is empty.');
+    }
+
+    // Hitung total
+    $subtotal = 0;
+    $hasDelivery = false;
+    $itemDetails = [];
+
+    foreach ($cartItems as $item) {
+        $pricePerDay = $item->product->price;
+        $quantity = $item->quantity;
+        $rentalDays = $item->rental_days ?? 1;
+
+        $itemTotal = $pricePerDay * $quantity * $rentalDays;
+        $subtotal += $itemTotal;
+
+        $itemDetails[] = [
+            'id' => $item->product->id,
+            'price' => $pricePerDay * $rentalDays,
+            'quantity' => $quantity,
+            'name' => $item->product->name . ' (' . $rentalDays . ' days)',
+        ];
+
+        if ($item->delivery_option === 'delivery') {
+            $hasDelivery = true;
+        }
+    }
+
+    $serviceFee = 5000;
+    $deposit = $subtotal * 0.5;
+    $deliveryFee = $hasDelivery ? 10000 : 0;
+    $total = $subtotal + $serviceFee + $deposit + $deliveryFee;
+
+    // Tambah fee ke item details
+    $itemDetails[] = ['id' => 'service', 'price' => $serviceFee, 'quantity' => 1, 'name' => 'Service Fee'];
+    $itemDetails[] = ['id' => 'deposit', 'price' => $deposit, 'quantity' => 1, 'name' => 'Security Deposit'];
+    if ($deliveryFee > 0) {
+        $itemDetails[] = ['id' => 'delivery', 'price' => $deliveryFee, 'quantity' => 1, 'name' => 'Delivery Fee'];
+    }
+
+    // Simpan order
+    $orderCode = 'FST-' . date('Ymd') . '-' . strtoupper(uniqid());
+    $order = Order::create([
+        'user_id' => $user->id,
+        'order_code' => $orderCode,
+        'total_amount' => $total,
+        'status' => 'pending',
+        'payment_status' => 'unpaid',
+        'start_date' => now(), // Default jika tidak disimpan di cart
+        'end_date' => now()->addDays(3),
+    ]);
+
+    // Simpan produk dalam order
+    foreach ($cartItems as $item) {
+        OrderProduct::create([
+            'order_id' => $order->id,
+            'product_id' => $item->product_id,
+            'quantity' => $item->quantity,
+            'unit_price' => $item->product->price,
+            'subtotal' => $item->product->price * $item->quantity,
+        ]);
+    }
+
+    // Midtrans
+    $params = [
+        'transaction_details' => [
+            'order_id' => $orderCode,
+            'gross_amount' => $total,
+        ],
+        'item_details' => $itemDetails,
+        'customer_details' => [
+            'first_name' => $user->name,
+            'email' => $user->email,
+            'phone' => $user->phone ?? '081234567890',
+        ],
+        'expiry' => [
+            'start_time' => now()->format('Y-m-d H:i:s O'),
+            'unit' => 'minutes',
+            'duration' => 60,
+        ]
+    ];
+
+    $snapToken = Snap::getSnapToken($params);
+    session(['current_order_id' => $order->id]);
+
+    foreach ($cartItems as $item) {
+        $item->rental_days = \Carbon\Carbon::parse($item->start_date)->diffInDays(\Carbon\Carbon::parse($item->end_date)) + 1;
+    
+        if ($item->delivery_option === 'delivery' && $item->delivery_details) {
+            $details = json_decode($item->delivery_details, true);
+            $item->recipient_name = $details['recipient_name'] ?? '-';
+            $item->phone_number = $details['phone'] ?? '-';
+            $item->delivery_address = $details['address'] ?? '-';
+        }
+    }
+    
+    return view('pages.customer.paymentcust', [
+        'snapToken' => $snapToken,
+        'orderCode' => $orderCode,
+        'total' => $total,
+        'cartItems' => $cartItems, // ← WAJIB ADA
+        'pricing' => [
+            'subtotal' => $subtotal,
+            'service_fee' => $serviceFee,
+            'deposit' => $deposit,
+            'delivery_fee' => $deliveryFee,
+            'total' => $total
+        ],
+    ]);
+    
+}
 }

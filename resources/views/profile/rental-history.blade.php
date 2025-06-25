@@ -67,6 +67,7 @@
     </ul>
 
     <a href="#" class="text-red-500 font-medium hover:underline text-sm">Lihat Konfirmasi Pengembalian</a>
+    
     @foreach ($rentalList as $rental)
       @foreach ($rental->rentalItems as $item)
         {{-- Informasi Produk --}}

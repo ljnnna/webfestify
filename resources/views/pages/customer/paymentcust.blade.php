@@ -23,13 +23,50 @@
         Contact
     </a>
 </div>
-
 @endsection
 
 @section('content')
 
+@php
+    $cartItems = $cartItems ?? collect();
+    $isRentNow = isset($paymentData) && isset($paymentData['rental_data']);
 
-<!-- Ubah pt-24 menjadi pt-4 atau pt-6 untuk mengurangi jarak -->
+    if ($isRentNow) {
+        // Rent Now
+        $rental = $paymentData['rental_data'];
+        $product = $paymentData['product'];
+
+        $cartItems = collect([(object)[
+            'product' => $product,
+            'quantity' => $rental['quantity'],
+            'delivery_option' => $rental['delivery_option'],
+            'recipient_name' => $rental['recipient_name'] ?? '-',
+            'phone_number' => $rental['phone_number'] ?? '-',
+            'delivery_address' => $rental['delivery_address'] ?? '-',
+            'rental_days' => $rental['rental_days'],
+        ]]);
+
+        $pricing = $paymentData['pricing'] ?? [
+            'subtotal' => 0,
+            'service_fee' => 0,
+            'deposit' => 0,
+            'delivery_fee' => 0,
+            'total' => 0,
+        ];
+    } else {
+        $pricing = $pricing ?? [
+            'subtotal' => 0,
+            'service_fee' => 0,
+            'deposit' => 0,
+            'delivery_fee' => 0,
+            'total' => 0,
+        ];
+    }
+
+    // FIX: Buat $items universal supaya @foreach($items) bisa jalan
+    $items = $cartItems;
+@endphp
+
 <main class="pt-4 container mx-auto px-4 py-8">
     <div class="max-w-6xl mx-auto">
         <div class="bg-white/90 rounded-xl shadow-lg p-6 sm:p-8 lg:p-10 backdrop-blur-sm">

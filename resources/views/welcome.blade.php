@@ -2,8 +2,6 @@
 
 @section('title', 'Welcome')
 
-@section('content')
-
 @section('desktop-menu')
     <div class="hidden lg:flex space-x-6 items-center">
         <a href="{{ url('/') }}"
@@ -11,9 +9,9 @@
             Welcome
         </a>
 
-        <a href="{{ url('/marketplace') }}"
-           class="{{ Request::is('marketplace') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
-            Marketplace
+        <a href="{{ route('catalog') }}"
+            class="{{ request()->routeIs('catalog') ? 'bg-purple-300 dark:bg-purple-700 text-purple-900 dark:text-white' : 'text-gray-700 hover:text-purple-700 dark:text-gray-300 dark:hover:text-white' }} px-3 py-2 rounded-lg">
+            Catalog
         </a>
 
         <a href="{{ url('/team') }}"
@@ -26,9 +24,9 @@
             Contact
         </a>
     </div>
-
 @endsection
 
+@section('content')
 
   <!-- Konten utama dari halaman welcome.blade.php -->
   <section class="relative bg-cover bg-center bg-no-repeat bg-[url('{{ asset('images/banner3.png') }}')] dark:bg-gray-900">
