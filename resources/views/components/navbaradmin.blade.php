@@ -7,7 +7,7 @@
         <h1 class="text-[#493862] text-xl font-bold">Hi, Admin!</h1>
     </div>
 
-    <div class="flex-1 ml-10 text-center">
+    <div class="flex-1 text-center">
         <img src="{{ asset('images/logofestify.png') }}" alt="Logo" class="mx-auto h-10" />
     </div>
     <div class="flex items-center gap-6 mr-8">
