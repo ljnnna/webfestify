@@ -227,7 +227,11 @@ public function processRentNow(Request $request)
         session(['url.intended' => route('payment')]);
         
         // Redirect to login with a message
+
         return redirect()->route('login');
+
+        return redirect()->route('login')->with('message', 'Please login to continue with your rental.');
+
     }
 
     // If user is already logged in, proceed to payment

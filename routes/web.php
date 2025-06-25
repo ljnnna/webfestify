@@ -41,6 +41,8 @@ Route::post('rent-now', [ProductController::class, 'processRentNow'])->name('ren
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/post', [HomeController::class, 'post'])->middleware('admin');
+    Route::get('/cart/process-pending', [CartController::class, 'processPendingCart'])->name('cart.process-pending');
+
     // Profile
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/save', [ProfileController::class, 'saveAll'])->name('profile.saveAll');
@@ -51,6 +53,8 @@ Route::middleware(['auth'])->group(function () {
     // Customer pages
 
     Route::get('/details', [DetailsController::class, 'details'])->name('details');
+
+
 
         // Display payment page
     Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');

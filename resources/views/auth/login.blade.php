@@ -14,6 +14,7 @@
         <!-- Status Session -->
         <x-auth-session-status class="mb-4" :status="session('status')" />
         @if(session('message'))
+
         <div class="mb-4 p-4 bg-blue-100 border border-blue-400 text-blue-700 rounded">
             <div class="flex items-center">
                 <i class="fas fa-info-circle mr-2"></i>
@@ -21,6 +22,15 @@
             </div>
         </div>
         @endif
+
+    <div class="mb-4 p-4 bg-blue-100 border border-blue-400 text-blue-700 rounded">
+        <div class="flex items-center">
+            <i class="fas fa-info-circle mr-2"></i>
+            {{ session('message') }}
+        </div>
+    </div>
+@endif
+
 
         <!-- Form Login -->
         <form action="{{ route('login') }}" method="POST" class="space-y-4">
