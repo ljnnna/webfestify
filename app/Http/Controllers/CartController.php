@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth; // ← WAJIB ini
 use App\Models\Product;
 use App\Models\Cart;
 
@@ -59,6 +59,7 @@ class CartController extends Controller
     
         return redirect()->route('cart')->with('success', 'Cart updated successfully.');
     }
+    
 
     public function remove($slug)
     {
@@ -77,55 +78,39 @@ class CartController extends Controller
     
     public function updateDelivery(Request $request, $slug)
     {
-        $cart = session()->get('cart', []);
+    $cart = session()->get('cart', []);
 
-        if (isset($cart[$slug])) {
-            $cart[$slug]['delivery_option'] = $request->input('delivery_option', 'pickup');
-            session()->put('cart', $cart);
-        }
+    if (isset($cart[$slug])) {
+        $cart[$slug]['delivery_option'] = $request->input('delivery_option', 'pickup');
+        session()->put('cart', $cart);
+    }
 
-        return redirect()->back()->with('success', 'Delivery option updated.');
+    return redirect()->back()->with('success', 'Delivery option updated.');
     }
 
     public function paymentPage()
-    {
-        $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
+{
+    $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
 
-    
-        if ($cartItems->isEmpty()) {
-            return redirect()->route('cart')->with('error', 'Keranjang kosong.');
-        }
-    
-        $subtotal = 0;
-        $hasDelivery = false;
-    
-        foreach ($cartItems as $item) {
-            $days = \Carbon\Carbon::parse($item->start_date)->diffInDays(\Carbon\Carbon::parse($item->end_date)) + 1;
-            $subtotal += $item->product->price * $item->quantity * $days;
-    
-            if ($item->delivery_option === 'delivery') {
-                $hasDelivery = true;
-            }
-        }
-    
-        $serviceFee = 5000;
-        $deliveryFee = $hasDelivery ? 10000 : 0;
-        $deposit = $subtotal * 0.5;
-        $total = $subtotal + $serviceFee + $deliveryFee;
-    
-        $paymentData = [
-            'cart_items' => $cartItems,
-            'pricing' => [
-                'subtotal' => $subtotal,
-                'service_fee' => $serviceFee,
-                'shipping_cost' => $deliveryFee,
-                'deposit' => $deposit,
-                'total' => $total,
-            ],
-        ];
-    
-        return view('pages.customer.paymentcust', compact('paymentData'));
+    if ($cartItems->isEmpty()) {
+        return redirect()->route('cart')->with('error', 'Keranjang kosong.');
     }
 
+    // Hitung total harga
+    $total = 0;
+    foreach ($cartItems as $item) {
+        $days = \Carbon\Carbon::parse($item->start_date)->diffInDays(\Carbon\Carbon::parse($item->end_date)) + 1;
+        $total += $item->product->price * $item->quantity * $days;
+    }
+
+    $paymentData = [
+        'cart_items' => $cartItems,
+        'pricing' => [
+            'total' => $total,
+        ],
+    ];
+
+    return view('pages.customer.paymentcust', compact('paymentData'));
 }
 
+}
