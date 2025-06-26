@@ -13,6 +13,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReturnProductController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\WelcomeController;
@@ -25,6 +26,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
     Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::post('/orders/{id}/condition', [OrderController::class, 'uploadCondition'])->name('orders.uploadCondition');
+    Route::get('/returns', [ReturnProductController::class, 'index'])->name('returns');
+    Route::post('/returns/{id}/upload-condition', [ReturnProductController::class, 'uploadCondition'])->name('returns.uploadCondition');
+    Route::put('/returns/{id}/status', [ReturnProductController::class, 'updateStatus'])->name('returns.updateStatus');
+    Route::put('/returns/{id}/notes', [ReturnProductController::class, 'updateNotes'])->name('returns.updateNotes');
+    Route::post('/returns/create/{orderId}', [ReturnProductController::class, 'createReturn'])->name('returns.createReturn');
+    Route::put('/returns/confirm/{returnId}', [ReturnProductController::class, 'confirmReturn'])->name('returns.confirmReturn');
     Route::resource('product', ProductController::class);
     Route::delete('/product/{product}/image/{imageId}', [ProductController::class, 'deleteImage'])
     ->name('product.image.destroy');

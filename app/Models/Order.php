@@ -111,4 +111,9 @@ class Order extends Model
         return $query->where('start_date', '>=', today())
                     ->where('start_date', '<=', today()->addDays($days));
     }
+
+    public function returnProducts()
+    {
+        return $this->hasMany(ReturnProduct::class);
+    }
 }
