@@ -89,28 +89,46 @@ class CartController extends Controller
     }
 
     public function paymentPage()
-{
-    $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
-
-    if ($cartItems->isEmpty()) {
-        return redirect()->route('cart')->with('error', 'Keranjang kosong.');
+    {
+        $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
+    
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart')->with('error', 'Keranjang kosong.');
+        }
+    
+        $subtotal = 0;
+        $hasDelivery = false;
+    
+        foreach ($cartItems as $item) {
+            $days = \Carbon\Carbon::parse($item->start_date)->diffInDays(\Carbon\Carbon::parse($item->end_date)) + 1;
+            $subtotal += $item->product->price * $item->quantity * $days;
+    
+            if ($item->delivery_option === 'delivery') {
+                $hasDelivery = true;
+            }
+        }
+    
+        $serviceFee = 5000;
+        $deliveryFee = $hasDelivery ? 10000 : 0;
+        $deposit = $subtotal * 0.5;
+        $total = $subtotal + $serviceFee + $deliveryFee;
+    
+        $paymentData = [
+            'cart_items' => $cartItems,
+            'pricing' => [
+                'subtotal' => $subtotal,
+                'service_fee' => $serviceFee,
+                'shipping_cost' => $deliveryFee,
+                'deposit' => $deposit,
+                'total' => $total,
+            ],
+        ];
+    
+        return view('pages.customer.paymentcust', compact('paymentData'));
     }
-
-    // Hitung total harga
-    $total = 0;
-    foreach ($cartItems as $item) {
-        $days = \Carbon\Carbon::parse($item->start_date)->diffInDays(\Carbon\Carbon::parse($item->end_date)) + 1;
-        $total += $item->product->price * $item->quantity * $days;
-    }
-
-    $paymentData = [
-        'cart_items' => $cartItems,
-        'pricing' => [
-            'total' => $total,
-        ],
-    ];
-
-    return view('pages.customer.paymentcust', compact('paymentData'));
-}
+    
+    
+    
+    
 
 }

@@ -54,8 +54,8 @@ Route::middleware(['auth'])->group(function () {
         // Display payment page
     Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
 
-    Route::get('/checkout', [PaymentController::class, 'checkout'])->name('checkout');
-    Route::post('/checkout', [CartController::class, 'paymentPage'])->name('checkout.process');
+
+    Route::post('/checkout', [PaymentController::class, 'checkoutFromCart'])->name('checkout.process');
 
     
     // Process payment (create Midtrans transaction)
