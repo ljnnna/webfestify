@@ -35,10 +35,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 });
 
 // ======================= CUSTOMER ROUTES ===========================
+Route::get('/details/{slug}', [ProductController::class, 'detailBySlug'])->name('product.details');
+Route::post('rent-now', [ProductController::class, 'processRentNow'])->name('rent.now'); // Move this outside auth middleware
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/post', [HomeController::class, 'post'])->middleware('admin');
-
     // Profile
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/save', [ProfileController::class, 'saveAll'])->name('profile.saveAll');
@@ -49,7 +51,6 @@ Route::middleware(['auth'])->group(function () {
     // Customer pages
 
     Route::get('/details', [DetailsController::class, 'details'])->name('details');
-    Route::post('rent-now', [PaymentController::class, 'rentNow'])->name('rent.now');
 
         // Display payment page
     Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');

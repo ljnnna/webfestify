@@ -176,51 +176,63 @@ class ProductController extends Controller
         return redirect()->route('admin.product.index')->with('success', 'Product deleted.');
     }
 
-    public function processRentNow(Request $request)
-    {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date' => 'required|date|after:start_date',
-            'delivery_option' => 'required|in:pickup,delivery',
-            'delivery_address' => 'required_if:delivery_option,delivery',
-            'phone_number' => 'required_if:delivery_option,delivery',
-            'recipient_name' => 'required_if:delivery_option,delivery'
-        ]);
+public function processRentNow(Request $request)
+{
+    // Validate the form data first
+    $request->validate([
+        'product_id' => 'required|exists:products,id',
+        'quantity' => 'required|integer|min:1',
+        'start_date' => 'required|date|after_or_equal:today',
+        'end_date' => 'required|date|after:start_date',
+        'delivery_option' => 'required|in:pickup,delivery',
+        'delivery_address' => 'required_if:delivery_option,delivery',
+        'phone_number' => 'required_if:delivery_option,delivery',
+        'recipient_name' => 'required_if:delivery_option,delivery'
+    ]);
 
-        $startDate = Carbon::parse($request->start_date);
-        $endDate = Carbon::parse($request->end_date);
-        $rentalDays = $startDate->diffInDays($endDate) + 1;
+    $startDate = Carbon::parse($request->start_date);
+    $endDate = Carbon::parse($request->end_date);
+    $rentalDays = $startDate->diffInDays($endDate) + 1;
 
-        $product = Product::findOrFail($request->product_id);
+    $product = Product::findOrFail($request->product_id);
 
-        if ($request->quantity > $product->stock_quantity) {
-            return back()->withErrors([
-                'quantity' => 'Requested quantity exceeds available stock (' . $product->stock_quantity . ')'
-            ])->withInput();
-        }
-
-        if ($rentalDays > $product->max_rent_duration) {
-            return back()->withErrors(['end_date' => 'Maximum rental period for this product is ' . $product->max_rent_duration . ' days'])->withInput();
-        }
-
-        session([
-            'rental_data' => [
-                'product_id' => $request->product_id,
-                'quantity' => $request->quantity,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'rental_days' => $rentalDays,
-                'delivery_option' => $request->delivery_option,
-                'delivery_address' => $request->delivery_address,
-                'phone_number' => $request->phone_number,
-                'recipient_name' => $request->recipient_name
-            ]
-        ]);
-
-        return redirect()->route('payment');
+    if ($request->quantity > $product->stock_quantity) {
+        return back()->withErrors([
+            'quantity' => 'Requested quantity exceeds available stock (' . $product->stock_quantity . ')'
+        ])->withInput();
     }
+
+    if ($rentalDays > $product->max_rent_duration) {
+        return back()->withErrors(['end_date' => 'Maximum rental period for this product is ' . $product->max_rent_duration . ' days'])->withInput();
+    }
+
+    // Store rental data in session
+    session([
+        'rental_data' => [
+            'product_id' => $request->product_id,
+            'quantity' => $request->quantity,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'rental_days' => $rentalDays,
+            'delivery_option' => $request->delivery_option,
+            'delivery_address' => $request->delivery_address,
+            'phone_number' => $request->phone_number,
+            'recipient_name' => $request->recipient_name
+        ]
+    ]);
+
+    // Check if user is authenticated
+    if (!auth()->check()) {
+        // Store intended URL to redirect back after login
+        session(['url.intended' => route('payment')]);
+        
+        // Redirect to login with a message
+        return redirect()->route('login');
+    }
+
+    // If user is already logged in, proceed to payment
+    return redirect()->route('payment');
+}
 
     private function calculateDays($startDate, $endDate)
     {

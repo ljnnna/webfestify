@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // ← WAJIB ini
+use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Cart;
 
@@ -59,7 +59,6 @@ class CartController extends Controller
     
         return redirect()->route('cart')->with('success', 'Cart updated successfully.');
     }
-    
 
     public function remove($slug)
     {
@@ -78,19 +77,20 @@ class CartController extends Controller
     
     public function updateDelivery(Request $request, $slug)
     {
-    $cart = session()->get('cart', []);
+        $cart = session()->get('cart', []);
 
-    if (isset($cart[$slug])) {
-        $cart[$slug]['delivery_option'] = $request->input('delivery_option', 'pickup');
-        session()->put('cart', $cart);
-    }
+        if (isset($cart[$slug])) {
+            $cart[$slug]['delivery_option'] = $request->input('delivery_option', 'pickup');
+            session()->put('cart', $cart);
+        }
 
-    return redirect()->back()->with('success', 'Delivery option updated.');
+        return redirect()->back()->with('success', 'Delivery option updated.');
     }
 
     public function paymentPage()
     {
         $cartItems = Cart::with('product')->where('user_id', Auth::id())->get();
+
     
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart')->with('error', 'Keranjang kosong.');
@@ -126,9 +126,6 @@ class CartController extends Controller
     
         return view('pages.customer.paymentcust', compact('paymentData'));
     }
-    
-    
-    
-    
 
 }
+
