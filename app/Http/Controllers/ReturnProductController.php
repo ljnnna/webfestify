@@ -115,8 +115,8 @@ class ReturnProductController extends Controller
     public function createReturn(Request $request, $orderId)
     {
         $order = Order::with('orderProducts')->findOrFail($orderId);
-        
-        // Buat return record untuk setiap product dalam order
+        $returnMethod = $request->input('return_option', 'pickup'); // default pickup
+    
         foreach ($order->orderProducts as $orderProduct) {
             ReturnProduct::create([
                 'order_id' => $order->id,
@@ -125,12 +125,23 @@ class ReturnProductController extends Controller
                 'user_id' => $order->user_id,
                 'quantity_returned' => $orderProduct->quantity,
                 'return_status' => 'in_process',
+                'return_method' => $returnMethod,
                 'return_processed_at' => now(),
             ]);
         }
-
-        return redirect()->back()->with('success', 'Return process dimulai untuk order ini!');
+    
+        // Redirect ke halaman berbeda sesuai pilihan
+        if ($returnMethod === 'pickup') {
+            return redirect()->route('return.pickup.view', ['order' => $order->id]);
+        } elseif ($returnMethod === 'dropoff') {
+            return redirect()->route('return.dropoff.view', ['order' => $order->id]);
+        }
+    
+        // fallback kalau return_option tidak valid
+        return redirect()->back()->with('error', 'Invalid return method.');
     }
+
+
 
     public function confirmReturn(Request $request, $returnId)
     {

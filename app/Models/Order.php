@@ -22,6 +22,8 @@ class Order extends Model
         'phone_number',
         'recipient_name',
         'notes',
+        'condition_before', 
+        'condition_after',
     ];
 
     protected $casts = [ 
@@ -38,7 +40,7 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'order_product')
+        return $this->belongsToMany(Product::class, 'order_products')
                     ->withPivot('quantity', 'unit_price', 'subtotal')
                     ->withTimestamps();
     }
@@ -110,10 +112,5 @@ class Order extends Model
     {
         return $query->where('start_date', '>=', today())
                     ->where('start_date', '<=', today()->addDays($days));
-    }
-
-    public function returnProducts()
-    {
-        return $this->hasMany(ReturnProduct::class);
     }
 }
