@@ -1,4 +1,9 @@
 {{-- Ambil items --}}
+
+
+
+
+
 @php
     if (isset($paymentData['cart_items'])) {
         $items = $paymentData['cart_items'];
@@ -19,14 +24,28 @@
 {{-- Loop setiap item --}}
 @foreach($items as $item)
     @php
-        $rental_days = $item->rental_days ?? \Carbon\Carbon::parse($item->start_date)->diffInDays(\Carbon\Carbon::parse($item->end_date)) + 1;
+        // Hitung rental_days hanya jika belum ada
+        $rental_days = $item->rental_days ?? (
+            isset($item->start_date, $item->end_date)
+                ? \Carbon\Carbon::parse($item->start_date)->diffInDays(\Carbon\Carbon::parse($item->end_date)) + 1
+                : 1
+        );
+
+        // Cek dan ambil data delivery jika ada
         if (isset($item->delivery_details) && is_string($item->delivery_details)) {
             $details = json_decode($item->delivery_details, true);
             $item->recipient_name = $details['recipient_name'] ?? '-';
             $item->phone_number = $details['phone'] ?? '-';
             $item->delivery_address = $details['address'] ?? '-';
         }
+
+        // Fallback kalau tetap belum ada
+        $item->recipient_name = $item->recipient_name ?? '-';
+        $item->phone_number = $item->phone_number ?? '-';
+        $item->delivery_address = $item->delivery_address ?? '-';
     @endphp
+
+
 
     <article class="bg-white rounded-xl shadow-sm p-4 sm:p-6 space-y-4 hover-lift transition-smooth mb-6">
         <div class="flex flex-col sm:flex-row gap-4">
@@ -40,6 +59,16 @@
                 <p class="font-semibold text-sm">
                     Rental Period: <span class="font-normal">{{ $rental_days }} Days</span>
                 </p>
+
+                <!-- @if(isset($item->start_date, $item->end_date))
+    <p class="text-sm text-gray-500">
+        <i class="fas fa-calendar-alt mr-1"></i>
+        {{ \Carbon\Carbon::parse($item->start_date)->format('d M Y') }}
+        - 
+        {{ \Carbon\Carbon::parse($item->end_date)->format('d M Y') }}
+    </p>
+@endif -->
+
             </div>
         </div>
 
@@ -92,12 +121,17 @@
         <span>Deposit (50%)</span>
         <span class="font-semibold">Rp. {{ number_format($paymentData['pricing']['deposit'], 0, ',', '.') }}</span>
     </div>
-    @if($paymentData['pricing']['shipping_cost'] > 0)
+    @php
+    $shippingCost = $paymentData['pricing']['shipping_cost'] ?? $paymentData['pricing']['delivery_fee'] ?? 0;
+@endphp
+
+@if($shippingCost > 0)
     <div class="flex justify-between">
         <span>Shipping Costs</span>
-        <span class="font-semibold">Rp. {{ number_format($paymentData['pricing']['shipping_cost'], 0, ',', '.') }}</span>
+        <span class="font-semibold">Rp. {{ number_format($shippingCost, 0, ',', '.') }}</span>
     </div>
-    @endif
+@endif
+
 </div>
 
 <div class="border-t border-gray-300 pt-4 flex justify-between font-extrabold text-[#5B4B7A] text-lg">

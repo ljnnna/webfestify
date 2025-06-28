@@ -27,7 +27,7 @@ class Order extends Model
     protected $casts = [ 
         'start_date' => 'date',
         'end_date' => 'date',
-         'total_amount' => 'decimal:2'
+        'total_amount' => 'decimal:2'
     ];
 
     // Relasi ke User
