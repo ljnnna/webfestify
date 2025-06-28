@@ -154,7 +154,7 @@
       <div class="space-y-3">
         <textarea id="delivery-address" rows="3"
           class="w-full border-2 border-gray-300 rounded-lg p-3 text-[#6D5983] focus:border-[#6B549A] transition-colors resize-none"
-          placeholder="Enter complete address..."></textarea>
+          placeholder="Enter complete address: street name, house number, city, province, postal code"></textarea>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <input type="tel" id="phone-number"
             class="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-[#6D5983] focus:border-[#6B549A] transition-colors"
@@ -490,6 +490,7 @@ const deliveryManager = {
 
     init() {
         this.bindEvents();
+        this.addReturnHelper();
     },
 
     bindEvents() {
@@ -499,6 +500,32 @@ const deliveryManager = {
         document.getElementById('save-delivery-address-btn')?.addEventListener('click', () => this.saveAddress());
     },
 
+addReturnHelper() {
+    const wrapper = document.getElementById('delivery-options-wrapper');
+    if (wrapper) {
+        const helper = document.createElement('div');
+        helper.className = 'mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800';
+        helper.innerHTML = `
+        <div class="flex items-center gap-2 mb-2">
+            <i class="fas fa-info-circle"></i>
+            <span class="font-semibold">Return Information</span>
+        </div>    
+        
+        <div class="mb-2">
+            <div class="font-semibold">📍 Return Address:</div>
+            <div>Jl. Ahmad Yani, Batam Center, Batam</div>
+        </div>
+            <ul class="space-y-1">
+                <li>• Renter is responsible for return shipping costs</li>
+                <li>• Items must be returned in good condition</li>
+                <li>• Photo evidence required before packing for return</li>
+                <li>• Late returns are subject to penalty fees</li>
+            </ul>
+        `;
+        wrapper.appendChild(helper);
+    }
+},
+
     toggle() {
         this.isVisible = !this.isVisible;
         const wrapper = document.getElementById('delivery-options-wrapper');
@@ -507,6 +534,13 @@ const deliveryManager = {
         wrapper?.classList.toggle('hidden', !this.isVisible);
         if (button) {
             button.textContent = this.isVisible ? 'Hide Delivery Options' : 'Select Delivery Option';
+        }
+    },
+
+    showReturnHelper() {
+        this.toggle();
+        if (this.isVisible) {
+            document.getElementById('pickup-option-btn')?.focus();
         }
     },
 
@@ -727,6 +761,9 @@ const productController = {
         });
         return;
     }
+
+    // Show loading message
+    utils.showNotification('Processing rental request...', 'info', 2000);
 
     // Create and submit form with rental data
     const form = document.createElement('form');

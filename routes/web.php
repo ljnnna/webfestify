@@ -26,8 +26,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::post('/orders/{id}/condition', [OrderController::class, 'uploadCondition'])->name('orders.uploadCondition');
     Route::resource('product', ProductController::class);
-    Route::delete('/product/{product}/image/{imageId}', [ProductController::class, 'deleteImage'])
-    ->name('product.image.destroy');
+    Route::delete('/product/{product}/image/{imageId}', [ProductController::class, 'deleteImage'])->name('product.image.destroy');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::get('/home', function () {
         return redirect()->route('home');
@@ -35,6 +34,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 });
 
 // ======================= CUSTOMER ROUTES ===========================
+Route::get('/details/{slug}', [ProductController::class, 'detailBySlug'])->name('product.details');
+Route::post('rent-now', [ProductController::class, 'processRentNow'])->name('rent.now');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/post', [HomeController::class, 'post'])->middleware('admin');
@@ -46,27 +48,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/rental-information', [ProfileController::class, 'rentalInfo'])->name('profile.rentalInfo');
     Route::get('/profile/rental-history', [ProfileController::class, 'rentalHistory'])->name('profile.rentalHistory');
 
-    // Customer pages
-
+    //Details
     Route::get('/details', [DetailsController::class, 'details'])->name('details');
-    Route::post('rent-now', [PaymentController::class, 'rentNow'])->name('rent.now');
 
-        // Display payment page
+    // Display payment page
     Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
-
+    Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+    Route::get('/payment/finish', [PaymentController::class, 'paymentFinish'])->name('payment.finish');
     Route::get('/checkout', [PaymentController::class, 'checkout'])->name('checkout');
     Route::post('/checkout', [CartController::class, 'paymentPage'])->name('checkout.process');
 
-    
-    // Process payment (create Midtrans transaction)
-    Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
-    
-    // Payment finish redirect
-    Route::get('/payment/finish', [PaymentController::class, 'paymentFinish'])->name('payment.finish');
+    //Cart
+    Route::get('/cart', [CartController::class, 'index'])->name('cart');
+    Route::post('/cart/add/{slug}', [CartController::class, 'add'])->name('cart.add');
+    Route::delete('/cart/remove/{slug}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/cart/update/{slug}', [CartController::class, 'update'])->name('cart.update');
 });
 
 // Payment notification from Midtrans (webhook)
-// This should be outside auth middleware as Midtrans will call it directly
 Route::post('/payment/notification', [PaymentController::class, 'paymentNotification'])
     ->name('payment.notification')
     ->withoutMiddleware(['web']); // Remove CSRF protection for webhook
@@ -79,14 +78,6 @@ Route::get('/order/success/{orderCode}', function($orderCode) {
     return view('pages.customer.order-success', compact('order'));
 })->name('order.success')->middleware('auth');
 
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/cart', [CartController::class, 'index'])->name('cart');
-    Route::post('/cart/add/{slug}', [CartController::class, 'add'])->name('cart.add');
-    Route::delete('/cart/remove/{slug}', [CartController::class, 'remove'])->name('cart.remove');
-    Route::post('/cart/update/{slug}', [CartController::class, 'update'])->name('cart.update');
-
-});
 
 // ======================= AUTH ROUTES ===========================
 Route::post('/login', [AuthenticatedSessionController::class, 'store']);
@@ -109,10 +100,9 @@ Route::get('/privacypolice', fn () => view('pages.customer.privacypolice'))->nam
 Route::get('/team', fn () => view('team'))->name('team');
 Route::get('/contact', fn () => view('contact'))->name('contact');
 
+//Catalog
 Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
-
 Route::get('/catalog/{category:slug}', [CatalogController::class, 'byCategory'])->name('catalog.category');
-
 Route::get('/catalog/merchandise', [CatalogController::class, 'merchandise'])->name('catalog.merchandise');
 Route::get('/catalog/electronics', [CatalogController::class, 'electronics'])->name('catalog.electronics');
 Route::get('/catalog/others', [CatalogController::class, 'others'])->name('catalog.others');
@@ -122,7 +112,6 @@ Route::get('/catalog/others', [CatalogController::class, 'others'])->name('catal
 require __DIR__.'/auth.php';
 
 Route::get('/product/{slug}', [ProductController::class, 'detailBySlug'])->name('product.show');
-
 
 Route::get('/contact', function () {
     return view('contact');
