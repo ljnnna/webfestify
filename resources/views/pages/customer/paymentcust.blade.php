@@ -28,15 +28,13 @@
 @section('content')
 
 @php
-    $cartItems = $cartItems ?? collect();
-    $isRentNow = isset($paymentData) && isset($paymentData['rental_data']);
+    $isRentNow = isset($paymentData['rental_data']) && isset($paymentData['product']);
 
     if ($isRentNow) {
-        // Rent Now
         $rental = $paymentData['rental_data'];
         $product = $paymentData['product'];
 
-        $cartItems = collect([(object)[
+        $items = collect([(object)[
             'product' => $product,
             'quantity' => $rental['quantity'],
             'delivery_option' => $rental['delivery_option'],
@@ -54,7 +52,9 @@
             'total' => 0,
         ];
     } else {
-        $pricing = $pricing ?? [
+        $cartItems = $paymentData['cart_items'] ?? collect();
+        $items = $cartItems; // ✅ ini yang sangat penting
+        $pricing = $paymentData['pricing'] ?? [
             'subtotal' => 0,
             'service_fee' => 0,
             'deposit' => 0,
@@ -62,10 +62,9 @@
             'total' => 0,
         ];
     }
-
-    // FIX: Buat $items universal supaya @foreach($items) bisa jalan
-    $items = $cartItems;
 @endphp
+
+
 
 <main class="pt-4 container mx-auto px-4 py-8">
     <div class="max-w-6xl mx-auto">
@@ -84,4 +83,9 @@
         </div>
     </div>
 </main>
+
+@if($items->isEmpty())
+    <p class="text-red-500">No items to display (empty cart or data issue)</p>
+@endif
+
 @endsection

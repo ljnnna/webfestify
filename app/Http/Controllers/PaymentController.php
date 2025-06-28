@@ -94,6 +94,7 @@ class PaymentController extends Controller
                 'total' => $total
             ]
         ];
+        
 
         return view('pages.customer.paymentcust', compact('paymentData'));
     }
@@ -104,86 +105,108 @@ class PaymentController extends Controller
             'payment_method' => 'required|string',
             'terms' => 'required|accepted'
         ]);
-
+    
         $rentalData = session('rental_data');
-        
-        if (!$rentalData) {
+        $orderId = session('current_order_id');
+    
+        if (!$rentalData && !$orderId) {
             return response()->json([
                 'success' => false,
                 'message' => 'Rental data not found'
             ], 400);
         }
-
+    
         try {
-            // Create order first
-            $product = Product::findOrFail($rentalData['product_id']);
-            
-            // Calculate pricing again for security
-            $subtotal = $product->price * $rentalData['quantity'] * $rentalData['rental_days'];
-            $serviceFee = 5000;
-            $deposit = $subtotal * 0.5;
-            $shippingCost = $rentalData['delivery_option'] === 'delivery' ? 10000 : 0;
-            $total = $subtotal + $serviceFee + $deposit + $shippingCost;
-
-            // Generate unique order code
-            $orderCode = 'FST-' . date('Ymd') . '-' . strtoupper(uniqid());
-
-            // Create order in database
-            $order = Order::create([
-                'user_id' => auth()->id(),
-                'order_code' => $orderCode,
-                'total_amount' => $total,
-                'status' => 'pending',
-                'start_date' => $rentalData['start_date'],
-                'end_date' => $rentalData['end_date'],
-                'payment_status' => 'unpaid',
-                'delivery_option' => $rentalData['delivery_option'],
-                'delivery_address' => $rentalData['delivery_address'] ?? null,
-                'phone_number' => $rentalData['phone_number'] ?? null,
-                'recipient_name' => $rentalData['recipient_name'] ?? null,
-                'notes' => $rentalData['notes'] ?? null
-            ]);
-
-            // Add order items
-            OrderProduct::create([
-                'order_id' => $order->id,
-                'product_id' => $product->id,
-                'quantity' => $rentalData['quantity'],
-                'unit_price' => $product->price,
-                'subtotal' => $subtotal
-            ]);
-
-            // Prepare item details for Midtrans
-            $itemDetails = [
-                [
-                    'id' => $product->id,
-                    'price' => $product->price * $rentalData['rental_days'],
+            $itemDetails = [];
+            $order = null;
+    
+            // ================= ALUR 1: RENT NOW =================
+            if ($rentalData) {
+                $product = Product::findOrFail($rentalData['product_id']);
+                $subtotal = $product->price * $rentalData['quantity'] * $rentalData['rental_days'];
+                $serviceFee = 5000;
+                $deposit = $subtotal * 0.5;
+                $shippingCost = $rentalData['delivery_option'] === 'delivery' ? 10000 : 0;
+                $total = $subtotal + $serviceFee + $deposit + $shippingCost;
+    
+                $orderCode = 'FST-' . date('Ymd') . '-' . strtoupper(uniqid());
+    
+                $order = Order::create([
+                    'user_id' => auth()->id(),
+                    'order_code' => $orderCode,
+                    'total_amount' => $total,
+                    'status' => 'pending',
+                    'start_date' => $rentalData['start_date'],
+                    'end_date' => $rentalData['end_date'],
+                    'payment_status' => 'unpaid',
+                    'delivery_option' => $rentalData['delivery_option'],
+                    'delivery_address' => $rentalData['delivery_address'] ?? null,
+                    'phone_number' => $rentalData['phone_number'] ?? null,
+                    'recipient_name' => $rentalData['recipient_name'] ?? null,
+                    'notes' => $rentalData['notes'] ?? null
+                ]);
+    
+                OrderProduct::create([
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
                     'quantity' => $rentalData['quantity'],
-                    'name' => $product->name . ' (Rental ' . $rentalData['rental_days'] . ' days)'
-                ]
+                    'unit_price' => $product->price,
+                    'subtotal' => $subtotal
+                ]);
+    
+                $itemDetails[] = [
+                    'id' => $product->id,
+                    'price' => $subtotal, // sudah dikali qty dan hari
+                    'quantity' => 1, // biar tidak dikali ulang
+                    'name' => $product->name . ' (' . $rentalData['quantity'] . ' pcs × ' . $rentalData['rental_days'] . ' days)'
+                ];
+            }
+    
+            // ================= ALUR 2: CHECKOUT DARI CART =================
+            if ($orderId && !$rentalData) {
+                $order = Order::with('orderProducts.product')->findOrFail($orderId);
+                $subtotal = 0;
+    
+                $rentalDays = \Carbon\Carbon::parse($order->start_date)
+                    ->diffInDays(\Carbon\Carbon::parse($order->end_date)) + 1;
+    
+                foreach ($order->orderProducts as $item) {
+                    $productPrice = $item->unit_price;
+                    $qty = $item->quantity;
+                    $sub = $productPrice * $qty * $rentalDays;
+                    $subtotal += $sub;
+    
+                    $itemDetails[] = [
+                        'id' => $item->product_id,
+                        'price' => $item->unit_price * $qty * $rentalDays, // Sudah dikali total
+                        'quantity' => 1, // biar Midtrans tidak mengalikan ulang
+                        'name' => $item->product->name . " ({$qty} pcs × {$rentalDays} days)"
+                    ];
+                    
+                    
+                }
+    
+                $serviceFee = 5000;
+                $deposit = $subtotal * 0.5;
+                $shippingCost = $order->delivery_option === 'delivery' ? 10000 : 0;
+                $total = $subtotal + $serviceFee + $deposit + $shippingCost;
+    
+                $order->update(['total_amount' => $total]);
+            }
+    
+            // ================= ITEM TAMBAHAN =================
+            $itemDetails[] = [
+                'id' => 'service_fee',
+                'price' => $serviceFee,
+                'quantity' => 1,
+                'name' => 'Service Fee'
             ];
-
-            // Add service fee as separate item
-            if ($serviceFee > 0) {
-                $itemDetails[] = [
-                    'id' => 'service_fee',
-                    'price' => $serviceFee,
-                    'quantity' => 1,
-                    'name' => 'Service Fee'
-                ];
-            }
-
-            // Add deposit as separate item
-            if ($deposit > 0) {
-                $itemDetails[] = [
-                    'id' => 'deposit',
-                    'price' => $deposit,
-                    'quantity' => 1,
-                    'name' => 'Security Deposit (50%)'
-                ];
-            }
-
-            // Add shipping cost if delivery
+            $itemDetails[] = [
+                'id' => 'deposit',
+                'price' => $deposit,
+                'quantity' => 1,
+                'name' => 'Security Deposit (50%)'
+            ];
             if ($shippingCost > 0) {
                 $itemDetails[] = [
                     'id' => 'shipping',
@@ -192,35 +215,27 @@ class PaymentController extends Controller
                     'name' => 'Delivery Fee'
                 ];
             }
-
-            // Customer details
-            $customerDetails = [
-                'first_name' => auth()->user()->name,
-                'last_name' => '',
-                'email' => auth()->user()->email,
-                'phone' => auth()->user()->phone ?? '081234567890'
-            ];
-
-            // Prepare transaction details for Midtrans
+    
+            // ================= MIDTRANS CONFIG =================
             $transactionDetails = [
-                'order_id' => $orderCode,
-                'gross_amount' => $total
+                'order_id' => $order->order_code,
+                'gross_amount' => $order->total_amount
             ];
-
-            // Set enabled payments based on selected method (DANA removed)
-            $enabledPayments = [];
-            switch ($request->payment_method) {
-                case 'bank':
-                    $enabledPayments = ['bank_transfer'];
-                    break;
-                case 'ewallet':
-                    $enabledPayments = ['gopay', 'shopeepay'];
-                    break;
-                default:
-                    $enabledPayments = ['bank_transfer', 'gopay', 'shopeepay'];
-            }
-
-            // Midtrans transaction parameters
+    
+            $customer = auth()->user();
+            $customerDetails = [
+                'first_name' => $customer->name,
+                'last_name' => '',
+                'email' => $customer->email,
+                'phone' => $customer->phone ?? '081234567890'
+            ];
+    
+            $enabledPayments = match ($request->payment_method) {
+                'bank' => ['bank_transfer'],
+                'ewallet' => ['gopay', 'shopeepay'],
+                default => ['bank_transfer', 'gopay', 'shopeepay'],
+            };
+    
             $params = [
                 'transaction_details' => $transactionDetails,
                 'item_details' => $itemDetails,
@@ -230,24 +245,19 @@ class PaymentController extends Controller
                     'finish' => route('payment.finish')
                 ],
                 'expiry' => [
-                    'start_time' => date('Y-m-d H:i:s O'),
+                    'start_time' => now()->format('Y-m-d H:i:s O'),
                     'unit' => 'minutes',
                     'duration' => 60
                 ]
             ];
-
-            // Get Snap Token
+    
             $snapToken = Snap::getSnapToken($params);
-
-            // Store order ID in session for later use
-            session(['current_order_id' => $order->id]);
-
+    
             return response()->json([
                 'success' => true,
                 'snap_token' => $snapToken,
-                'order_code' => $orderCode
+                'order_code' => $order->order_code
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -255,20 +265,214 @@ class PaymentController extends Controller
             ], 500);
         }
     }
+    
+    public function checkoutFromCart(Request $request)
+    {
+        $user = auth()->user();
+    
+        // Validasi dan pecah input ID
+        if (!$request->filled('selected_cart_ids')) {
+            return redirect()->route('cart')->with('error', 'No items selected for checkout.');
+        }
+    
+        $selectedIds = array_filter(explode(',', $request->input('selected_cart_ids')));
+    
+        // Ambil item cart sesuai ID dan milik user
+        $cartItems = Cart::with('product')
+            ->where('user_id', $user->id)
+            ->whereIn('id', $selectedIds)
+            ->get();
+    
+        // Validasi jumlah item yang diambil sesuai input
+        if ($cartItems->count() !== count($selectedIds)) {
+            return redirect()->route('cart')->with('error', 'Some selected cart items are invalid.');
+        }
+    
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart')->with('error', 'No valid items selected.');
+        }
+    
+        $subtotal = 0;
+        $hasDelivery = false;
+        $itemDetails = [];
+    
+        // Loop item cart untuk hitung harga & data delivery
+        foreach ($cartItems as $item) {
+            $price = $item->product->price;
+            $qty = $item->quantity;
+    
+            $start = \Carbon\Carbon::parse($item->start_date);
+            $end = \Carbon\Carbon::parse($item->end_date);
+            $rentalDays = $start->diffInDays($end) + 1;
+    
+            if ($rentalDays > 7) {
+                return redirect()->route('cart')->with('error', 'Item "' . $item->product->name . '" exceeds 7-day rental limit.');
+            }
+    
+            $item->rental_days = $rentalDays;
+    
+            $itemTotal = $price * $qty * $rentalDays;
+            $subtotal += $itemTotal;
+
+            \Log::info('Item perhitungan:', [
+                'name' => $item->product->name,
+                'price' => $price,
+                'qty' => $qty,
+                'days' => $rentalDays,
+                'total' => $itemTotal,
+            ]);
+            
+            $itemDetails[] = [
+                'id' => $item->product->id,
+                'price' => (int) $price,
+                'quantity' => $qty * $rentalDays,
+                'name' => $item->product->name
+            ];
+            
+
+            // Cek pengiriman
+            if ($item->delivery_option === 'delivery') {
+                $hasDelivery = true;
+    
+                if ($item->delivery_details) {
+                    $details = json_decode($item->delivery_details, true);
+                    $item->recipient_name = $details['recipient_name'] ?? '-';
+                    $item->phone_number = $details['phone'] ?? '-';
+                    $item->delivery_address = $details['address'] ?? '-';
+                }
+            }
+        }
+    
+        $serviceFee = 5000;
+        $deposit = $subtotal * 0.5;
+        $deliveryFee = $hasDelivery ? 10000 : 0;
+        $total = $subtotal + $serviceFee + $deposit + $deliveryFee;
+    
+        // Tambahkan biaya lain ke itemDetails
+        $itemDetails[] = ['id' => 'service', 'price' => $serviceFee, 'quantity' => 1, 'name' => 'Service Fee'];
+        $itemDetails[] = ['id' => 'deposit', 'price' => $deposit, 'quantity' => 1, 'name' => 'Security Deposit'];
+        if ($deliveryFee > 0) {
+            $itemDetails[] = ['id' => 'delivery', 'price' => $deliveryFee, 'quantity' => 1, 'name' => 'Delivery Fee'];
+        }
+    
+        // Simpan order
+        $orderCode = 'FST-' . date('Ymd') . '-' . strtoupper(uniqid());
+        $order = Order::create([
+            'user_id' => $user->id,
+            'order_code' => $orderCode,
+            'total_amount' => $total,
+            'status' => 'pending',
+            'payment_status' => 'unpaid',
+            'start_date' => now(),
+            'end_date' => now()->addDays(3), // opsional default
+        ]);
+    
+        // Simpan produk dalam order
+        foreach ($cartItems as $item) {
+            OrderProduct::create([
+                'order_id' => $order->id,
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+                'unit_price' => $item->product->price,
+                'subtotal' => $item->product->price * $item->quantity * $item->rental_days, // ✅ benar
+            ]);
+        }
+    
+        // Hapus dari cart setelah checkout (opsional)
+        session([
+            'current_order_id' => $order->id,
+            'cart_ids_to_remove' => $selectedIds
+        ]);
+    
+        // Midtrans
+        $params = [
+            'transaction_details' => [
+                'order_id' => $orderCode,
+                'gross_amount' => $total,
+            ],
+            'item_details' => $itemDetails,
+            'customer_details' => [
+                'first_name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone ?? '081234567890',
+            ],
+            'expiry' => [
+                'start_time' => now()->format('Y-m-d H:i:s O'),
+                'unit' => 'minutes',
+                'duration' => 60,
+            ]
+        ];
+    
+        $snapToken = Snap::getSnapToken($params);
+
+
+        $cartItems = $cartItems->map(function ($item) {
+            // Pastikan properti `product` tetap
+            $item->product = $item->product;
+        
+            // Hitung rental_days
+            $start = \Carbon\Carbon::parse($item->start_date);
+            $end = \Carbon\Carbon::parse($item->end_date);
+            $item->rental_days = $start->diffInDays($end) + 1;
+        
+            // Set delivery details jika delivery
+            if ($item->delivery_option === 'delivery' && $item->delivery_details) {
+                $details = json_decode($item->delivery_details, true);
+                $item->recipient_name = $details['recipient_name'] ?? '-';
+                $item->phone_number = $details['phone'] ?? '-';
+                $item->delivery_address = $details['address'] ?? '-';
+            } else {
+                $item->recipient_name = '-';
+                $item->phone_number = '-';
+                $item->delivery_address = '-';
+            }
+        
+            return $item;
+        });
+        
+    
+        return view('pages.customer.paymentcust', [
+            'paymentData' => [
+                'cart_items' => $cartItems,
+                'pricing' => [
+                    'subtotal' => $subtotal,
+                    'service_fee' => $serviceFee,
+                    'deposit' => $deposit,
+                    'shipping_cost' => $deliveryFee,
+                    'total' => $total,
+                ]
+            ],
+            'items' => $cartItems, // ✅ TAMBAHKAN INI
+            'snapToken' => $snapToken,
+            'orderCode' => $orderCode,
+        ]);
+    }
 
     public function paymentFinish(Request $request)
     {
         $orderId = session('current_order_id');
-        
+        $cartIds = session('cart_ids_to_remove', []);
+    
         if ($orderId) {
             $order = Order::find($orderId);
-            if ($order) {
+            if ($order && $order->payment_status === 'paid') {
+                // Hapus cart hanya jika payment sukses
+                if (!empty($cartIds)) {
+                    Cart::where('user_id', auth()->id())
+                        ->whereIn('id', $cartIds)
+                        ->delete();
+                }
+    
+                // Hapus session
+                session()->forget(['current_order_id', 'cart_ids_to_remove']);
+    
                 return redirect()->route('order.success', $order->order_code);
             }
         }
-
-        return redirect()->route('home')->with('success', 'Payment completed successfully!');
+    
+        return redirect()->route('home')->with('error', 'Payment not completed yet.');
     }
+    
 
     public function paymentNotification(Request $request)
     {
@@ -360,123 +564,4 @@ class PaymentController extends Controller
         }
 
     }
-
-    
-public function checkoutFromCart(Request $request)
-{
-    $user = auth()->user();
-    $cartItems = Cart::with('product')->where('user_id', $user->id)->get();
-
-    if ($cartItems->isEmpty()) {
-        return redirect()->route('cart')->with('error', 'Your cart is empty.');
-    }
-
-    // Hitung total
-    $subtotal = 0;
-    $hasDelivery = false;
-    $itemDetails = [];
-
-    foreach ($cartItems as $item) {
-        $pricePerDay = $item->product->price;
-        $quantity = $item->quantity;
-        $rentalDays = $item->rental_days ?? 1;
-
-        $itemTotal = $pricePerDay * $quantity * $rentalDays;
-        $subtotal += $itemTotal;
-
-        $itemDetails[] = [
-            'id' => $item->product->id,
-            'price' => $pricePerDay * $rentalDays,
-            'quantity' => $quantity,
-            'name' => $item->product->name . ' (' . $rentalDays . ' days)',
-        ];
-
-        if ($item->delivery_option === 'delivery') {
-            $hasDelivery = true;
-        }
-    }
-
-    $serviceFee = 5000;
-    $deposit = $subtotal * 0.5;
-    $deliveryFee = $hasDelivery ? 10000 : 0;
-    $total = $subtotal + $serviceFee + $deposit + $deliveryFee;
-
-    // Tambah fee ke item details
-    $itemDetails[] = ['id' => 'service', 'price' => $serviceFee, 'quantity' => 1, 'name' => 'Service Fee'];
-    $itemDetails[] = ['id' => 'deposit', 'price' => $deposit, 'quantity' => 1, 'name' => 'Security Deposit'];
-    if ($deliveryFee > 0) {
-        $itemDetails[] = ['id' => 'delivery', 'price' => $deliveryFee, 'quantity' => 1, 'name' => 'Delivery Fee'];
-    }
-
-    // Simpan order
-    $orderCode = 'FST-' . date('Ymd') . '-' . strtoupper(uniqid());
-    $order = Order::create([
-        'user_id' => $user->id,
-        'order_code' => $orderCode,
-        'total_amount' => $total,
-        'status' => 'pending',
-        'payment_status' => 'unpaid',
-        'start_date' => now(), // Default jika tidak disimpan di cart
-        'end_date' => now()->addDays(3),
-    ]);
-
-    // Simpan produk dalam order
-    foreach ($cartItems as $item) {
-        OrderProduct::create([
-            'order_id' => $order->id,
-            'product_id' => $item->product_id,
-            'quantity' => $item->quantity,
-            'unit_price' => $item->product->price,
-            'subtotal' => $item->product->price * $item->quantity,
-        ]);
-    }
-
-    // Midtrans
-    $params = [
-        'transaction_details' => [
-            'order_id' => $orderCode,
-            'gross_amount' => $total,
-        ],
-        'item_details' => $itemDetails,
-        'customer_details' => [
-            'first_name' => $user->name,
-            'email' => $user->email,
-            'phone' => $user->phone ?? '081234567890',
-        ],
-        'expiry' => [
-            'start_time' => now()->format('Y-m-d H:i:s O'),
-            'unit' => 'minutes',
-            'duration' => 60,
-        ]
-    ];
-
-    $snapToken = Snap::getSnapToken($params);
-    session(['current_order_id' => $order->id]);
-
-    foreach ($cartItems as $item) {
-        $item->rental_days = \Carbon\Carbon::parse($item->start_date)->diffInDays(\Carbon\Carbon::parse($item->end_date)) + 1;
-    
-        if ($item->delivery_option === 'delivery' && $item->delivery_details) {
-            $details = json_decode($item->delivery_details, true);
-            $item->recipient_name = $details['recipient_name'] ?? '-';
-            $item->phone_number = $details['phone'] ?? '-';
-            $item->delivery_address = $details['address'] ?? '-';
-        }
-    }
-    
-    return view('pages.customer.paymentcust', [
-        'snapToken' => $snapToken,
-        'orderCode' => $orderCode,
-        'total' => $total,
-        'cartItems' => $cartItems, // ← WAJIB ADA
-        'pricing' => [
-            'subtotal' => $subtotal,
-            'service_fee' => $serviceFee,
-            'deposit' => $deposit,
-            'delivery_fee' => $deliveryFee,
-            'total' => $total
-        ],
-    ]);
-    
-}
-}
+}  

@@ -13,6 +13,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReturnProductController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\WelcomeController;
@@ -40,13 +42,30 @@ Route::post('rent-now', [ProductController::class, 'processRentNow'])->name('ren
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/post', [HomeController::class, 'post'])->middleware('admin');
-
     // Profile
+    //Route::post('/profile/verify', [ProfileController::class, 'verify'])->name('profile.verify');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/save', [ProfileController::class, 'saveAll'])->name('profile.saveAll');
     Route::post('/profile/photo-upload', [ProfileController::class, 'uploadPicture'])->name('profile.uploadPicture');
     Route::get('/profile/rental-information', [ProfileController::class, 'rentalInfo'])->name('profile.rentalInfo');
     Route::get('/profile/rental-history', [ProfileController::class, 'rentalHistory'])->name('profile.rentalHistory');
+    Route::post('/return/create/{order}', [ReturnProductController::class, 'createReturn'])->name('return.create');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/history', [OrderController::class, 'history'])->name('orders.history');
+    Route::post('/profile/verify', [ProfileController::class, 'verify'])->name('profile.verify');
+    Route::post('/return/upload/{id}', [ReturnProductController::class, 'uploadCondition'])->name('return.upload-photos');
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::get('/return/pickup/{order}', function ($orderId) {
+        $order = \App\Models\Order::with('products')->findOrFail($orderId);
+        return view('returns.pickup', compact('order'));
+    })->name('return.pickup.view');
+
+    Route::get('/return/dropoff/{order}', function ($orderId) {
+        $order = \App\Models\Order::with('products')->findOrFail($orderId);
+        return view('returns.dropoff', compact('order'));
+    })->name('return.dropoff.view');
+
 
     //Details
     Route::get('/details', [DetailsController::class, 'details'])->name('details');

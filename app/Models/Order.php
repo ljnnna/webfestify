@@ -22,12 +22,14 @@ class Order extends Model
         'phone_number',
         'recipient_name',
         'notes',
+        'condition_before', 
+        'condition_after',
     ];
 
     protected $casts = [ 
         'start_date' => 'date',
         'end_date' => 'date',
-         'total_amount' => 'decimal:2'
+        'total_amount' => 'decimal:2'
     ];
 
     // Relasi ke User
@@ -38,7 +40,7 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'order_product')
+        return $this->belongsToMany(Product::class, 'order_products')
                     ->withPivot('quantity', 'unit_price', 'subtotal')
                     ->withTimestamps();
     }
