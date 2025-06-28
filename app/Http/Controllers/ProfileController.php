@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Rental;
-use App\Models\Order;
-use App\Http\Controllers\ReturnController;
 
 class ProfileController extends Controller
 {
@@ -56,24 +54,14 @@ class ProfileController extends Controller
         return back()->with('status', 'Foto profil diperbarui.');
     }
 
-    public function edit()
+        public function edit()
     {
-        $user = auth()->user();
-        return view('profile.edit', compact('user'));
+        return view('profile.edit'); 
     }
 
         public function rentalInfo()
     {
-        $query = Order::where('user_id', auth()->id());
-    
-        $status = request('status'); // ambil query string
-        if ($status && in_array($status, ['pending', 'confirmed', 'active', 'completed', 'cancelled'])) {
-            $query->where('status', $status);
-        }
-    
-        $activeOrders = $query->orderByDesc('start_date')->get();
-    
-        return view('profile.rental-information', compact('activeOrders'));
+        return view('profile.rental-information');
     }
 
     public function rentalHistory()
@@ -86,15 +74,6 @@ class ProfileController extends Controller
     return view('profile.rental-history', compact('rentalList'));
     
     }
-
-    public function destroy(Request $request)
-    {
-    $user = $request->user();
-    $user->delete();
-
-    return redirect('/')->with('status', 'Akun berhasil dihapus.');
-    }
-
     
     
 

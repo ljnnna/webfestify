@@ -22,8 +22,6 @@ class Order extends Model
         'phone_number',
         'recipient_name',
         'notes',
-        'condition_before', 
-        'condition_after',
     ];
 
     protected $casts = [ 
@@ -40,7 +38,7 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'order_products')
+        return $this->belongsToMany(Product::class, 'order_product')
                     ->withPivot('quantity', 'unit_price', 'subtotal')
                     ->withTimestamps();
     }

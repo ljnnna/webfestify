@@ -407,7 +407,7 @@ class PaymentController extends Controller
 
 
         $cartItems = $cartItems->map(function ($item) {
-            // Pastikan properti product tetap
+            // Pastikan properti `product` tetap
             $item->product = $item->product;
         
             // Hitung rental_days
@@ -564,4 +564,4 @@ class PaymentController extends Controller
         }
 
     }
-}
+}  

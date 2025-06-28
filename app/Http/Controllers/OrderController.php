@@ -130,4 +130,28 @@ class OrderController extends Controller
         return redirect()->back()->with('success', 'Status order berhasil diupdate');
     }
 
+    public function uploadCondition(Request $request, $id)
+    {
+        $request->validate([
+            'condition_before' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'condition_after' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $order = Order::findOrFail($id);
+
+        if ($request->hasFile('condition_before')) {
+            $beforePath = $request->file('condition_before')->store('condition_images', 'public');
+            $order->condition_before = $beforePath;
+        }
+
+        if ($request->hasFile('condition_after')) {
+            $afterPath = $request->file('condition_after')->store('condition_images', 'public');
+            $order->condition_after = $afterPath;
+        }
+
+        $order->save();
+
+        return back()->with('success', 'Foto kondisi berhasil diupload');
+    }
+
 }

@@ -13,8 +13,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\ReturnProductController;
-use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\WelcomeController;
@@ -27,12 +25,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
     Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::post('/orders/{id}/condition', [OrderController::class, 'uploadCondition'])->name('orders.uploadCondition');
-    Route::get('/returns', [ReturnProductController::class, 'index'])->name('returns');
-    Route::post('/returns/{id}/upload-condition', [ReturnProductController::class, 'uploadCondition'])->name('returns.uploadCondition');
-    Route::put('/returns/{id}/status', [ReturnProductController::class, 'updateStatus'])->name('returns.updateStatus');
-    Route::put('/returns/{id}/notes', [ReturnProductController::class, 'updateNotes'])->name('returns.updateNotes');
-    Route::post('/returns/create/{orderId}', [ReturnProductController::class, 'createReturn'])->name('returns.createReturn');
-    Route::put('/returns/confirm/{returnId}', [ReturnProductController::class, 'confirmReturn'])->name('returns.confirmReturn');
     Route::resource('product', ProductController::class);
     Route::delete('/product/{product}/image/{imageId}', [ProductController::class, 'deleteImage'])
     ->name('product.image.destroy');
@@ -43,45 +35,28 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 });
 
 // ======================= CUSTOMER ROUTES ===========================
+Route::get('/details/{slug}', [ProductController::class, 'detailBySlug'])->name('product.details');
+Route::post('rent-now', [ProductController::class, 'processRentNow'])->name('rent.now'); // Move this outside auth middleware
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/post', [HomeController::class, 'post'])->middleware('admin');
-
     // Profile
-    //Route::post('/profile/verify', [ProfileController::class, 'verify'])->name('profile.verify');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/save', [ProfileController::class, 'saveAll'])->name('profile.saveAll');
     Route::post('/profile/photo-upload', [ProfileController::class, 'uploadPicture'])->name('profile.uploadPicture');
     Route::get('/profile/rental-information', [ProfileController::class, 'rentalInfo'])->name('profile.rentalInfo');
     Route::get('/profile/rental-history', [ProfileController::class, 'rentalHistory'])->name('profile.rentalHistory');
-    Route::post('/return/create/{order}', [ReturnProductController::class, 'createReturn'])->name('return.create');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-    Route::get('/orders/history', [OrderController::class, 'history'])->name('orders.history');
-    Route::post('/profile/verify', [ProfileController::class, 'verify'])->name('profile.verify');
-    Route::post('/return/upload/{id}', [ReturnProductController::class, 'uploadCondition'])->name('return.upload-photos');
-    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
-    Route::get('/return/pickup/{order}', function ($orderId) {
-        $order = \App\Models\Order::with('products')->findOrFail($orderId);
-        return view('returns.pickup', compact('order'));
-    })->name('return.pickup.view');
-
-    Route::get('/return/dropoff/{order}', function ($orderId) {
-        $order = \App\Models\Order::with('products')->findOrFail($orderId);
-        return view('returns.dropoff', compact('order'));
-    })->name('return.dropoff.view');
-
 
     // Customer pages
 
     Route::get('/details', [DetailsController::class, 'details'])->name('details');
-    Route::post('rent-now', [PaymentController::class, 'rentNow'])->name('rent.now');
 
         // Display payment page
     Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
 
-    Route::get('/checkout', [PaymentController::class, 'checkout'])->name('checkout');
-    Route::post('/checkout', [CartController::class, 'paymentPage'])->name('checkout.process');
+
+    Route::post('/checkout', [PaymentController::class, 'checkoutFromCart'])->name('checkout.process');
 
     
     // Process payment (create Midtrans transaction)
