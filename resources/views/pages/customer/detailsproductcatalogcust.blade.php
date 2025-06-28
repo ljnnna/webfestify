@@ -728,9 +728,6 @@ const productController = {
         return;
     }
 
-    // Show loading message
-    utils.showNotification('Processing rental request...', 'info', 2000);
-
     // Create and submit form with rental data
     const form = document.createElement('form');
     form.method = 'POST';

@@ -49,12 +49,8 @@
             $product = $item->product;
             $slug = $product->slug;
         @endphp
-        <div class="relative group cart-item bg-gradient-to-r from-purple-50 to-pink-50 rounded p-4 shadow overflow-hidden"
-    data-id="{{ $item->id }}"
-    data-price="{{ $product->price }}"
-    data-base-price="{{ $product->price }}"
-    data-delivery="{{ $item->delivery_option }}">
-
+    <div class="relative group cart-item bg-gradient-to-r from-purple-50 to-pink-50 rounded p-4 shadow overflow-hidden"
+        data-price="{{ $product->price }}" data-base-price="{{ $product->price }}" data-delivery="{{ $item->delivery_option }}">
 
         {{-- Link overlay seluruh card --}}
         <a href="{{ route('product.show', $slug) }}" class="absolute inset-0 z-0"></a>
@@ -143,8 +139,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const selectAll = document.getElementById('select-all');
     const itemChecks = document.querySelectorAll('.item-check');
-    const form = document.getElementById('checkout-form');
-    const selectedInput = document.getElementById('selected_cart_ids');
 
     function updateItemPriceDisplay(item) {
         const count = parseInt(item.querySelector('.count').innerText);
@@ -156,43 +150,77 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateSummary() {
-        let items = document.querySelectorAll('.cart-item');
-        let subtotal = 0, itemCount = 0;
-        let hasDelivery = false;
+    let items = document.querySelectorAll('.cart-item');
+    let subtotal = 0, itemCount = 0;
+    let hasDelivery = false;
 
-        items.forEach(item => {
-            const checkbox = item.querySelector('.item-check');
-            const count = parseInt(item.querySelector('.count').innerText);
-            const basePrice = parseInt(item.getAttribute('data-base-price'));
-            const deliveryOption = item.getAttribute('data-delivery');
+    items.forEach(item => {
+        const checkbox = item.querySelector('.item-check');
+        const count = parseInt(item.querySelector('.count').innerText);
+        const basePrice = parseInt(item.getAttribute('data-base-price'));
+        const deliveryOption = item.getAttribute('data-delivery');
 
-            if (checkbox.checked) {
-                subtotal += basePrice * count;
-                itemCount += count;
-                if (deliveryOption === 'delivery') {
-                    hasDelivery = true;
-                }
+        if (checkbox.checked) {
+            subtotal += basePrice * count;
+            itemCount += count;
+            if (deliveryOption === 'delivery') {
+                hasDelivery = true;
+            }
+        }
+    });
+
+    const serviceFee = 5000;
+    const deliveryFee = hasDelivery ? 10000 : 0;
+    const total = subtotal + serviceFee + deliveryFee;
+
+    document.getElementById('item-count').innerText = `${itemCount} items`;
+    document.getElementById('item-subtotal').innerText = `IDR ${subtotal.toLocaleString()}`;
+    document.getElementById('delivery-fee-display').innerText = `IDR ${deliveryFee.toLocaleString()}`;
+    document.getElementById('total-price').innerText = `IDR ${total.toLocaleString()}`;
+}
+
+
+    // document.querySelectorAll('.increment').forEach(btn => {
+    //     btn.addEventListener('click', e => {
+    //         const item = e.target.closest('.cart-item');
+    //         const countEl = item.querySelector('.count');
+    //         let count = parseInt(countEl.innerText) + 1;
+    //         countEl.innerText = count;
+    //         updateItemPriceDisplay(item);
+    //         updateSummary();
+    //     });
+    // });
+
+    // document.querySelectorAll('.decrement').forEach(btn => {
+    //     btn.addEventListener('click', e => {
+    //         const item = e.target.closest('.cart-item');
+    //         const countEl = item.querySelector('.count');
+    //         let count = parseInt(countEl.innerText);
+    //         if (count > 1) {
+    //             countEl.innerText = count - 1;
+    //             updateItemPriceDisplay(item);
+    //             updateSummary();
+    //         }
+    //     });
+    // });
+
+    document.querySelectorAll('.remove').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to remove this item?')) {
+                this.closest('form').submit();
             }
         });
-
-        const serviceFee = 5000;
-        const deliveryFee = hasDelivery ? 10000 : 0;
-        const total = subtotal + serviceFee + deliveryFee;
-
-        document.getElementById('item-count').innerText = `${itemCount} items`;
-        document.getElementById('item-subtotal').innerText = `IDR ${subtotal.toLocaleString()}`;
-        document.getElementById('delivery-fee-display').innerText = `IDR ${deliveryFee.toLocaleString()}`;
-        document.getElementById('total-price').innerText = `IDR ${total.toLocaleString()}`;
-    }
+    });
 
     itemChecks.forEach(cb => cb.addEventListener('change', function () {
-        updateSummary();
+    updateSummary();
 
-        // Sync selectAll checkbox
-        const allChecked = Array.from(itemChecks).every(item => item.checked);
-        if (selectAll) {
-            selectAll.checked = allChecked;
-        }
+    // Sync status selectAll berdasarkan semua item
+    const allChecked = Array.from(itemChecks).every(item => item.checked);
+    if (selectAll) {
+        selectAll.checked = allChecked;
+    }
     }));
 
     if (selectAll) {
@@ -202,36 +230,13 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Default checked semua saat awal
+    // Default check semua
     itemChecks.forEach(cb => cb.checked = true);
     if (selectAll) selectAll.checked = true;
 
     document.querySelectorAll('.cart-item').forEach(updateItemPriceDisplay);
     updateSummary();
-
-    // Submit: ambil hanya cart ID yang dicentang
-    form.addEventListener('submit', function (e) {
-        const selectedIds = [];
-        document.querySelectorAll('.cart-item').forEach(item => {
-            const checkbox = item.querySelector('.item-check');
-            if (checkbox.checked) {
-                selectedIds.push(item.getAttribute('data-id'));
-            }
-        });
-        selectedInput.value = selectedIds.join(',');
-    });
-
-    // Confirm delete
-    document.querySelectorAll('.remove').forEach(btn => {
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (confirm('Are you sure you want to remove this item?')) {
-                this.closest('form').submit();
-            }
-        });
-    });
 });
 </script>
-
 
 @endsection

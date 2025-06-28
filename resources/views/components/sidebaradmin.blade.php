@@ -39,6 +39,14 @@
                     Orders
                 </div>
             </a>
+
+            <a href="{{ route('admin.returns') }}" class="nav-item rounded-full border font-semibold hover:bg-purple-100 {{ request()->routeIs('admin.returns') ? 'bg-purple-200' : '' }} flex items-center relative group min-h-[44px] px-4 py-2 gap-3">
+                <i class="fas fa-truck-pickup flex-shrink-0 w-5 text-center"></i>
+                <span class="nav-text transition-opacity duration-300 opacity-100 whitespace-nowrap">Return</span>
+                <div class="sidebar-tooltip absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-sm rounded opacity-0 pointer-events-none group-hover:opacity-100 transition-all duration-200 whitespace-nowrap z-50 hidden transform -translate-x-1 group-hover:translate-x-0">
+                    Return
+                </div>
+            </a>
         </nav>
     </div>
 </div>
