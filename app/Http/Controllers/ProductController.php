@@ -196,9 +196,10 @@ class ProductController extends Controller
 
     $product = Product::findOrFail($request->product_id);
 
-    if ($request->quantity > $product->stock_quantity) {
+    $availableStock = $product->stock_quantity - $product->stock_rented;
+    if ($request->quantity > $availableStock) {
         return back()->withErrors([
-            'quantity' => 'Requested quantity exceeds available stock (' . $product->stock_quantity . ')'
+            'quantity' => 'Requested quantity exceeds available stock (' . $availableStock . ')'
         ])->withInput();
     }
 

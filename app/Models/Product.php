@@ -110,4 +110,9 @@ class Product extends Model
             : asset('images/default.png');
     }
 
+    public function getAvailableStockAttribute()
+    {
+        return $this->stock_quantity - $this->stock_rented;
+    }
+
 }
