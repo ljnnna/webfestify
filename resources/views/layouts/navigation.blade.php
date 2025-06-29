@@ -4,33 +4,24 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
 
-            <!-- Logo -->
-            <div class="flex items-center space-x-2">
-                <a href="{{ url('/') }}">
-                    <img src="{{ asset('images/logofestify.png') }}" class="h-8 lg:h-12 w-auto" alt="Festify Logo" />
-                </a>
-                <span class="text-base lg:text-xl font-semibold text-purple-800 dark:text-white hidden lg:inline">Festify</span>
+            <!-- KIRI: Logo + Desktop Menu -->
+            <div class="flex items-center space-x-8">
+                <!-- Logo -->
+                <div class="flex items-center space-x-2">
+                    <a href="{{ url('/') }}">
+                        <img src="{{ asset('images/logofestify.png') }}" class="h-8 lg:h-12 w-auto" alt="Festify Logo" />
+                    </a>
+                    <span class="text-base lg:text-x font-semibold text-purple-800 dark:text-white hidden lg:inline">Festify</span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center space-x-6">
+                    @yield('desktop-menu')
+                </div>
             </div>
 
-            <!-- Mobile Search + Cart -->
-            <div class="flex lg:hidden items-center space-x-2 ml-auto">
-                <form action="{{ url('/search/result') }}" method="GET">
-                    <input 
-                        type="text" 
-                        name="query" 
-                        placeholder="Search..." 
-                        class="pl-4 pr-10 py-2 rounded-full border border-purple-800 focus:ring-2 focus:ring-purple-300 focus:outline-none w-44 sm:w-56 dark:bg-gray-700 dark:text-white text-sm"
-                    />
-                </form>
-                <a href="{{ route('cart') }}" class="text-[#3E3667] hover:text-[#6B5DD3] text-xl">
-                    <i class="fas fa-shopping-cart"></i>
-                </a>
-            </div>
-
-            <!-- Desktop Menu -->
+            <!-- KANAN: Search, Cart, Auth (Desktop Only) -->
             <div class="hidden lg:flex items-center space-x-6">
-                @yield('desktop-menu')
-
                 <!-- Search Input -->
                 <form action="{{ url('/search/result') }}" method="GET" class="relative">
                     <input 
@@ -89,9 +80,25 @@
                     </a>
                 @endauth
             </div>
+
+            <!-- Mobile Search + Cart -->
+            <div class="flex lg:hidden items-center space-x-2 ml-auto">
+                <form action="{{ url('/search/result') }}" method="GET">
+                    <input 
+                        type="text" 
+                        name="query" 
+                        placeholder="Search..." 
+                        class="pl-4 pr-10 py-2 rounded-full border border-purple-800 focus:ring-2 focus:ring-purple-300 focus:outline-none w-44 sm:w-56 dark:bg-gray-700 dark:text-white text-sm"
+                    />
+                </form>
+                <a href="{{ route('cart') }}" class="text-[#3E3667] hover:text-[#6B5DD3] text-xl">
+                    <i class="fas fa-shopping-cart"></i>
+                </a>
+            </div>
         </div>
     </div>
 </nav>
+
 
 
 

@@ -20,7 +20,7 @@
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
-    @include('components.navbar')
+    @include('layouts.navigation')
     
     <!-- Main Content -->
     @yield('content')
