@@ -113,4 +113,18 @@ class Order extends Model
         return $query->where('start_date', '>=', today())
                     ->where('start_date', '<=', today()->addDays($days));
     }
+
+    public function returnProducts()
+    {
+        return $this->hasMany(ReturnProduct::class);
+    }
+
+    public static function getMonthlyRentals()
+    {
+        return self::selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, MONTHNAME(created_at) as month_name, COUNT(*) as total')
+            ->groupBy('year', 'month')
+            ->orderBy('year', 'desc')
+            ->orderBy('month', 'desc')
+            ->get();
+    }
 }

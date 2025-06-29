@@ -25,8 +25,14 @@ Route::get('/', [WelcomeController::class, 'welcome'])->name('welcome');
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/userfest', [UsersController::class, 'index'])->name('user');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
-    Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::post('/orders/{id}/condition', [OrderController::class, 'uploadCondition'])->name('orders.uploadCondition');
+    Route::get('/returns', [ReturnProductController::class, 'index'])->name('returns');
+    Route::post('/returns/{id}/upload-condition', [ReturnProductController::class, 'uploadCondition'])->name('returns.uploadCondition');
+    Route::put('/returns/{id}/status', [ReturnProductController::class, 'updateStatus'])->name('returns.updateStatus');
+    Route::put('/returns/{id}/notes', [ReturnProductController::class, 'updateNotes'])->name('returns.updateNotes');
+    Route::post('/returns/create/{orderId}', [ReturnProductController::class, 'createReturn'])->name('returns.createReturn');
+    Route::put('/returns/confirm/{returnId}', [ReturnProductController::class, 'confirmReturn'])->name('returns.confirmReturn');
     Route::resource('product', ProductController::class);
     Route::delete('/product/{product}/image/{imageId}', [ProductController::class, 'deleteImage'])->name('product.image.destroy');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
