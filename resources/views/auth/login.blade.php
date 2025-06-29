@@ -13,6 +13,14 @@
 
         <!-- Status Session -->
         <x-auth-session-status class="mb-4" :status="session('status')" />
+        @if(session('message'))
+        <div class="mb-4 p-4 bg-blue-100 border border-blue-400 text-blue-700 rounded">
+            <div class="flex items-center">
+                <i class="fas fa-info-circle mr-2"></i>
+                {{ session('message') }}
+            </div>
+        </div>
+        @endif
 
         <!-- ✅ BAGIAN INI TELAH DIPERBAIKI -->
         @if(session('message'))
@@ -57,10 +65,9 @@
                 </label>
 
                 @if (Route::has('password.request'))
-
-                    <a class="text-sm text-purple-500 hover:underline" href="{{ route('password.request') }}">
-                        Forgot Password?
-                    </a>
+                <a class="text-sm text-purple-500 hover:underline" href="{{ route('password.request') }}">
+                    Forgot Password?
+                </a>
                 @endif
             </div>
 
@@ -75,18 +82,12 @@
 
             <!-- Link Register -->
             <div class="mt-6 text-center">
-                <a class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-                    href="{{ route('register') }}">
-
+                <a class=" text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+                    href="{{ route('register') }} ">
                     {{ __('Dont have an account?') }}
                 </a>
             </div>
         </form>
 
-    </div>
-
 </x-guest-layout>
-
-
-
 

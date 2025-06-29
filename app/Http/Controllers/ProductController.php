@@ -176,7 +176,7 @@ class ProductController extends Controller
         return redirect()->route('admin.product.index')->with('success', 'Product deleted.');
     }
 
-public function processRentNow(Request $request)
+    public function processRentNow(Request $request)
 {
     // Validate the form data first
     $request->validate([
@@ -196,9 +196,10 @@ public function processRentNow(Request $request)
 
     $product = Product::findOrFail($request->product_id);
 
-    if ($request->quantity > $product->stock_quantity) {
+    $availableStock = $product->stock_quantity - $product->stock_rented;
+    if ($request->quantity > $availableStock) {
         return back()->withErrors([
-            'quantity' => 'Requested quantity exceeds available stock (' . $product->stock_quantity . ')'
+            'quantity' => 'Requested quantity exceeds available stock (' . $availableStock . ')'
         ])->withInput();
     }
 
@@ -227,13 +228,7 @@ public function processRentNow(Request $request)
         session(['url.intended' => route('payment')]);
         
         // Redirect to login with a message
-
-
-        return redirect()->route('login');
-
-        return redirect()->route('login')->with('message', 'Please login to continue with your rental.');
-
-
+        return redirect()->route('login')->with('message', '');
     }
 
     // If user is already logged in, proceed to payment

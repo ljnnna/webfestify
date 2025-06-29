@@ -61,6 +61,18 @@ class OrderController extends Controller
             ])->withInput();
         }
 
+        // Validasi stock tersedia
+        foreach ($request->products as $productData) {
+            $product = Product::find($productData['product_id']);
+            $availableStock = $product->stock_quantity - $product->stock_rented;
+            
+            if ($availableStock < $productData['quantity']) {
+                return back()->withErrors([
+                    'stock' => "Stock {$product->name} tidak mencukupi. Tersedia: {$availableStock}"
+                ])->withInput();
+            }
+        }
+
         // Create order
         $order = Order::create([
             'user_id' => $request->user_id,
@@ -89,6 +101,9 @@ class OrderController extends Controller
                 'unit_price' => $unitPrice,
                 'subtotal' => $subtotal,
             ]);
+
+            // Update stock
+            $product->increment('stock_rented', $quantity);
 
             $totalAmount += $subtotal;
         }
@@ -121,11 +136,42 @@ class OrderController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:pending,confirmed,active,completed,canceled'
+            'status' => 'required|in:pending,confirmed,active,completed,cancelled'
         ]);
 
         $order = Order::findOrFail($id);
-        $order->update(['status' => $request->status]);
+        $oldStatus = $order->status;
+        $newStatus = $request->status;
+
+        \Log::info("Updating order status", [
+            'order_id' => $id,
+            'old_status' => $oldStatus,
+            'new_status' => $newStatus
+        ]);
+
+
+        // Kembalikan stock jika order completed atau cancelled
+        if (in_array($newStatus, ['completed', 'cancelled']) && !in_array($oldStatus, ['completed', 'cancelled'])) {
+            foreach ($order->orderProducts as $orderProduct) {
+                $product = $orderProduct->product;
+                $product->decrement('stock_rented', $orderProduct->quantity);
+            }
+        }
+        
+        // Kurangi stock lagi jika order direactivate dari completed/cancelled
+        if (!in_array($newStatus, ['completed', 'cancelled']) && in_array($oldStatus, ['completed', 'cancelled'])) {
+            foreach ($order->orderProducts as $orderProduct) {
+                $product = $orderProduct->product;
+                $product->increment('stock_rented', $orderProduct->quantity);
+            }
+        }
+
+        $order->update(['status' => $newStatus]);
+
+        \Log::info("Order status updated", [
+            'order_id' => $id,
+            'final_status' => $order->fresh()->status
+        ]);
 
         return redirect()->back()->with('success', 'Status order berhasil diupdate');
     }

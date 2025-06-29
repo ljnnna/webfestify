@@ -45,7 +45,9 @@
                 <th class="px-6 py-3 text-center text-sm font-semibold">#</th>
                 <th class="px-6 py-3 text-center text-sm font-semibold">Product</th>
                 <th class="px-6 py-3 text-center text-sm font-semibold">Price</th>
-                <th class="px-6 py-3 text-center text-sm font-semibold">Stock</th>
+                <th class="px-6 py-3 text-center text-sm font-semibold">Total Stock</th>
+                <th class="px-6 py-3 text-center text-sm font-semibold">Avail</th>
+                <th class="px-6 py-3 text-center text-sm font-semibold">Rented</th>
                 <th class="px-6 py-3 text-center text-sm font-semibold">Actions</th>
             </tr>
         </thead>
@@ -94,9 +96,19 @@
                     Rp{{ number_format($product->price, 0, ',', '.') }}/day
                 </td>
 
-                <!-- Stok -->
+                <!-- Stock -->
                 <td class="px-6 py-4 text-sm text-gray-700 text-center">
                     {{ $product->stock_quantity }}
+                </td>
+
+                <!-- Avail -->
+                <td class="px-6 py-4 text-sm text-gray-700 text-center">
+                    {{ $product->available_stock }}
+                </td>
+
+                <!-- Rented -->
+                <td class="px-6 py-4 text-sm text-gray-700 text-center">
+                    {{ $product->stock_rented }}
                 </td>
 
                 <!-- Tombol Edit dan Hapus -->

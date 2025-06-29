@@ -31,9 +31,6 @@
                 <th class="px-6 py-3">Order Date</th>
                 <th class="px-6 py-3">Payment Status</th>
                 <th class="px-6 py-3">Status</th>
-                <th class="px-6 py-3">Cond Before</th>
-                <th class="px-6 py-3">Cond After</th>
-                <th class="px-6 py-3">Upload Cond</th>
             </tr>
         </thead>
         <tbody class="bg-white">
@@ -61,7 +58,7 @@
                     <td class="px-6 py-4">
                         <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST">
                             @csrf
-                            @method('PUT')
+                            @method('PATCH')
                             <select name="status" onchange="this.form.submit()" class="border px-2 py-1 rounded bg-white shadow text-sm">
                                 @foreach (['pending', 'confirmed', 'active', 'completed', 'cancelled'] as $status)
                                     <option value="{{ $status }}" {{ $order->status === $status ? 'selected' : '' }}>
@@ -69,38 +66,6 @@
                                     </option>
                                 @endforeach
                             </select>
-                        </form>
-                    </td>
-                    <td class="px-6 py-4">
-                        @if ($order->condition_before)
-                            <a href="{{ asset('storage/' . $order->condition_before) }}" target="_blank"
-                            class="text-blue-600 underline text-sm">Lihat</a>
-                        @else
-                            <span class="text-red-500 font-bold text-sm">Belum</span>
-                        @endif
-                    </td>
-                    <td class="px-6 py-4">
-                        @if ($order->condition_after)
-                            <a href="{{ asset('storage/' . $order->condition_after) }}" target="_blank"
-                            class="text-blue-600 underline text-sm">Lihat</a>
-                        @else
-                            <span class="text-red-500 font-bold text-sm">Belum</span>
-                        @endif
-                    </td>
-                    <td class="px-6 py-4">
-                        <form action="{{ route('admin.orders.uploadCondition', $order->id) }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block font-semibold mb-1">Before</label>
-                                    <input type="file" name="condition_before" accept="image/*" class="border rounded p-2 w-full">
-                                </div>
-                                <div>
-                                    <label class="block font-semibold mb-1">After</label>
-                                    <input type="file" name="condition_after" accept="image/*" class="border rounded p-2 w-full">
-                                </div>
-                            </div>
-                            <button type="submit" class="mt-4 bg-blue-200 text-black px-4 py-2 rounded shadow">Upload</button>
                         </form>
                     </td>
                 </tr>

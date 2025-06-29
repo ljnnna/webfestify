@@ -11,7 +11,6 @@ use Midtrans\Config;
 use Midtrans\Notification;
 use App\Models\Cart;
 
-
 class PaymentController extends Controller
 {
     public function __construct()
@@ -23,7 +22,7 @@ class PaymentController extends Controller
         Config::$is3ds = config('midtrans.is3ds');
     }
 
-    // Tambahkan method rent now
+    // Method rent now
     public function rentNow(Request $request)
     {
         $request->validate([
@@ -95,7 +94,6 @@ class PaymentController extends Controller
             ]
         ];
         
-
         return view('pages.customer.paymentcust', compact('paymentData'));
     }
 
@@ -108,23 +106,35 @@ class PaymentController extends Controller
     
         $rentalData = session('rental_data');
         $orderId = session('current_order_id');
-    
+        
+        // ✅ PERBAIKAN: Cek apakah ada salah satu data yang tersedia
         if (!$rentalData && !$orderId) {
+            \Log::error('No rental data or order ID found', [
+                'rental_data' => $rentalData,
+                'order_id' => $orderId,
+                'session_all' => session()->all()
+            ]);
+            
             return response()->json([
                 'success' => false,
-                'message' => 'Rental data not found'
+                'message' => 'No rental data or order found. Please try again.'
             ], 400);
         }
     
         try {
             $itemDetails = [];
             $order = null;
+            $serviceFee = 5000;
+            $deposit = 0;
+            $shippingCost = 0;
+            $subtotal = 0;
     
             // ================= ALUR 1: RENT NOW =================
             if ($rentalData) {
+                \Log::info('Processing Rent Now payment', ['rental_data' => $rentalData]);
+                
                 $product = Product::findOrFail($rentalData['product_id']);
                 $subtotal = $product->price * $rentalData['quantity'] * $rentalData['rental_days'];
-                $serviceFee = 5000;
                 $deposit = $subtotal * 0.5;
                 $shippingCost = $rentalData['delivery_option'] === 'delivery' ? 10000 : 0;
                 $total = $subtotal + $serviceFee + $deposit + $shippingCost;
@@ -156,17 +166,20 @@ class PaymentController extends Controller
     
                 $itemDetails[] = [
                     'id' => $product->id,
-                    'price' => $subtotal, // sudah dikali qty dan hari
-                    'quantity' => 1, // biar tidak dikali ulang
+                    'price' => $subtotal,
+                    'quantity' => 1,
                     'name' => $product->name . ' (' . $rentalData['quantity'] . ' pcs × ' . $rentalData['rental_days'] . ' days)'
                 ];
             }
     
             // ================= ALUR 2: CHECKOUT DARI CART =================
             if ($orderId && !$rentalData) {
+                \Log::info('Processing Cart checkout payment', ['order_id' => $orderId]);
+                
                 $order = Order::with('orderProducts.product')->findOrFail($orderId);
                 $subtotal = 0;
     
+                // Hitung rental days dari order
                 $rentalDays = \Carbon\Carbon::parse($order->start_date)
                     ->diffInDays(\Carbon\Carbon::parse($order->end_date)) + 1;
     
@@ -178,15 +191,12 @@ class PaymentController extends Controller
     
                     $itemDetails[] = [
                         'id' => $item->product_id,
-                        'price' => $item->unit_price * $qty * $rentalDays, // Sudah dikali total
-                        'quantity' => 1, // biar Midtrans tidak mengalikan ulang
+                        'price' => $sub,
+                        'quantity' => 1,
                         'name' => $item->product->name . " ({$qty} pcs × {$rentalDays} days)"
                     ];
-                    
-                    
                 }
     
-                $serviceFee = 5000;
                 $deposit = $subtotal * 0.5;
                 $shippingCost = $order->delivery_option === 'delivery' ? 10000 : 0;
                 $total = $subtotal + $serviceFee + $deposit + $shippingCost;
@@ -252,13 +262,28 @@ class PaymentController extends Controller
             ];
     
             $snapToken = Snap::getSnapToken($params);
+            
+            // ✅ SIMPAN ORDER ID KE SESSION
+            session(['current_order_id' => $order->id]);
+            
+            \Log::info('Payment processed successfully', [
+                'order_id' => $order->id,
+                'order_code' => $order->order_code,
+                'total_amount' => $order->total_amount
+            ]);
     
             return response()->json([
                 'success' => true,
                 'snap_token' => $snapToken,
                 'order_code' => $order->order_code
             ]);
+            
         } catch (\Exception $e) {
+            \Log::error('Payment processing failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Payment processing failed: ' . $e->getMessage()
@@ -295,6 +320,11 @@ class PaymentController extends Controller
         $subtotal = 0;
         $hasDelivery = false;
         $itemDetails = [];
+        
+        // ✅ PERBAIKAN: Ambil tanggal dari item cart pertama atau set default
+        $firstItem = $cartItems->first();
+        $orderStartDate = $firstItem->start_date ?? now()->format('Y-m-d');
+        $orderEndDate = $firstItem->end_date ?? now()->addDays(1)->format('Y-m-d');
     
         // Loop item cart untuk hitung harga & data delivery
         foreach ($cartItems as $item) {
@@ -328,7 +358,6 @@ class PaymentController extends Controller
                 'quantity' => $qty * $rentalDays,
                 'name' => $item->product->name
             ];
-            
 
             // Cek pengiriman
             if ($item->delivery_option === 'delivery') {
@@ -363,8 +392,9 @@ class PaymentController extends Controller
             'total_amount' => $total,
             'status' => 'pending',
             'payment_status' => 'unpaid',
-            'start_date' => now(),
-            'end_date' => now()->addDays(3), // opsional default
+            'start_date' => $orderStartDate, // ✅ PERBAIKAN
+            'end_date' => $orderEndDate,     // ✅ PERBAIKAN
+            'delivery_option' => $hasDelivery ? 'delivery' : 'pickup', // ✅ PERBAIKAN
         ]);
     
         // Simpan produk dalam order
@@ -374,15 +404,18 @@ class PaymentController extends Controller
                 'product_id' => $item->product_id,
                 'quantity' => $item->quantity,
                 'unit_price' => $item->product->price,
-                'subtotal' => $item->product->price * $item->quantity * $item->rental_days, // ✅ benar
+                'subtotal' => $item->product->price * $item->quantity * $item->rental_days,
             ]);
         }
     
-        // Hapus dari cart setelah checkout (opsional)
+        // ✅ PERBAIKAN: Simpan ke session untuk proses payment
         session([
             'current_order_id' => $order->id,
             'cart_ids_to_remove' => $selectedIds
         ]);
+        
+        // ✅ PERBAIKAN: Hapus rental_data dari session agar tidak konflik
+        session()->forget('rental_data');
     
         // Midtrans
         $params = [
@@ -405,17 +438,14 @@ class PaymentController extends Controller
     
         $snapToken = Snap::getSnapToken($params);
 
-
+        // Prepare cart items for view
         $cartItems = $cartItems->map(function ($item) {
-            // Pastikan properti `product` tetap
             $item->product = $item->product;
         
-            // Hitung rental_days
             $start = \Carbon\Carbon::parse($item->start_date);
             $end = \Carbon\Carbon::parse($item->end_date);
             $item->rental_days = $start->diffInDays($end) + 1;
         
-            // Set delivery details jika delivery
             if ($item->delivery_option === 'delivery' && $item->delivery_details) {
                 $details = json_decode($item->delivery_details, true);
                 $item->recipient_name = $details['recipient_name'] ?? '-';
@@ -430,6 +460,12 @@ class PaymentController extends Controller
             return $item;
         });
         
+        \Log::info('Checkout from cart completed', [
+            'order_id' => $order->id,
+            'order_code' => $order->order_code,
+            'total_amount' => $total,
+            'cart_items_count' => $cartItems->count()
+        ]);
     
         return view('pages.customer.paymentcust', [
             'paymentData' => [
@@ -442,7 +478,7 @@ class PaymentController extends Controller
                     'total' => $total,
                 ]
             ],
-            'items' => $cartItems, // ✅ TAMBAHKAN INI
+            'items' => $cartItems,
             'snapToken' => $snapToken,
             'orderCode' => $orderCode,
         ]);
@@ -450,45 +486,60 @@ class PaymentController extends Controller
 
     public function paymentFinish(Request $request)
     {
+        \Log::info('Payment Finish called', [
+            'session_order_id' => session('current_order_id'),
+            'session_cart_ids' => session('cart_ids_to_remove'),
+            'request_params' => $request->all()
+        ]);
+
         $orderId = session('current_order_id');
         $cartIds = session('cart_ids_to_remove', []);
     
         if ($orderId) {
             $order = Order::find($orderId);
-            if ($order && $order->payment_status === 'paid') {
-                // Hapus cart hanya jika payment sukses
+            
+            \Log::info('Order found', [
+                'order_id' => $order->id ?? 'null',
+                'order_code' => $order->order_code ?? 'null',
+                'payment_status' => $order->payment_status ?? 'null'
+            ]);
+            
+            if ($order) {
+                // Hapus cart items jika ada
                 if (!empty($cartIds)) {
                     Cart::where('user_id', auth()->id())
                         ->whereIn('id', $cartIds)
                         ->delete();
+                    
+                    \Log::info('Cart items removed', ['cart_ids' => $cartIds]);
                 }
     
                 // Hapus session
-                session()->forget(['current_order_id', 'cart_ids_to_remove']);
+                session()->forget(['current_order_id', 'cart_ids_to_remove', 'rental_data']);
+                
+                \Log::info('Redirecting to order success', ['order_code' => $order->order_code]);
     
                 return redirect()->route('order.success', $order->order_code);
             }
         }
-    
+        
+        \Log::warning('Payment finish failed - redirecting to home');
         return redirect()->route('home')->with('error', 'Payment not completed yet.');
     }
-    
 
     public function paymentNotification(Request $request)
     {
         try {
-            // Log incoming notification for debugging
             \Log::info('Midtrans Notification Received:', $request->all());
 
             $notification = new Notification();
             
             $transactionStatus = $notification->transaction_status;
-            $fraudStatus = $notification->fraud_status ?? 'accept'; // Default to accept if not present
+            $fraudStatus = $notification->fraud_status ?? 'accept';
             $orderId = $notification->order_id;
             $statusCode = $notification->status_code;
             $grossAmount = $notification->gross_amount;
 
-            // Find order by order_code
             $order = Order::where('order_code', $orderId)->first();
             
             if (!$order) {
@@ -523,7 +574,6 @@ class PaymentController extends Controller
                     \Log::info("Order {$orderId} marked as paid/confirmed");
                 }
             } else if ($transactionStatus == 'settlement') {
-                // This is the most common success status for non-card payments
                 $order->update([
                     'payment_status' => 'paid',
                     'status' => 'confirmed'
@@ -562,6 +612,5 @@ class PaymentController extends Controller
             \Log::error('Stack trace: ' . $e->getTraceAsString());
             return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
         }
-
     }
-}  
+}

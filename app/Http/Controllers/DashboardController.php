@@ -36,6 +36,26 @@ class DashboardController extends Controller
     public function index()
     {
         $data = self::getDashboardData();
+
+        $monthlyData = Order::getMonthlyRentals();
+        
+        $months = [];
+        $rentals = [];
+        
+        foreach($monthlyData as $row) {
+            $months[] = $row->month_name . ' ' . $row->year;
+            $rentals[] = $row->total;
+        }
+        
+        $chart_months = array_reverse($months);
+        $chart_rentals = array_reverse($rentals);
+
+        // Gabungkan semua data
+        $data = array_merge($data, [
+            'chart_months' => $chart_months,
+            'chart_rentals' => $chart_rentals
+        ]);
+
         return view('admin.dashboardfestify', $data);
     }
 }
