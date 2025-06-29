@@ -51,10 +51,10 @@ document.addEventListener('DOMContentLoaded', function() {
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: chartMonths,
+            labels: @json($chart_months),
             datasets: [{
                 label: 'Jumlah Penyewaan',
-                data: chartRentals,
+                data: @json($chart_rentals),
                 borderColor: 'rgb(147, 51, 234)',
                 backgroundColor: 'rgba(147, 51, 234, 0.1)',
                 borderWidth: 3,

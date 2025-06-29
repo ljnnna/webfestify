@@ -14,6 +14,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReturnProductController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\CartController;
@@ -24,6 +25,9 @@ Route::get('/', [WelcomeController::class, 'welcome'])->name('welcome');
 // ======================= ADMIN ROUTES ===========================
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/userfest', [UsersController::class, 'index'])->name('user');
+    Route::get('/userfest/verification', [UsersController::class, 'verification'])->name('user.verification');
+    Route::post('/userfest/verification/{user}/approve', [UsersController::class, 'approveVerification'])->name('user.verification.approve');
+    Route::post('/userfest/verification/{user}/reject', [UsersController::class, 'rejectVerification'])->name('user.verification.reject');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
     Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::post('/orders/{id}/condition', [OrderController::class, 'uploadCondition'])->name('orders.uploadCondition');

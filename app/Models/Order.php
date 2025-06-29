@@ -121,8 +121,13 @@ class Order extends Model
 
     public static function getMonthlyRentals()
     {
-        return self::selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, MONTHNAME(created_at) as month_name, COUNT(*) as total')
-            ->groupBy('year', 'month')
+        return self::selectRaw('
+                YEAR(created_at) as year, 
+                MONTH(created_at) as month, 
+                MONTHNAME(created_at) as month_name, 
+                COUNT(*) as total
+            ')
+            ->groupBy('year', 'month', 'month_name')
             ->orderBy('year', 'desc')
             ->orderBy('month', 'desc')
             ->get();

@@ -22,21 +22,7 @@ class DashboardController extends Controller
 
         $total_customers = User::where('usertype', 'customer')->count();
 
-        return [
-            'total_product' => $total_product,
-            'order_new' => $order_new,
-            'order_progress' => $order_progress,
-            'order_done' => $order_done,
-            'product_available' => $product_available,
-            'product_rented' => $product_rented,
-            'total_customers' => $total_customers,
-        ];
-    }
-
-    public function index()
-    {
-        $data = self::getDashboardData();
-
+        // Pindahkan logika chart ke sini
         $monthlyData = Order::getMonthlyRentals();
         
         $months = [];
@@ -50,11 +36,22 @@ class DashboardController extends Controller
         $chart_months = array_reverse($months);
         $chart_rentals = array_reverse($rentals);
 
-        // Gabungkan semua data
-        $data = array_merge($data, [
+        return [
+            'total_product' => $total_product,
+            'order_new' => $order_new,
+            'order_progress' => $order_progress,
+            'order_done' => $order_done,
+            'product_available' => $product_available,
+            'product_rented' => $product_rented,
+            'total_customers' => $total_customers,
             'chart_months' => $chart_months,
-            'chart_rentals' => $chart_rentals
-        ]);
+            'chart_rentals' => $chart_rentals,
+        ];
+    }
+
+    public function index()
+    {
+        $data = self::getDashboardData();
 
         return view('admin.dashboardfestify', $data);
     }
