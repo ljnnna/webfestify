@@ -75,7 +75,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
     Route::get('/payment/finish', [PaymentController::class, 'paymentFinish'])->name('payment.finish');
     Route::get('/checkout', [PaymentController::class, 'checkout'])->name('checkout');
-    Route::post('/checkout', [CartController::class, 'paymentPage'])->name('checkout.process');
+    Route::post('/checkout', [PaymentController::class, 'checkoutFromCart'])->name('checkout.process');
 
     //Cart
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
