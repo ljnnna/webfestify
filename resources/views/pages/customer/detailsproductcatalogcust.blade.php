@@ -77,8 +77,8 @@
 
         <!-- ⚠️ Stock Warning Notification Centered -->
         <div class="text-center mb-6">
-          <small id="stockWarning" class="text-sm text-red-600 hidden">
-            ⚠️ Melebihi stok produk yang tersedia.
+          <small id="stockWarning" class="text-sm text-yellow-600 hidden">
+            ⚠️ You've selected all available stock.
           </small>
         </div>
 
