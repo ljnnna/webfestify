@@ -1,4 +1,4 @@
-<main class="max-w-6xl mx-auto py-6 sm:py-10 px-4 sm:px-6 lg:px-8">
+<main class="max-w-6xl mx-auto py-6 sm:py-10 px-4 sm:px-6 lg:px-8 mb-12">
   <!-- Judul -->
   <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-purple-800 mb-8 sm:mb-10" data-aos="fade-down">
     Our Team
@@ -93,7 +93,7 @@
         <h2 class="text-xl sm:text-2xl font-bold text-purple-700">Salsabila</h2>
         <p class="text-gray-600 mt-2 text-sm sm:text-base">In charge of the frontend, designing UI/UX displays and compiling project reports.</p>
         <div class="contact-info mt-4 flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm text-gray-500">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 ">
             <i data-feather="mail" class="w-4 h-4"></i>
             <span class="break-all sm:break-normal">salsabilla0105@gmail.com</span>
           </div>
