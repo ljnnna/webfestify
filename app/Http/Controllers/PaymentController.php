@@ -110,7 +110,7 @@ class PaymentController extends Controller
         
         // ✅ PERBAIKAN: Cek apakah ada salah satu data yang tersedia
         if (!$rentalData && !$orderId) {
-            \Log::error('No rental data or order ID found', [
+            Log::error('No rental data or order ID found', [
                 'rental_data' => $rentalData,
                 'order_id' => $orderId,
                 'session_all' => session()->all()
@@ -132,7 +132,7 @@ class PaymentController extends Controller
     
             // ================= ALUR 1: RENT NOW =================
             if ($rentalData) {
-                \Log::info('Processing Rent Now payment', ['rental_data' => $rentalData]);
+                Log::info('Processing Rent Now payment', ['rental_data' => $rentalData]);
                 
                 $product = Product::findOrFail($rentalData['product_id']);
                 $subtotal = $product->price * $rentalData['quantity'] * $rentalData['rental_days'];
@@ -175,7 +175,7 @@ class PaymentController extends Controller
     
             // ================= ALUR 2: CHECKOUT DARI CART =================
             if ($orderId && !$rentalData) {
-                \Log::info('Processing Cart checkout payment', ['order_id' => $orderId]);
+                Log::info('Processing Cart checkout payment', ['order_id' => $orderId]);
                 
                 $order = Order::with('orderProducts.product')->findOrFail($orderId);
                 $subtotal = 0;
@@ -267,7 +267,7 @@ class PaymentController extends Controller
             // ✅ SIMPAN ORDER ID KE SESSION
             session(['current_order_id' => $order->id]);
             
-            \Log::info('Payment processed successfully', [
+            Log::info('Payment processed successfully', [
                 'order_id' => $order->id,
                 'order_code' => $order->order_code,
                 'total_amount' => $order->total_amount
@@ -280,7 +280,7 @@ class PaymentController extends Controller
             ]);
             
         } catch (\Exception $e) {
-            \Log::error('Payment processing failed', [
+            Log::error('Payment processing failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -461,7 +461,7 @@ class PaymentController extends Controller
             return $item;
         });
         
-        \Log::info('Checkout from cart completed', [
+        Log::info('Checkout from cart completed', [
             'order_id' => $order->id,
             'order_code' => $order->order_code,
             'total_amount' => $total,
@@ -487,7 +487,7 @@ class PaymentController extends Controller
 
     public function paymentFinish(Request $request)
     {
-        \Log::info('Payment Finish called', [
+        Log::info('Payment Finish called', [
             'session_order_id' => session('current_order_id'),
             'session_cart_ids' => session('cart_ids_to_remove'),
             'request_params' => $request->all()
@@ -499,7 +499,7 @@ class PaymentController extends Controller
         if ($orderId) {
             $order = Order::find($orderId);
             
-            \Log::info('Order found', [
+            Log::info('Order found', [
                 'order_id' => $order->id ?? 'null',
                 'order_code' => $order->order_code ?? 'null',
                 'payment_status' => $order->payment_status ?? 'null'
@@ -512,26 +512,26 @@ class PaymentController extends Controller
                         ->whereIn('id', $cartIds)
                         ->delete();
                     
-                    \Log::info('Cart items removed', ['cart_ids' => $cartIds]);
+                    Log::info('Cart items removed', ['cart_ids' => $cartIds]);
                 }
     
                 // Hapus session
                 session()->forget(['current_order_id', 'cart_ids_to_remove', 'rental_data']);
                 
-                \Log::info('Redirecting to order success', ['order_code' => $order->order_code]);
+                Log::info('Redirecting to order success', ['order_code' => $order->order_code]);
     
                 return redirect()->route('order.success', $order->order_code);
             }
         }
         
-        \Log::warning('Payment finish failed - redirecting to home');
+        Log::warning('Payment finish failed - redirecting to home');
         return redirect()->route('home')->with('error', 'Payment not completed yet.');
     }
 
     public function paymentNotification(Request $request)
     {
         try {
-            \Log::info('Midtrans Notification Received:', $request->all());
+            Log::info('Midtrans Notification Received:', $request->all());
 
             $notification = new Notification();
             
@@ -544,7 +544,7 @@ class PaymentController extends Controller
             $order = Order::where('order_code', $orderId)->first();
             
             if (!$order) {
-                \Log::error('Order not found for order_id: ' . $orderId);
+                Log::error('Order not found for order_id: ' . $orderId);
                 return response()->json(['message' => 'Order not found'], 404);
             }
 
@@ -553,11 +553,11 @@ class PaymentController extends Controller
             $expectedSignature = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
             
             if ($notification->signature_key !== $expectedSignature) {
-                \Log::error('Invalid signature key for order: ' . $orderId);
+                Log::error('Invalid signature key for order: ' . $orderId);
                 return response()->json(['message' => 'Invalid signature'], 400);
             }
 
-            \Log::info("Processing notification for order: {$orderId}, status: {$transactionStatus}, fraud: {$fraudStatus}");
+            Log::info("Processing notification for order: {$orderId}, status: {$transactionStatus}, fraud: {$fraudStatus}");
 
             // Handle different transaction statuses
             if ($transactionStatus == 'capture') {
@@ -572,45 +572,45 @@ class PaymentController extends Controller
                         'payment_status' => 'paid',
                         'status' => 'confirmed'
                     ]);
-                    \Log::info("Order {$orderId} marked as paid/confirmed");
+                    Log::info("Order {$orderId} marked as paid/confirmed");
                 }
             } else if ($transactionStatus == 'settlement') {
                 $order->update([
                     'payment_status' => 'paid',
                     'status' => 'confirmed'
                 ]);
-                \Log::info("Order {$orderId} settled - marked as paid/confirmed");
+                Log::info("Order {$orderId} settled - marked as paid/confirmed");
             } else if ($transactionStatus == 'pending') {
                 $order->update([
                     'payment_status' => 'unpaid',
                     'status' => 'pending'
                 ]);
-                \Log::info("Order {$orderId} is pending payment");
+                Log::info("Order {$orderId} is pending payment");
             } else if ($transactionStatus == 'deny') {
                 $order->update([
                     'payment_status' => 'unpaid',
                     'status' => 'cancelled'
                 ]);
-                \Log::info("Order {$orderId} denied - cancelled");
+                Log::info("Order {$orderId} denied - cancelled");
             } else if ($transactionStatus == 'expire') {
                 $order->update([
                     'payment_status' => 'unpaid',
                     'status' => 'cancelled'
                 ]);
-                \Log::info("Order {$orderId} expired - cancelled");
+                Log::info("Order {$orderId} expired - cancelled");
             } else if ($transactionStatus == 'cancel') {
                 $order->update([
                     'payment_status' => 'unpaid',
                     'status' => 'cancelled'
                 ]);
-                \Log::info("Order {$orderId} cancelled");
+                Log::info("Order {$orderId} cancelled");
             }
 
             return response()->json(['message' => 'Notification handled successfully']);
 
         } catch (\Exception $e) {
-            \Log::error('Midtrans notification error: ' . $e->getMessage());
-            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            Log::error('Midtrans notification error: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
             return response()->json(['message' => 'Error: ' . $e->getMessage()], 500);
         }
     }
