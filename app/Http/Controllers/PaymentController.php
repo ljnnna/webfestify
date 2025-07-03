@@ -345,7 +345,7 @@ class PaymentController extends Controller
             $itemTotal = $price * $qty * $rentalDays;
             $subtotal += $itemTotal;
 
-            \Log::info('Item perhitungan:', [
+            Log::info('Item perhitungan:', [
                 'name' => $item->product->name,
                 'price' => $price,
                 'qty' => $qty,
