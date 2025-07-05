@@ -20,7 +20,7 @@
     <div class="mt-10 mb-6">
         <nav class="flex space-x-4">
             <button onclick="showTab('active-orders')" id="tab-active-orders" class="px-4 py-2 bg-[#d3b9f6] text-white rounded font-semibold">
-                Orders Aktif ({{ count($activeOrders) }})
+                Active Orders ({{ count($activeOrders) }})
             </button>
             <button onclick="showTab('returns')" id="tab-returns" class="px-4 py-2 bg-gray-200 text-gray-700 rounded font-semibold">
                 Return Process ({{ count($returns) }})
@@ -30,7 +30,7 @@
 
     <!-- Active Orders Tab -->
     <div id="active-orders-tab" class="overflow-x-auto">
-        <h3 class="text-lg font-semibold mb-4 text-[#493862]">Orders Sedang Disewa - Menunggu Return</h3>
+        <h3 class="text-lg font-semibold mb-4 text-[#493862]">Active Orders - Waiting for Return</h3>
         <table class="w-full text-sm text-center text-gray-700 border border-gray-200 rounded-lg">
             <thead class="text-xs text-white uppercase bg-[#d3b9f6]">
                 <tr>
@@ -67,7 +67,7 @@
                             <form action="{{ route('admin.returns.createReturn', $order->id) }}" method="POST" class="inline">
                                 @csrf
                                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600">
-                                    Mulai Return
+                                    Start Return
                                 </button>
                             </form>
                         </td>
@@ -76,7 +76,7 @@
                 @if(count($activeOrders) === 0)
                     <tr>
                         <td colspan="6" class="px-6 py-8 text-gray-500 text-center">
-                            Tidak ada orders aktif yang menunggu return
+                            There are no active orders waiting for return
                         </td>
                     </tr>
                 @endif
@@ -86,7 +86,7 @@
 
     <!-- Returns Tab -->
     <div id="returns-tab" class="overflow-x-auto" style="display: none;">
-        <h3 class="text-lg font-semibold mb-4 text-[#493862]">Process Return - Upload Kondisi & Konfirmasi</h3>
+        <h3 class="text-lg font-semibold mb-4 text-[#493862]">Process Return - Upload Condition & Confirmation</h3>
         <table class="w-full text-sm text-center text-gray-700 border border-gray-200 rounded-lg">
             <thead class="text-xs text-white uppercase bg-[#d3b9f6]">
                 <tr>
@@ -107,7 +107,7 @@
                 @foreach ($returns as $return)
                     <tr class="border-t border-gray-200">
                         <td class="px-6 py-4">{{ $return->order->order_code ?? 'N/A' }}</td>
-                        <td class="px-6 py-4">{{ $return->product->name ?? 'Tidak ditemukan' }}</td>
+                        <td class="px-6 py-4">{{ $return->product->name ?? 'Not Found' }}</td>
                         <td class="px-6 py-4">{{ $return->quantity_returned }}</td>
                         <td class="px-6 py-4">
                             @if($return->order)
@@ -135,7 +135,7 @@
                                 @csrf
                                 @method('PUT')
                                 <select name="product_condition" onchange="this.form.submit()" class="border px-2 py-1 rounded bg-white shadow text-sm">
-                                    <option value="">Pilih Kondisi</option>
+                                    <option value="">Select Condition</option>
                                     @foreach (['excellent', 'good', 'fair', 'poor', 'damaged'] as $condition)
                                         <option value="{{ $condition }}" {{ $return->product_condition === $condition ? 'selected' : '' }}>
                                             {{ ucfirst($condition) }}
@@ -153,10 +153,10 @@
 
                             @if (!empty($beforePhotos))
                                 @foreach($beforePhotos as $photo)
-                                    <a href="{{ asset('storage/' . $photo) }}" target="_blank" class="text-blue-600 underline text-sm block">Lihat</a>
+                                    <a href="{{ asset('storage/' . $photo) }}" target="_blank" class="text-blue-600 underline text-sm block">View</a>
                                 @endforeach
                             @else
-                                <span class="text-red-500 font-bold text-sm">Belum</span>
+                                <span class="text-red-500 font-bold text-sm">No Photos</span>
                             @endif
                         </td>
 
@@ -169,10 +169,10 @@
                                                     
                             @if (!empty($afterPhotos))
                                 @foreach($afterPhotos as $photo)
-                                    <a href="{{ asset('storage/' . $photo) }}" target="_blank" class="text-blue-600 underline text-sm block">Lihat</a>
+                                    <a href="{{ asset('storage/' . $photo) }}" target="_blank" class="text-blue-600 underline text-sm block">View</a>
                                 @endforeach
                             @else
-                                <span class="text-red-500 font-bold text-sm">Belum</span>
+                                <span class="text-red-500 font-bold text-sm">No Photos</span>
                             @endif
                         </td>
 
@@ -196,8 +196,8 @@
                             <form action="{{ route('admin.returns.updateNotes', $return->id) }}" method="POST">
                                 @csrf
                                 @method('PUT')
-                                <textarea name="condition_notes" rows="3" class="border rounded p-2 w-full text-sm" placeholder="Catatan kondisi...">{{ $return->condition_notes }}</textarea>
-                                <input type="number" name="penalty_amount" step="0.01" min="0" value="{{ $return->penalty_amount }}" class="border rounded p-2 w-full text-sm mt-2" placeholder="Denda (Rp)">
+                                <textarea name="condition_notes" rows="3" class="border rounded p-2 w-full text-sm" placeholder="Condition notes...">{{ $return->condition_notes }}</textarea>
+                                <input type="number" name="penalty_amount" step="0.01" min="0" value="{{ $return->penalty_amount }}" class="border rounded p-2 w-full text-sm mt-2" placeholder="Penalty (Rp)">
                                 <button type="submit" class="mt-2 bg-green-200 text-black px-3 py-1 rounded shadow text-sm">Update</button>
                             </form>
                         </td>
@@ -207,12 +207,12 @@
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600" 
-                                            onclick="return confirm('Konfirmasi return selesai?')">
-                                        Konfirmasi Return
+                                            onclick="return confirm('Return confirmation complete?')">
+                                        Confirm Return
                                     </button>
                                 </form>
                             @else
-                                <span class="text-green-600 font-semibold">Selesai</span>
+                                <span class="text-green-600 font-semibold">Done</span>
                             @endif
                         </td>
                     </tr>
@@ -220,7 +220,7 @@
                 @if(count($returns) === 0)
                     <tr>
                         <td colspan="11" class="px-6 py-8 text-gray-500 text-center">
-                            Belum ada return process yang dimulai
+                            No return process has been initiated yet
                         </td>
                     </tr>
                 @endif

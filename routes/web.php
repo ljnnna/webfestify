@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CatalogController;
@@ -26,6 +28,7 @@ Route::get('/', [WelcomeController::class, 'welcome'])->name('welcome');
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/userfest', [UsersController::class, 'index'])->name('user');
     Route::get('/userfest/verification', [UsersController::class, 'verification'])->name('user.verification');
+    Route::put('/userfest/{id}/notes', [ReturnProductController::class, 'updateNotes'])->name('userfest.updateNotes');
     Route::post('/userfest/verification/{user}/approve', [UsersController::class, 'approveVerification'])->name('user.verification.approve');
     Route::post('/userfest/verification/{user}/reject', [UsersController::class, 'rejectVerification'])->name('user.verification.reject');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');

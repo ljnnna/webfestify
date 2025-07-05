@@ -33,8 +33,8 @@
                         <x-slot name="trigger">
                             <button class="flex items-center focus:outline-none">
                                 <img class="h-10 w-10 rounded-full object-cover border-2 border-purple-400"
-                                    src="{{ Auth::user()->picture 
-                                        ? asset('storage/' . Auth::user()->picture) . '?' . now()->timestamp 
+                                    src="{{ auth()->user()->picture 
+                                        ? asset('storage/' . auth()->user()->picture) . '?' . now()->timestamp 
                                         : asset('images/default-user.png') }}"
                                     alt="User Avatar">
                             </button>
@@ -42,8 +42,8 @@
 
                         <x-slot name="content">
                             <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
-                                <div class="font-medium">{{ Auth::user()->name }}</div>
-                                <div class="text-xs text-gray-500">{{ Auth::user()->email }}</div>
+                                <div class="font-medium">{{ auth()->user()->name }}</div>
+                                <div class="text-xs text-gray-500">{{ auth()->user()->email }}</div>
                             </div>
                             <x-dropdown-link :href="route('home')">{{ __('Home') }}</x-dropdown-link>
                             <x-dropdown-link :href="route('profile.edit')">{{ __('Profile') }}</x-dropdown-link>
@@ -118,8 +118,8 @@
 >
 
         <div class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 border-b border-gray-200 dark:border-gray-600">
-            <div class="font-medium">{{ Auth::user()->name }}</div>
-            <div class="text-xs text-gray-500">{{ Auth::user()->email }}</div>
+            <div class="font-medium">{{ auth()->user()->name }}</div>
+            <div class="text-xs text-gray-500">{{ auth()->user()->email }}</div>
         </div>
         <a href="{{ route('home') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-purple-100 dark:hover:bg-gray-700">
             Home
