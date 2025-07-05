@@ -26,12 +26,12 @@
 
 @section('content')
 <div class="flex flex-col md:flex-row min-h-screen bg-gray-50">
-    <!-- SIDEBAR (Sekarang tampil di mobile juga) -->
+    <!-- SIDEBAR -->
     <x-sidebar-profile :user="auth()->user()" />
 
 
     <!-- ISI HALAMAN -->
-    <div class="flex-1 min-h-screen bg-gray-50 p-6">
+    <div class="flex-1 h-screen overflow-y-auto bg-gray-50 p-6">
         <div class="bg-white rounded-2xl shadow-lg p-8 max-w-3xl w-full mx-auto mb-10">
 
             {{-- Tabs --}}
@@ -63,11 +63,76 @@
                     
 
          {{-- Section per orders --}}
-         @foreach ($activeOrders as $order)
-         @php
-            $product = $order->products->first();
-         @endphp
-            <div class="mt-4 bg-white rounded-lg shadow-md border-l-4 border-gray-400 flex p-4 space-x- relative">
+@foreach ($activeOrders as $order)
+@php
+    $product = $order->products->first();
+
+    // Logic override status berdasarkan payment_status
+    if ($order->payment_status === 'unpaid') {
+        $adjustedStatus = 'pending';
+    } elseif ($order->payment_status === 'paid') {
+        $adjustedStatus = 'confirmed';
+    } else {
+        $adjustedStatus = $order->status;
+    }
+
+    $diffInHours = now()->diffInHours($order->end_date, false);
+    $daysLeft = (int) ceil($diffInHours / 24);
+
+    // Warna border & background berdasarkan status baru
+    if ($adjustedStatus === 'pending') {
+        $borderColor = 'border-gray-400';
+        $bgColor = 'bg-white';
+    } elseif ($adjustedStatus === 'active') {
+        if ($daysLeft < 0) {
+            $borderColor = 'border-red-600';
+            $bgColor = 'bg-red-50';
+        } elseif ($daysLeft === 0) {
+            $borderColor = 'border-red-500';
+            $bgColor = 'bg-white';
+        } elseif ($daysLeft === 1) {
+            $borderColor = 'border-yellow-400';
+            $bgColor = 'bg-white';
+        } else {
+            $borderColor = 'border-purple-400';
+            $bgColor = 'bg-white';
+        }
+    } else {
+        $borderColor = 'border-gray-300';
+        $bgColor = 'bg-white';
+    }
+@endphp
+
+@php
+    $product = $order->products->first();
+    $diffInHours = now()->diffInHours($order->end_date, false);
+    $daysLeft = (int) ceil($diffInHours / 24);
+
+    // Tentukan warna border dan background sesuai kondisi
+    if ($order->status === 'pending') {
+        $borderColor = 'border-gray-400';
+        $bgColor = 'bg-white';
+    } elseif ($order->status === 'active') {
+        if ($daysLeft < 0) {
+            $borderColor = 'border-red-600';
+            $bgColor = 'bg-red-50'; // overdue
+        } elseif ($daysLeft === 0) {
+            $borderColor = 'border-red-500';
+            $bgColor = 'bg-white'; // harus balikin hari ini
+        } elseif ($daysLeft === 1) {
+            $borderColor = 'border-yellow-400';
+            $bgColor = 'bg-white';
+        } else {
+            $borderColor = 'border-purple-400';
+            $bgColor = 'bg-white';
+        }
+    } else {
+        $borderColor = 'border-gray-300';
+        $bgColor = 'bg-white';
+    }
+@endphp
+
+<div class="mt-4 {{ $bgColor }} rounded-lg shadow-md border-l-4 {{ $borderColor }} flex p-4 space-x-4 relative">
                 <img src="{{ $product && $product->image ? asset('storage/' . $product->image) : asset('images/no-image.jpg') }}"
                          alt="{{ $product?->name ?? 'No product' }}"
                          class="w-28 h-28 object-cover rounded">
@@ -79,7 +144,7 @@
                         </h3>
                         <div class="mt-2 text-gray-600 text-sm space-y-1">
                 <div class="flex items-center space-x-2">
-                    @if ($order->status !== 'active')
+                    @if ($adjustedStatus !== 'active')
                         <!-- Tampilkan rentang tanggal sewa jika statusnya bukan 'active' -->
                         <i class="far fa-calendar-alt text-gray-400"></i>
                         <span class="text-gray-600">
@@ -132,44 +197,25 @@
                         </div>
                     </div>
                     <div class="flex space-x-3 mt-4 justify-end">
-                        <button class="text-white text-xs px-4 py-1 rounded bg-gradient-to-r from-indigo-300 to-purple-400 hover:from-indigo-500 hover:to-purple-600">
-                            View Detail
+                    <a href="{{ route('profile.rentalDetail', ['order' => $order->id]) }}"
+                       class="text-white text-xs px-4 py-1 rounded bg-gradient-to-r from-indigo-300 to-purple-400 hover:from-indigo-500 hover:to-purple-600">
+                       View Detail
+                    </a>
+                    @if (in_array($adjustedStatus, ['pending', 'confirmed']))
+                    <form action="{{ route('order.cancel', ['order' => $order->id]) }}" method="POST"
+                          onsubmit="return confirm('Are you sure you want to cancel this order?')">
+                        @csrf
+                        <button type="submit"
+                                class="text-white text-xs px-4 py-1 rounded bg-red-400 hover:bg-red-600">
+                            Cancel
                         </button>
-
-<div x-data="{ openReturn: false }" class="relative">
-    <button
-        @click="openReturn = !openReturn"
-        class="text-white text-xs px-4 py-1 rounded 
-               {{ $order->status === 'active' 
-                   ? 'bg-gradient-to-r from-pink-400 to-yellow-300 hover:from-pink-500 hover:to-yellow-400' 
-                   : 'bg-gray-300 cursor-not-allowed' }}"
-        {{ $order->status !== 'active' ? 'disabled' : '' }}>
-        Return
-    </button>
-
-    {{-- Dropdown Return Options --}}
-    <div x-show="openReturn" @click.away="openReturn = false"
-         class="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10">
-        <form method="POST" action="{{ route('return.create', $order->id) }}">
-            @csrf
-            <input type="hidden" name="order_id" value="{{ $order->id }}">
-            <button name="return_option" value="pickup"
-                    class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
-                Request Pickup
-            </button>
-            <button name="return_option" value="dropoff"
-                    class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100">
-                Drop Off to Office
-            </button>
-        </form>
-    </div>
-</div>
-
-
+                    </form>
+                    @endif
                     </div>
                 </div>
                 <span class="absolute top-4 right-4 bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
-                    {{ ucfirst($order->status) }}
+                    {{ ucfirst($adjustedStatus) }}
+
                 </span>
             </div>
          @endforeach     

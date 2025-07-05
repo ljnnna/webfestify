@@ -145,25 +145,37 @@
                             </form>
                         </td>
                         <td class="px-6 py-4">
-                            @if ($return->condition_before && count($return->condition_before) > 0)
-                                @foreach($return->condition_before as $photo)
-                                    <a href="{{ asset('storage/' . $photo) }}" target="_blank"
-                                    class="text-blue-600 underline text-sm block">Lihat</a>
+                            @php
+                                $beforePhotos = is_string($return->condition_before)
+                                    ? json_decode($return->condition_before, true)
+                                    : $return->condition_before;
+                            @endphp
+
+                            @if (!empty($beforePhotos))
+                                @foreach($beforePhotos as $photo)
+                                    <a href="{{ asset('storage/' . $photo) }}" target="_blank" class="text-blue-600 underline text-sm block">Lihat</a>
                                 @endforeach
                             @else
                                 <span class="text-red-500 font-bold text-sm">Belum</span>
                             @endif
                         </td>
+
                         <td class="px-6 py-4">
-                            @if ($return->condition_after && count($return->condition_after) > 0)
-                                @foreach($return->condition_after as $photo)
-                                    <a href="{{ asset('storage/' . $photo) }}" target="_blank"
-                                    class="text-blue-600 underline text-sm block">Lihat</a>
+                            @php
+                                $afterPhotos = is_string($return->condition_after)
+                                    ? json_decode($return->condition_after, true)
+                                    : $return->condition_after;
+                            @endphp
+                                                    
+                            @if (!empty($afterPhotos))
+                                @foreach($afterPhotos as $photo)
+                                    <a href="{{ asset('storage/' . $photo) }}" target="_blank" class="text-blue-600 underline text-sm block">Lihat</a>
                                 @endforeach
                             @else
                                 <span class="text-red-500 font-bold text-sm">Belum</span>
                             @endif
                         </td>
+
                         <td class="px-6 py-4">
                             <form action="{{ route('admin.returns.uploadCondition', $return->id) }}" method="POST" enctype="multipart/form-data">
                                 @csrf

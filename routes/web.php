@@ -29,6 +29,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/userfest/verification/{user}/approve', [UsersController::class, 'approveVerification'])->name('user.verification.approve');
     Route::post('/userfest/verification/{user}/reject', [UsersController::class, 'rejectVerification'])->name('user.verification.reject');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+    //Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::post('/orders/{id}/condition', [OrderController::class, 'uploadCondition'])->name('orders.uploadCondition');
     Route::get('/returns', [ReturnProductController::class, 'index'])->name('returns');
@@ -52,25 +53,23 @@ Route::post('rent-now', [ProductController::class, 'processRentNow'])->name('ren
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/post', [HomeController::class, 'post'])->middleware('admin');
+
     // Profile
-    //Route::post('/profile/verify', [ProfileController::class, 'verify'])->name('profile.verify');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/save', [ProfileController::class, 'saveAll'])->name('profile.saveAll');
     Route::post('/profile/photo-upload', [ProfileController::class, 'uploadPicture'])->name('profile.uploadPicture');
     Route::get('/profile/rental-information', [ProfileController::class, 'rentalInfo'])->name('profile.rentalInfo');
+    Route::get('/profile/rental/{order}', [ProfileController::class, 'showRentalDetail'])->name('profile.rentalDetail');
     Route::get('/profile/rental-history', [ProfileController::class, 'rentalHistory'])->name('profile.rentalHistory');
     Route::post('/return/create/{order}', [ReturnProductController::class, 'createReturn'])->name('return.create');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/orders/history', [OrderController::class, 'history'])->name('orders.history');
     Route::post('/profile/verify', [ProfileController::class, 'verify'])->name('profile.verify');
-    Route::post('/return/upload/{id}', [ReturnProductController::class, 'uploadCondition'])->name('return.upload-photos');
+    Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('order.cancel');
+    Route::post('/returns/{order}/upload-photos', [ReturnProductController::class, 'uploadPhotos'])->name('return.upload-photos');
+    Route::get('/profile/rental-detail/{id}', [ProfileController::class, 'rentalDetail'])->name('profile.rental.detail');
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
-    Route::get('/return/pickup/{order}', function ($orderId) {
-        $order = \App\Models\Order::with('products')->findOrFail($orderId);
-        return view('returns.pickup', compact('order'));
-    })->name('return.pickup.view');
-
+    Route::get('/return/pickup/{order}', [ReturnProductController::class, 'pickupView'])->name('return.pickup.view');
     Route::get('/return/dropoff/{order}', function ($orderId) {
         $order = \App\Models\Order::with('products')->findOrFail($orderId);
         return view('returns.dropoff', compact('order'));

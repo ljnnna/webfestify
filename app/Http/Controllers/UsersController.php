@@ -14,9 +14,7 @@ class UsersController extends Controller
     {
         // User statistics
         $total_customers = User::where('usertype', 'customer')->count();
-        $active_users = User::where('usertype', 'user')
-                          ->where('usertype', 'active')
-                          ->count();
+        $active_users = User::where('status', 'active')->where('usertype', 'customer')->count();
         
         // New signups in the last 30 days
         $new_signups = User::where('usertype', 'user')
@@ -97,14 +95,31 @@ class UsersController extends Controller
     
     /**
      * Reject verifikasi user (sederhana)
-     */
-    public function rejectVerification(User $user)
-    {
-        $user->update([
-            'verification_status' => 'rejected',
-            'verified_at' => now(),
-        ]);
-        
-        return redirect()->back()->with('error', 'Verifikasi user ditolak');
-    }
+     *
+     *   public function rejectVerification(User $user)
+     *   {
+     *       $user->update([
+     *           'verification_status' => 'rejected',
+     *           'verified_at' => now(),
+     *       ]);
+*
+     *       return redirect()->back()->with('error', 'Verifikasi user ditolak');}*/
+
+public function rejectVerification(Request $request, $id)
+{
+    $request->validate([
+        'rejection_reason' => 'required|string|max:500',
+    ]);
+
+    $user = User::findOrFail($id);
+    $user->verification_status = 'rejected';
+    $user->verification_notes = $request->input('rejection_reason');
+    $user->save();
+
+    return redirect()->back()->with('success', 'Verifikasi ditolak dan alasan sudah disimpan.');
+}
+
+
+
+
 }  

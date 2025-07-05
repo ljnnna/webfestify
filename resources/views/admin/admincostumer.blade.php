@@ -113,15 +113,18 @@
                                     </button>
                                 </form>
                                 
-                                <!-- Reject Button -->
-                                <form action="{{ route('admin.user.verification.reject', $user) }}" method="POST" class="inline">
-                                    @csrf
-                                    <button type="submit" 
-                                            class="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition"
-                                            onclick="return confirm('Yakin ingin reject user ini?')">
-                                        Reject
-                                    </button>
-                                </form>
+<!-- Reject Button with input -->
+<form action="{{ route('admin.user.verification.reject', $user) }}" method="POST" class="inline-block">
+    @csrf
+    <input type="text" name="rejection_reason" placeholder="Alasan penolakan..." 
+           class="text-xs border px-2 py-1 rounded mb-1 w-full" required>
+    <button type="submit" 
+            class="w-full px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition"
+            onclick="return confirm('Yakin ingin reject user ini?')">
+        Reject
+    </button>
+</form>
+
                             </div>
                         @else
                             <span class="text-gray-400 text-sm">

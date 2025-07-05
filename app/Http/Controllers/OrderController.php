@@ -200,4 +200,31 @@ class OrderController extends Controller
         return back()->with('success', 'Foto kondisi berhasil diupload');
     }
 
+    public function cancel(Request $request, Order $order)
+    {
+        // Pastikan hanya user yang punya order ini yang boleh cancel
+        if ($order->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+    
+        // Hanya boleh cancel kalau belum active/completed
+        if (in_array($order->status, ['completed', 'cancelled'])) {
+            return back()->with('error', 'Order tidak bisa dibatalkan.');
+        }
+    
+        // Update status menjadi cancelled
+        $oldStatus = $order->status;
+        $order->status = 'cancelled';
+        $order->save();
+    
+        // Kembalikan stok
+        if (!in_array($oldStatus, ['completed', 'cancelled'])) {
+            foreach ($order->orderProducts as $orderProduct) {
+                $orderProduct->product->decrement('stock_rented', $orderProduct->quantity);
+            }
+        }
+    
+        return back()->with('success', 'Order berhasil dibatalkan.');
+    }
+
 }

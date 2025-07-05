@@ -30,37 +30,6 @@
 @section('content')
 <div class="min-h-screen bg-gray-50 p-6">
     <div class="max-w-4xl mx-auto">
-        <!-- Header -->
-        <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
-            <div class="flex items-center justify-between mb-4">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Return by Dropoff</h1>
-                    <p class="text-gray-600">Order #{{ $order->order_code ?? $order->id }}</p>
-                </div>
-                <div class="text-right">
-                    <span class="bg-green-100 text-green-700 text-sm font-semibold px-3 py-1 rounded-full">
-                        Ready for Dropoff
-                    </span>
-                </div>
-            </div>
-            
-            <!-- Order Summary -->
-            @php
-                $product = $order->products->first();
-            @endphp
-            <div class="border-t pt-4">
-                <div class="flex items-center space-x-4">
-                    <img src="{{ $product && $product->image ? asset('storage/' . $product->image) : asset('images/no-image.jpg') }}"
-                         alt="{{ $product?->name ?? 'No product' }}"
-                         class="w-20 h-20 object-cover rounded-lg">
-                    <div class="flex-1">
-                        <h3 class="font-semibold text-gray-900">{{ $product?->name ?? 'Product' }}</h3>
-                        <p class="text-gray-600 text-sm">Rental Period: {{ $order->start_date->format('d M Y') }} - {{ $order->end_date->format('d M Y') }}</p>
-                        <p class="text-gray-600 text-sm">Total Amount: Rp {{ number_format($order->total_amount, 0, ',', '.') }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Main Content -->
@@ -135,74 +104,6 @@
                                     </a>
                                     <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-medium text-center">
                                         2.5 km
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Location 2 -->
-                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                            <div class="flex items-start justify-between">
-                                <div class="flex-1">
-                                    <h3 class="font-semibold text-gray-900 mb-2">Branch Store - Nagoya</h3>
-                                    <div class="space-y-2 text-sm text-gray-600">
-                                        <div class="flex items-center">
-                                            <i class="fas fa-map-marker-alt w-4 mr-2 text-red-500"></i>
-                                            <span>Kompleks Nagoya City Walk, Blok B No. 45, Nagoya</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-clock w-4 mr-2 text-blue-500"></i>
-                                            <span>Mon-Sun: 10:00 - 22:00</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-phone w-4 mr-2 text-green-500"></i>
-                                            <span>+62 778-654321</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="ml-4 flex flex-col space-y-2">
-                                    <a href="https://maps.google.com/?q=Kompleks+Nagoya+City+Walk+Batam" 
-                                       target="_blank"
-                                       class="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600 transition-colors">
-                                        <i class="fas fa-directions mr-1"></i>
-                                        Directions
-                                    </a>
-                                    <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-medium text-center">
-                                        5.8 km
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Location 3 -->
-                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                            <div class="flex items-start justify-between">
-                                <div class="flex-1">
-                                    <h3 class="font-semibold text-gray-900 mb-2">Express Point - Harbour Bay</h3>
-                                    <div class="space-y-2 text-sm text-gray-600">
-                                        <div class="flex items-center">
-                                            <i class="fas fa-map-marker-alt w-4 mr-2 text-red-500"></i>
-                                            <span>Harbour Bay Mall, Ground Floor, Batu Aji</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-clock w-4 mr-2 text-blue-500"></i>
-                                            <span>Mon-Sun: 10:00 - 20:00</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-info-circle w-4 mr-2 text-orange-500"></i>
-                                            <span>Express dropoff only (no staff assistance)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="ml-4 flex flex-col space-y-2">
-                                    <a href="https://maps.google.com/?q=Harbour+Bay+Mall+Batam" 
-                                       target="_blank"
-                                       class="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600 transition-colors">
-                                        <i class="fas fa-directions mr-1"></i>
-                                        Directions
-                                    </a>
-                                    <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs font-medium text-center">
-                                        8.2 km
                                     </span>
                                 </div>
                             </div>

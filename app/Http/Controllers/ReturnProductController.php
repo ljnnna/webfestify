@@ -43,39 +43,96 @@ class ReturnProductController extends Controller
         ));
     }
 
-    public function uploadCondition(Request $request, $id)
+public function show($id)
+{
+    $return = ReturnProduct::findOrFail($id);
+
+    $conditionPhotos = $return->condition_before ?? [];
+
+
+    return view('profile.rental-detail', compact('return', 'conditionPhotos'));
+}
+    
+    public function pickupView($orderId)
+    {
+        $order = Order::with(['orderProducts.product'])->findOrFail($orderId);
+        $return = ReturnProduct::where('order_id', $order->id)->first();
+    
+        return view('returns.pickup', compact('order', 'return'));
+    }
+    
+    
+    public function uploadPhotos(Request $request, $orderId)
     {
         $request->validate([
-            'condition_before.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'condition_after.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'condition_photos.*' => 'required|image|mimes:jpeg,png,jpg|max:5120',
         ]);
-
-        $returnProduct = ReturnProduct::findOrFail($id);
-
-        // Upload condition_before
-        if ($request->hasFile('condition_before')) {
-            $conditionBeforePaths = [];
-            foreach ($request->file('condition_before') as $file) {
+    
+        $order = Order::with('orderProducts')->findOrFail($orderId);
+    
+        // Ambil atau buat data return untuk tiap produk
+        foreach ($order->orderProducts as $orderProduct) {
+            $return = ReturnProduct::firstOrCreate([
+                'order_id' => $order->id,
+                'order_product_id' => $orderProduct->id,
+                'product_id' => $orderProduct->product_id,
+                'user_id' => $order->user_id,
+            ], [
+                'quantity_returned' => $orderProduct->quantity,
+                'return_status' => 'in_process',
+                'return_method' => 'pickup',
+                'return_processed_at' => now(),
+            ]);
+        
+            // Upload foto ke kolom condition_before (karena dari user)
+            $photoPaths = [];
+            foreach ($request->file('condition_photos') as $file) {
                 $path = $file->store('return_conditions/before', 'public');
-                $conditionBeforePaths[] = $path;
+                $photoPaths[] = $path;
             }
-            $returnProduct->condition_before = $conditionBeforePaths;
+        
+            $return->condition_before = $photoPaths;
+            $return->save();
         }
-
-        // Upload condition_after
-        if ($request->hasFile('condition_after')) {
-            $conditionAfterPaths = [];
-            foreach ($request->file('condition_after') as $file) {
-                $path = $file->store('return_conditions/after', 'public');
-                $conditionAfterPaths[] = $path;
-            }
-            $returnProduct->condition_after = $conditionAfterPaths;
-        }
-
-        $returnProduct->save();
-
-        return redirect()->back()->with('success', 'Foto kondisi berhasil diupload!');
+    
+        return redirect()->back()->with('success', 'Photos uploaded successfully.');
     }
+    
+public function uploadCondition(Request $request, $id)
+{
+    $return = ReturnProduct::findOrFail($id);
+
+    // Upload condition_before
+    if ($request->hasFile('condition_before')) {
+        $beforePaths = [];
+
+        foreach ($request->file('condition_before') as $file) {
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/conditions', $filename);
+            $beforePaths[] = $filename;
+        }
+
+        // Simpan sebagai JSON
+        $return->condition_before = json_encode($beforePaths);
+    }
+
+    // Upload condition_after (sama logikanya)
+    if ($request->hasFile('condition_after')) {
+        $afterPaths = [];
+
+        foreach ($request->file('condition_after') as $file) {
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/conditions', $filename);
+            $afterPaths[] = $filename;
+        }
+
+        $return->condition_after = json_encode($afterPaths);
+    }
+
+    $return->save();
+
+    return back()->with('success', 'Condition photos uploaded successfully.');
+}
 
     public function updateStatus(Request $request, $id)
     {
@@ -166,4 +223,6 @@ class ReturnProductController extends Controller
 
         return redirect()->back()->with('success', 'Return berhasil dikonfirmasi!');
     }
+
+
 }

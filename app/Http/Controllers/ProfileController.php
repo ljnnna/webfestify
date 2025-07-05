@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Rental;
 use App\Models\Order;
 use App\Http\Controllers\ReturnController;
+use Carbon\Carbon;
 
 class ProfileController extends Controller
 {
@@ -76,6 +77,61 @@ class ProfileController extends Controller
         return view('profile.rental-information', compact('activeOrders'));
     }
 
+public function verify(Request $request)
+{
+    $request->validate([
+        'ktp_photo' => 'required|image|mimes:jpeg,png,jpg|max:5120',
+        'selfie_with_ktp' => 'required|image|mimes:jpeg,png,jpg|max:5120'
+    ]);
+
+    $user = $request->user();
+    
+// Simpan file dulu
+if ($request->hasFile('ktp_photo')) {
+    $ktpPath = $request->file('ktp_photo')->store('verifications', 'public');
+    $user->ktp_photo = $ktpPath;
+}
+if ($request->hasFile('selfie_with_ktp')) {
+    $selfiePath = $request->file('selfie_with_ktp')->store('verifications', 'public');
+    $user->ktp_selfie_photo = $selfiePath;
+}
+
+// Kalau sudah lengkap baru set status
+if ($user->ktp_photo && $user->ktp_selfie_photo) {
+    $user->verification_status = 'pending';
+    $user->verification_submitted_at = now();
+} else {
+    // Kalau belum lengkap, pastikan status di DB tetap kosong/null
+    $user->verification_status = null;
+    $user->verification_submitted_at = null;
+}
+
+$user->save();
+
+    return redirect()->back()->with('success', 'Verification documents submitted successfully!');
+}
+
+public function showRentalDetail($id)
+{
+    $order = \App\Models\Order::with('products')->findOrFail($id); 
+
+    if ($order->user_id !== auth()->id()) {
+        abort(403);
+    }
+
+    $return = \App\Models\ReturnProduct::where('order_id', $order->id)->first();
+    $conditionPhotos = $return?->condition_before ?? [];
+
+    $endDate = Carbon::parse($order->end_date)->setTime(18, 0)->format('Y-m-d\TH:i:s');
+
+    return view('profile.rental-detail', [
+        'order' => $order,
+        'return' => $return,
+        'conditionPhotos' => $conditionPhotos,
+        'endDate' => $endDate
+    ]);
+}
+
     public function rentalHistory()
     {
         $rentalList = Rental::with(['rentalItems.product.category', 'rentalItems.review'])
@@ -95,7 +151,7 @@ class ProfileController extends Controller
     return redirect('/')->with('status', 'Akun berhasil dihapus.');
     }
 
-    
+
     
 
 }
