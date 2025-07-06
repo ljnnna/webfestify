@@ -58,12 +58,12 @@
                 <div class="space-y-6">
                     @forelse($reviews as $review)
                         <div class="flex space-x-4">
-                        <img alt="Profile picture of {{ $review->user->name }}"
-                             class="w-8 h-8 rounded-full object-cover border border-purple-300"
-                             src="{{ $review->user->profile_photo 
-                                ? asset('storage/' . $review->user->profile_photo) 
-                                : 'https://ui-avatars.com/api/?name=' . urlencode($review->user->name) }}"
-                            width="32" height="32" />
+                            <img alt="Profile picture of {{ $review->user->name }}"
+                                 class="w-8 h-8 rounded-full object-cover border border-purple-300"
+                                 src="{{ $review->user->profile_photo 
+                                    ? asset('storage/' . $review->user->profile_photo) 
+                                    : 'https://ui-avatars.com/api/?name=' . urlencode($review->user->name) }}"
+                                 width="32" height="32" />
                             <div>
                                 <p class="font-semibold text-purple-700">
                                     {{ $review->user->name }}
@@ -71,7 +71,7 @@
                                 <p class="text-gray-600 text-sm mb-1">
                                     {{ $review->review ?? 'No comment provided.' }}
                                 </p>
-                                <div class="text-purple-700 text-sm">
+                                <div class="text-purple-700 text-sm mb-1">
                                     @for ($i = 1; $i <= 5; $i++)
                                         @if ($i <= $review->rating)
                                             <i class="fas fa-star"></i>
@@ -80,6 +80,9 @@
                                         @endif
                                     @endfor
                                 </div>
+                                <p class="text-xs text-gray-400">
+                                    Reviewed on {{ $review->created_at->format('F j, Y') }}
+                                </p>
                             </div>
                         </div>
                     @empty
