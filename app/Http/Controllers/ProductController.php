@@ -66,11 +66,38 @@ class ProductController extends Controller
     }
 
     public function detailBySlug($slug)
-    {
-        $product = Product::with('images', 'category')->where('slug', $slug)->firstOrFail();
-        $productImages = $product->images->pluck('path')->toArray();
-        return view('pages.customer.detailsproductcatalogcust', compact('product', 'productImages'));
-    }
+{
+    $product = Product::with('images', 'category')->where('slug', $slug)->firstOrFail();
+    $productImages = $product->images->pluck('path')->toArray();
+
+    // Ambil semua review untuk produk ini
+    $reviews = \App\Models\Review::with('user')
+        ->where('product_id', $product->id)
+        ->latest()
+        ->get();
+
+    $averageRating = $reviews->avg('rating');
+    $totalRatings = $reviews->count();
+
+    // Hitung jumlah per rating
+    $ratingsCount = [
+        5 => $reviews->where('rating', 5)->count(),
+        4 => $reviews->where('rating', 4)->count(),
+        3 => $reviews->where('rating', 3)->count(),
+        2 => $reviews->where('rating', 2)->count(),
+        1 => $reviews->where('rating', 1)->count(),
+    ];
+
+    return view('pages.customer.detailsproductcatalogcust', compact(
+        'product',
+        'productImages',
+        'reviews',
+        'averageRating',
+        'totalRatings',
+        'ratingsCount'
+    ));
+}
+
 
     public function edit(Product $product)
     {

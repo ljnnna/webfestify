@@ -6,113 +6,85 @@
         </h2>
 
         <div class="flex flex-col md:flex-row md:space-x-12">
+            <!-- Left Panel: Rating Summary -->
             <div class="flex-1 bg-purple-100 rounded-lg p-6 mb-8 md:mb-0">
                 <div class="flex flex-col items-center justify-center space-y-2 mb-2">
                     <span class="text-4xl font-bold text-purple-700 mb-4">
-                        4.3
+                        {{ number_format($averageRating ?? 0, 1) }}
                     </span>
-                    <div class="flex space-x-8 text-purple-700 text-lg">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
+                    <div class="flex space-x-2 text-purple-700 text-lg">
+                        @for ($i = 1; $i <= 5; $i++)
+                            @if ($i <= round($averageRating))
+                                <i class="fas fa-star"></i>
+                            @elseif ($i - $averageRating <= 0.5)
+                                <i class="fas fa-star-half-alt"></i>
+                            @else
+                                <i class="far fa-star"></i>
+                            @endif
+                        @endfor
                     </div>
                 </div>
                 <p class="text-center text-purple-700 font-semibold">
-                    55 Ratings
+                    {{ $totalRatings }} Ratings
                 </p>
             </div>
+
+            <!-- Right Panel: Star Distribution -->
             <div class="flex-1">
                 <div class="space-y-4 text-sm text-gray-600">
-                    <div class="flex items-center justify-between">
-                        <span> 5.0 </span>
-                        <div class="w-80 h-2 bg-purple-200 rounded-full overflow-hidden">
-                            <div class="h-2 bg-purple-700 rounded-full" style="width: 115px"></div>
+                    @for ($i = 5; $i >= 1; $i--)
+                        @php
+                            $count = $ratingsCount[$i] ?? 0;
+                            $percent = $totalRatings > 0 ? ($count / $totalRatings) * 100 : 0;
+                        @endphp
+                        <div class="flex items-center justify-between">
+                            <span> {{ $i }}.0 </span>
+                            <div class="w-80 h-2 bg-purple-200 rounded-full overflow-hidden">
+                                <div class="h-2 bg-purple-700 rounded-full" style="width: {{ $percent }}%"></div>
+                            </div>
+                            <span> {{ $count }} </span>
                         </div>
-                        <span> 36 </span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span> 4.0 </span>
-                        <div class="w-80 h-2 bg-purple-200 rounded-full overflow-hidden">
-                            <div class="h-2 bg-purple-700 rounded-full" style="width: 96px"></div>
-                        </div>
-                        <span> 30 </span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span> 3.0 </span>
-                        <div class="w-80 h-2 bg-purple-200 rounded-full overflow-hidden">
-                            <div class="h-2 bg-purple-700 rounded-full" style="width: 86px"></div>
-                        </div>
-                        <span> 27 </span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span> 2.0 </span>
-                        <div class="w-80 h-2 bg-purple-200 rounded-full overflow-hidden">
-                            <div class="h-2 bg-purple-700 rounded-full" style="width: 25px"></div>
-                        </div>
-                        <span> 8 </span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span> 1.0 </span>
-                        <div class="w-80 h-2 bg-purple-200 rounded-full overflow-hidden">
-                            <div class="h-2 bg-purple-700 rounded-full" style="width: 6px"></div>
-                        </div>
-                        <span> 2 </span>
-                    </div>
+                    @endfor
                 </div>
             </div>
         </div>
+
+        <!-- Feedback List -->
         <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <h3 class="font-semibold text-gray-700 text-xl mb-4">
                     Recent Feedbacks
                 </h3>
                 <div class="space-y-6">
-                    <div class="flex space-x-4">
-                        <img alt="Profile picture of Issac Cassanova, male with short hair"
-                            class="w-12 h-12 rounded-full object-cover" height="48"
-                            src="https://storage.googleapis.com/a1aa/image/492c70e4-3bc6-418a-eee2-8c681d605608.jpg"
-                            width="48" />
-                        <div>
-                            <p class="font-semibold text-purple-700">
-                                Issac Cassanova
-                            </p>
-                            <p class="text-gray-600 text-sm mb-1">
-                                Loved the lightstick! Worked perfectly and
-                                looked nice. Smooth rental process!
-                            </p>
-                            <div class="text-purple-700 text-sm">
-                                <i class="fas fa-star"> </i>
-                                <i class="fas fa-star"> </i>
-                                <i class="fas fa-star"> </i>
-                                <i class="fas fa-star"> </i>
-                                <i class="fas fa-star"> </i>
+                    @forelse($reviews as $review)
+                        <div class="flex space-x-4">
+                        <img alt="Profile picture of {{ $review->user->name }}"
+                             class="w-8 h-8 rounded-full object-cover border border-purple-300"
+                             src="{{ $review->user->profile_photo 
+                                ? asset('storage/' . $review->user->profile_photo) 
+                                : 'https://ui-avatars.com/api/?name=' . urlencode($review->user->name) }}"
+                            width="32" height="32" />
+                            <div>
+                                <p class="font-semibold text-purple-700">
+                                    {{ $review->user->name }}
+                                </p>
+                                <p class="text-gray-600 text-sm mb-1">
+                                    {{ $review->review ?? 'No comment provided.' }}
+                                </p>
+                                <div class="text-purple-700 text-sm">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= $review->rating)
+                                            <i class="fas fa-star"></i>
+                                        @else
+                                            <i class="far fa-star"></i>
+                                        @endif
+                                    @endfor
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="flex space-x-4">
-                        <img alt="Profile picture of Snopia Elvira, female with long hair"
-                            class="w-12 h-12 rounded-full object-cover" height="48"
-                            src="https://storage.googleapis.com/a1aa/image/d62830be-2916-4583-6363-0f646094b15f.jpg"
-                            width="48" />
-                        <div>
-                            <p class="font-semibold text-purple-700">
-                                Snopia Elvira
-                            </p>
-                            <p class="text-gray-600 text-sm mb-1">
-                                Great service, good quality lightstick, and no
-                                hassle at all. Would rent again!
-                            </p>
-                            <div class="text-purple-700 text-sm">
-                                <i class="fas fa-star"> </i>
-                                <i class="fas fa-star"> </i>
-                                <i class="fas fa-star"> </i>
-                                <i class="fas fa-star"> </i>
-                                <i class="fas fa-star"> </i>
-                            </div>
-                        </div>
-                    </div>
+                    @empty
+                        <p class="text-gray-500">No reviews yet for this product.</p>
+                    @endforelse
                 </div>
             </div>
         </div>

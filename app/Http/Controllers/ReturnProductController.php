@@ -31,9 +31,9 @@ class ReturnProductController extends Controller
             'orderProduct', 
             'product', 
             'user',
-            'review',          // Tambahkan relasi ke review
-            'review.user',     // Untuk ambil nama user
-            'review.product'   // Untuk ambil nama produk
+            'review',          
+            'review.user',     
+            'review.product'   
         ])->orderBy('created_at', 'desc')->get();
 
         $totalProducts = Product::count();
