@@ -124,11 +124,14 @@ public function showRentalDetail($id)
 
     $endDate = Carbon::parse($order->end_date)->setTime(18, 0)->format('Y-m-d\TH:i:s');
 
+    $rentalItem = $return?->orderProduct;
+
     return view('profile.rental-detail', [
         'order' => $order,
         'return' => $return,
         'conditionPhotos' => $conditionPhotos,
-        'endDate' => $endDate
+        'endDate' => $endDate,
+        'rentalItem' => $rentalItem
     ]);
 }
 

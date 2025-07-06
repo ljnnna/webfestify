@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class ReturnProduct extends Model
 {
+
+    public function review()
+{
+    return $this->hasOne(Review::class, 'return_product_id');
+}
+
     use HasFactory;
 
     protected $fillable = [

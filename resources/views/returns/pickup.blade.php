@@ -249,46 +249,8 @@
 
             <!-- Sidebar (Right Column) -->
             <div class="lg:col-span-4 space-y-6">
-                <!-- Add Review -->
-                <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                        <span class="bg-yellow-100 text-yellow-600 p-2 rounded-full mr-3">
-                            <i class="fas fa-star text-sm"></i>
-                        </span>
-                        <span>Add Review</span>
-                    </h3>
-                    <p class="text-sm text-gray-600 mb-4">Share your experience with this rental</p>
-                    
-                    <form action="{{ route('reviews.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="order_id" value="{{ $order->id }}">
-                        
-                        <!-- Rating -->
-                        <div class="mb-4">
-                            <div class="flex justify-center space-x-1" id="rating-stars">
-                                @for($i = 1; $i <= 5; $i++)
-                                    <button type="button" class="rating-star text-2xl text-gray-300 hover:text-yellow-400 focus:outline-none transition-colors" data-rating="{{ $i }}">
-                                        <i class="fas fa-star"></i>
-                                    </button>
-                                @endfor
-                            </div>
-                            <input type="hidden" name="rating" id="rating-input" required>
-                        </div>
-                        
-                        <!-- Comment -->
-                        <div class="mb-4">
-                            <label for="comment" class="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
-                            <textarea name="comment" id="comment" rows="3" 
-                                      class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                                      placeholder="Tell us about your experience..."></textarea>
-                        </div>
-                        
-                        <!-- Submit Button -->
-                        <button type="submit" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-2 px-4 rounded-lg font-medium hover:opacity-90 transition-opacity shadow-md">
-                            Submit Review
-                        </button>
-                    </form>
-                </div>
+                @include('components.add-review')
+                
 
                 <!-- Penalty Information -->
                 <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
@@ -463,53 +425,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Uploading...';
         uploadBtn.disabled = true;
-    });
-
-    // Rating stars functionality
-    const stars = document.querySelectorAll('.rating-star');
-    const ratingInput = document.getElementById('rating-input');
-    
-    stars.forEach(star => {
-        star.addEventListener('click', function() {
-            const rating = this.getAttribute('data-rating');
-            ratingInput.value = rating;
-            
-            // Update star colors
-            stars.forEach((s, i) => {
-                if (i < rating) {
-                    s.classList.remove('text-gray-300');
-                    s.classList.add('text-yellow-400');
-                } else {
-                    s.classList.remove('text-yellow-400');
-                    s.classList.add('text-gray-300');
-                }
-            });
-        });
-        
-        // Hover effects
-        star.addEventListener('mouseover', function() {
-            const rating = this.getAttribute('data-rating');
-            stars.forEach((s, i) => {
-                if (i < rating) {
-                    s.classList.add('text-yellow-300');
-                }
-            });
-        });
-        
-        star.addEventListener('mouseout', function() {
-            stars.forEach(s => {
-                s.classList.remove('text-yellow-300');
-            });
-            
-            // Restore selected rating
-            if (ratingInput.value) {
-                stars.forEach((s, i) => {
-                    if (i < ratingInput.value) {
-                        s.classList.add('text-yellow-400');
-                    }
-                });
-            }
-        });
     });
 });
 </script>

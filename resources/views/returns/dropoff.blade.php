@@ -243,44 +243,31 @@
                 </div>
 
                 <!-- Add Review -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                        <i class="fas fa-star text-yellow-500 mr-2"></i>
-                        Add Review
-                    </h3>
-                    <p class="text-sm text-gray-600 mb-4">Share your experience with this rental</p>
-                    
-                    <form action="{{ route('reviews.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="order_id" value="{{ $order->id }}">
-                        
-                        <!-- Rating -->
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
-                            <div class="flex space-x-1" id="rating-stars">
-                                @for($i = 1; $i <= 5; $i++)
-                                    <button type="button" class="rating-star text-2xl text-gray-300 hover:text-yellow-400 focus:outline-none" data-rating="{{ $i }}">
-                                        <i class="fas fa-star"></i>
-                                    </button>
-                                @endfor
-                            </div>
-                            <input type="hidden" name="rating" id="rating-input" required>
-                        </div>
-                        
-                        <!-- Comment -->
-                        <div class="mb-4">
-                            <label for="comment" class="block text-sm font-medium text-gray-700 mb-2">Comment</label>
-                            <textarea name="comment" id="comment" rows="3" 
-                                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-                                      placeholder="Tell us about your experience..."></textarea>
-                        </div>
-                        
-                        <!-- Submit Button -->
-                        <button type="submit" class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
-                            Submit Review
-                        </button>
-                    </form>
-                </div>
+                @php
+    $displayedProducts = [];
+@endphp
+
+@foreach ($returns as $return)
+    @php
+        $rentalItem = $return->orderProduct;
+        $alreadyReviewed = in_array($return->product_id, $existingReviews ?? []);
+    @endphp
+
+    @if ($rentalItem)
+        @if ($alreadyReviewed && !in_array($return->product_id, $displayedProducts))
+            <div class="bg-green-50 p-4 rounded-lg shadow text-sm text-green-700 mt-4">
+                <i class="fas fa-check-circle mr-2 text-green-500"></i>
+                You've already submitted a review for this product. Thank you!
+            </div>
+            @php
+                $displayedProducts[] = $return->product_id;
+            @endphp
+        @elseif (!$alreadyReviewed)
+            @include('components.add-review', ['rentalItem' => $rentalItem, 'return' => $return])
+        @endif
+    @endif
+@endforeach
+
 
 
                 <!-- Contact Support -->
