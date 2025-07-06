@@ -49,8 +49,8 @@
                         <x-slot name="trigger">
                             <button class="flex items-center focus:outline-none">
                                 <img class="h-10 w-10 rounded-full object-cover border-2 border-purple-400"
-                                    src="{{ Auth::user()->picture 
-                                        ? asset('storage/' . Auth::user()->picture) . '?' . now()->timestamp 
+                                    src="{{ auth()->user()->picture 
+                                        ? asset('storage/' . auth()->user()->picture) . '?' . now()->timestamp 
                                         : asset('images/default-user.png') }}"
                                     alt="User Avatar">
                             </button>
@@ -58,8 +58,8 @@
 
                         <x-slot name="content">
                             <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
-                                <div class="font-medium">{{ Auth::user()->name }}</div>
-                                <div class="text-xs text-gray-500">{{ Auth::user()->email }}</div>
+                                <div class="font-medium">{{ auth()->user()->name }}</div>
+                                <div class="text-xs text-gray-500">{{ auth()->user()->email }}</div>
                             </div>
                             <x-dropdown-link :href="route('home')">{{ __('Home') }}</x-dropdown-link>
                             <x-dropdown-link :href="route('profile.edit')">{{ __('Profile') }}</x-dropdown-link>
@@ -127,50 +127,45 @@
             <i class="fas fa-envelope text-xl {{ request()->routeIs('contact') ? 'text-purple-700 dark:text-purple-400' : 'text-gray-700 dark:text-gray-200 hover:text-purple-600' }}"></i>
         </a>
         @auth
-<div x-data="{ openProfile: false }" class="relative">
-    <button @click="openProfile = !openProfile" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-purple-100 dark:hover:bg-gray-700">
-        <i class="fas fa-user text-xl"></i>
-    </button>
-
-    <div 
-<div 
-
-    x-show="openProfile"
-    @click.away="openProfile = false"
-    x-transition 
-    class="absolute bottom-12 right-0 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50"
->
-
-        <div class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 border-b border-gray-200 dark:border-gray-600">
-            <div class="font-medium">{{ Auth::user()->name }}</div>
-            <div class="text-xs text-gray-500">{{ Auth::user()->email }}</div>
-        </div>
-        <a href="{{ route('home') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-purple-100 dark:hover:bg-gray-700">
-            Home
-        </a>
-        <a href="{{ route('profile.edit') }}" class=" block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-purple-100 dark:hover:bg-gray-700">
-            Profile
-        </a>
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button 
-                type="submit" 
-                onclick="return confirm('Are you sure you want to log out?')" 
-                class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-purple-100 dark:hover:bg-gray-700"
-            >
-                Log Out
+        <div x-data="{ openProfile: false }" class="relative">
+            <button @click="openProfile = !openProfile" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-purple-100 dark:hover:bg-gray-700">
+                <i class="fas fa-user text-xl"></i>
             </button>
-        </form>
-    </div>
-</div>
-@else
-    @if (Route::has('login'))
-        <a href="{{ route('login') }}" class="text-purple-700 dark:text-purple-400 hover:text-purple-600">
-            <i class="fas fa-sign-in-alt text-xl"></i>
-        </a>
-    @endif
-@endauth
-
+        </div>
+        <div 
+            x-show="openProfile"
+            @click.away="openProfile = false"
+            x-transition 
+            class="absolute bottom-12 right-0 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50"
+        >
+            <div class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 border-b border-gray-200 dark:border-gray-600">
+                <div class="font-medium">{{ auth()->user()->name }}</div>
+                <div class="text-xs text-gray-500">{{ auth()->user()->email }}</div>
+            </div>
+            <a href="{{ route('home') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-purple-100 dark:hover:bg-gray-700">
+                Home
+            </a>
+            <a href="{{ route('profile.edit') }}" class=" block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-purple-100 dark:hover:bg-gray-700">
+                Profile
+            </a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button 
+                    type="submit" 
+                    onclick="return confirm('Are you sure you want to log out?')" 
+                    class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-purple-100 dark:hover:bg-gray-700"
+                >
+                    Log Out
+                </button>
+            </form>
+        </div>
+        @else
+            @if (\Illuminate\Support\Facades\Route::has('login'))
+                <a href="{{ route('login') }}" class="text-purple-700 dark:text-purple-400 hover:text-purple-600">
+                    <i class="fas fa-sign-in-alt text-xl"></i>
+                </a>
+            @endif
+        @endauth
     </div>
 </div>
 

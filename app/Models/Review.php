@@ -1,12 +1,14 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Review extends Model
 {
     protected $fillable = [
-        'user_id', 'product_id', 'rental_id', 'rating', 'review'
+        'user_id', 'product_id', 'return_product_id', 'rating', 'review'
     ];
 
     public function user() {
@@ -17,12 +19,7 @@ class Review extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function rental() {
-        return $this->belongsTo(Rental::class);
-    }
-
-    public function rentalItems()
-    {
-    return $this->hasMany(RentalItem::class);
+    public function returnProduct() {
+        return $this->belongsTo(ReturnProduct::class);
     }
 }

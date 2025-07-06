@@ -132,4 +132,9 @@ class Order extends Model
             ->orderBy('month', 'desc')
             ->get();
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(\App\Models\Review::class, 'rental_id');
+    }
 }

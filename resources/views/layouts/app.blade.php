@@ -19,12 +19,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
   <style>
     body { font-family: 'Inter', sans-serif; }
   </style>
-
-  {{-- Vite --}}
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 

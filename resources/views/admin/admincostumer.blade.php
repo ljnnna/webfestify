@@ -11,8 +11,8 @@
         <!-- Total User -->
         <x-card-stat title="Total User" :value="$total_customers" />
 
-        <!-- Active User -->
-        <x-card-stat title="Active User" :value="$active_users ?? 0" />
+        <!-- Verified User -->
+        <x-card-stat title="Verified User" :value="$verified_users ?? 0" />
 
         <!-- New Signups -->
         <x-card-stat title="New Signups" :value="$new_signups ?? 0" />
@@ -51,7 +51,11 @@
                     
                     <!-- Verification Status -->
                     <td class="px-6 py-4">
-                        @if($user->verification_status == 'pending')
+                        @if($user->verification_status == 'not_submitted')
+                            <span class="px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
+                                Belum Submit
+                            </span>
+                        @elseif($user->verification_status == 'pending')
                             <span class="px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
                                 Menunggu Verifikasi
                             </span>
@@ -72,7 +76,12 @@
                     
                     <!-- Verification Notes -->
                     <td class="px-6 py-4 text-gray-700">
-                        {{ $user->verification_notes ?? '-' }}
+                        <form action="{{ route('admin.userfest.updateNotes', $user->id) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <textarea name="verification_notes" rows="1" class="border rounded p-2 w-full text-sm" placeholder="Verification notes...">{{ $user->verification_notes ?? '-' }}</textarea>
+                                <button type="submit" class="mt-2 bg-green-200 text-black px-3 py-1 rounded shadow text-sm">Update</button>
+                            </form>
                     </td>
                     
                     <!-- KTP Photo -->
@@ -113,11 +122,13 @@
                                     </button>
                                 </form>
                                 
-                                <!-- Reject Button -->
-                                <form action="{{ route('admin.user.verification.reject', $user) }}" method="POST" class="inline">
+                                <!-- Reject Button with input -->
+                                <form action="{{ route('admin.user.verification.reject', $user) }}" method="POST" class="inline-block">
                                     @csrf
+                                    <input type="text" name="rejection_reason" placeholder="Alasan penolakan..." 
+                                        class="text-xs border px-2 py-1 rounded mb-1 w-full" required>
                                     <button type="submit" 
-                                            class="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition"
+                                            class="w-full px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition"
                                             onclick="return confirm('Yakin ingin reject user ini?')">
                                         Reject
                                     </button>
@@ -125,7 +136,7 @@
                             </div>
                         @else
                             <span class="text-gray-400 text-sm">
-                                Sudah di{{ $user->verification_status == 'approved' ? 'approve' : 'reject' }}
+                                This user is{{ $user->verification_status == 'approved' ? 'approve' : 'reject' }}
                             </span>
                         @endif
                     </td>

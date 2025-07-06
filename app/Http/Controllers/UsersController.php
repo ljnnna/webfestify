@@ -14,9 +14,7 @@ class UsersController extends Controller
     {
         // User statistics
         $total_customers = User::where('usertype', 'customer')->count();
-        $active_users = User::where('usertype', 'user')
-                          ->where('usertype', 'active')
-                          ->count();
+        $verified_users = User::where('verification_status', 'approved')->where('usertype', 'customer')->count();
         
         // New signups in the last 30 days
         $new_signups = User::where('usertype', 'user')
@@ -31,7 +29,7 @@ class UsersController extends Controller
 
          return view('admin.admincostumer', [
             'total_customers' => $total_customers,
-            'active_users' => $active_users,
+            'verified_users' => $verified_users,
             'new_signups' => $new_signups,
             'feedback_count' => $feedback_count,
             'reviews' => $reviews,
@@ -92,19 +90,46 @@ class UsersController extends Controller
             'verified_at' => now(),
         ]);
         
-        return redirect()->back()->with('success', 'User berhasil diverifikasi');
+        return redirect()->back()->with('success', 'User verified successfully.');
     }
     
     /**
      * Reject verifikasi user (sederhana)
-     */
-    public function rejectVerification(User $user)
+     *
+     *   public function rejectVerification(User $user)
+     *   {
+     *       $user->update([
+     *           'verification_status' => 'rejected',
+     *           'verified_at' => now(),
+     *       ]);
+*
+     *       return redirect()->back()->with('error', 'Verifikasi user ditolak');}*/
+
+    public function rejectVerification(Request $request, $id)
     {
-        $user->update([
-            'verification_status' => 'rejected',
-            'verified_at' => now(),
+        $request->validate([
+            'rejection_reason' => 'required|string|max:500',
         ]);
-        
-        return redirect()->back()->with('error', 'Verifikasi user ditolak');
+
+        $user = User::findOrFail($id);
+        $user->verification_status = 'rejected';
+        $user->verification_notes = $request->input('rejection_reason');
+        $user->save();
+
+        return redirect()->back()->with('success', 'Verification rejected and reason saved.');
     }
+
+    public function updateNotes(Request $request, $id)
+    {
+        $request->validate([
+            'verification_notes' => 'nullable|string|max:500'
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->verification_notes = $request->verification_notes;
+        $user->save();
+
+        return redirect()->back()->with('success', 'Condition notes are updated!');
+    }
+
 }  

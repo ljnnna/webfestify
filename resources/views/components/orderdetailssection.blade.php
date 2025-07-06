@@ -1,10 +1,9 @@
 {{-- Ambil items --}}
 
-
-
-
-
 @php
+
+    use Illuminate\Support\Str;
+
     if (isset($paymentData['cart_items'])) {
         $items = $paymentData['cart_items'];
     } elseif (isset($cartItems)) {

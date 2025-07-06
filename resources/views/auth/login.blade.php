@@ -64,7 +64,7 @@
                     <span class="ms-2 text-sm text-gray-600">Remember me</span>
                 </label>
 
-                @if (Route::has('password.request'))
+                @if (\Illuminate\Support\Facades\Route::has('password.request'))
                 <a class="text-sm text-purple-500 hover:underline" href="{{ route('password.request') }}">
                     Forgot Password?
                 </a>
