@@ -13,8 +13,7 @@
             type="file" 
             name="picture" 
             accept="image/*" 
-            class="hidden" 
-            onchange="checkFileSize(this)">
+            class="hidden">
         
         <span class="absolute bottom-0 right-0 bg-white text-purple-700 border border-purple-300 rounded-full p-1 text-xs shadow group-hover:bg-purple-100">
             Edit
