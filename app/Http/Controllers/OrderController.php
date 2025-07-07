@@ -7,6 +7,7 @@ use App\Models\OrderProduct;
 use App\Models\User;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -143,7 +144,7 @@ class OrderController extends Controller
         $oldStatus = $order->status;
         $newStatus = $request->status;
 
-        \Log::info("Updating order status", [
+        Log::info("Updating order status", [
             'order_id' => $id,
             'old_status' => $oldStatus,
             'new_status' => $newStatus
@@ -168,7 +169,7 @@ class OrderController extends Controller
 
         $order->update(['status' => $newStatus]);
 
-        \Log::info("Order status updated", [
+        Log::info("Order status updated", [
             'order_id' => $id,
             'final_status' => $order->fresh()->status
         ]);
