@@ -125,6 +125,12 @@ return [
 
     'aliases' => [
         'NoCaptcha' => Anhskohbo\NoCaptcha\Facades\NoCaptcha::class,
+            'Request' => Illuminate\Support\Facades\Request::class,
+    'Auth' => Illuminate\Support\Facades\Auth::class,
+    'Route' => Illuminate\Support\Facades\Route::class,
+    'URL' => Illuminate\Support\Facades\URL::class,
+    'Str' => Illuminate\Support\Str::class,
+    'File' => Illuminate\Support\Facades\File::class,
     ]
 
 ];
