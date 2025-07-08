@@ -8,6 +8,9 @@ use App\Models\Order;
 use App\Http\Controllers\ReturnController;
 use Carbon\Carbon;
 
+
+
+
 class ProfileController extends Controller
 {
     public function saveAll(Request $request)
@@ -154,7 +157,23 @@ public function showRentalDetail($id)
     return redirect('/')->with('status', 'Akun berhasil dihapus.');
     }
 
-
+    public function deliveryTracking($orderId)
+    {
+        $order = Order::where('id', $orderId)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
     
+        // Dummy tracking status, bisa diganti pakai kolom `delivery_status` jika ada
+        $trackingStatus = match ($order->status) {
+            'pending' => 'confirmed',
+            'confirmed' => $order->delivery_option === 'delivery' ? 'in_delivery' : 'ready_pickup',
+            'delivered', 'completed' => 'delivered',
+            default => 'confirmed',
+        };
+    
+        return view('profile.delivery-tracking', compact('order', 'trackingStatus'));
+    }
+    
+ 
 
 }

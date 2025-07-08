@@ -19,4 +19,11 @@ class OrderProduct extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function penalties()
+{
+    return $this->hasMany(Penalty::class);
+}
+
+    
 }

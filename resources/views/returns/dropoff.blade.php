@@ -28,263 +28,162 @@
 @endsection
 
 @section('content')
-<div class="min-h-screen bg-gray-50 p-6">
-    <div class="max-w-4xl mx-auto">
+<div class="min-h-screen bg-gray-50 py-10 px-4">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Main Content -->
-            <div class="lg:col-span-2 space-y-6">
-                <!-- QR Code Section -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                        <i class="fas fa-qrcode text-purple-600 mr-2"></i>
-                        Return QR Code
-                    </h2>
-                    <p class="text-gray-600 mb-6">Show this QR code to our staff when dropping off your item for quick processing.</p>
-                    
-                    <div class="flex justify-center mb-6">
-                        <div class="bg-white p-4 rounded-lg border-2 border-gray-200 shadow-sm">
-                            <!-- QR Code placeholder - you would generate actual QR code here -->
-                            <div class="w-48 h-48 bg-gray-100 flex items-center justify-center rounded-lg">
-                                <div class="text-center">
-                                    <i class="fas fa-qrcode text-6xl text-gray-400 mb-2"></i>
-                                    <p class="text-sm text-gray-500">QR Code</p>
-                                    <p class="text-xs text-gray-400">#{{ $order->order_code ?? $order->id }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-blue-50 rounded-lg p-4">
-                        <h4 class="font-semibold text-blue-900 mb-2">How to use QR Code:</h4>
-                        <ul class="text-sm text-blue-800 space-y-1">
-                            <li>• Screenshot or save this QR code to your phone</li>
-                            <li>• Show it to our staff at any dropoff location</li>
-                            <li>• Staff will scan and process your return immediately</li>
-                            <li>• You'll receive a confirmation receipt</li>
-                        </ul>
-                    </div>
-                </div>
+        {{-- LEFT PANEL --}}
+        <div class="lg:col-span-2 space-y-8">
+            @php
+                $rentalItem = $return->orderProduct;
+                $product = $rentalItem->product;
+                $order = $rentalItem->order;
+            @endphp
 
-                <!-- Dropoff Locations -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                        <i class="fas fa-map-marker-alt text-red-600 mr-2"></i>
-                        Dropoff Locations
-                    </h2>
-                    <p class="text-gray-600 mb-6">Choose the most convenient location to return your item.</p>
-                    
-                    <div class="space-y-4">
-                        <!-- Location 1 -->
-                        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                            <div class="flex items-start justify-between">
-                                <div class="flex-1">
-                                    <h3 class="font-semibold text-gray-900 mb-2">Main Store - Batam Center</h3>
-                                    <div class="space-y-2 text-sm text-gray-600">
-                                        <div class="flex items-center">
-                                            <i class="fas fa-map-marker-alt w-4 mr-2 text-red-500"></i>
-                                            <span>Jl. Raja Ali Haji No. 123, Batam Center, Batam</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-clock w-4 mr-2 text-blue-500"></i>
-                                            <span>Mon-Sun: 09:00 - 21:00</span>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <i class="fas fa-phone w-4 mr-2 text-green-500"></i>
-                                            <span>+62 778-123456</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="ml-4 flex flex-col space-y-2">
-                                    <a href="https://maps.google.com/?q=Jl.+Raja+Ali+Haji+No.+123+Batam+Center" 
-                                       target="_blank"
-                                       class="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600 transition-colors">
-                                        <i class="fas fa-directions mr-1"></i>
-                                        Directions
-                                    </a>
-                                    <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-medium text-center">
-                                        2.5 km
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dropoff Instructions -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                        <i class="fas fa-list-check text-green-600 mr-2"></i>
-                        Dropoff Instructions
-                    </h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <h3 class="font-semibold text-gray-800 mb-3">Before You Go:</h3>
-                            <ul class="space-y-2 text-sm text-gray-600">
-                                <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-green-500 mt-0.5 mr-2 flex-shrink-0"></i>
-                                    <span>Clean the item and remove personal belongings</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-green-500 mt-0.5 mr-2 flex-shrink-0"></i>
-                                    <span>Take photos of item condition (optional but recommended)</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-green-500 mt-0.5 mr-2 flex-shrink-0"></i>
-                                    <span>Bring this QR code (screenshot or printed)</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-green-500 mt-0.5 mr-2 flex-shrink-0"></i>
-                                    <span>Bring valid ID for verification</span>
-                                </li>
-                            </ul>
-                        </div>
-                        
-                        <div>
-                            <h3 class="font-semibold text-gray-800 mb-3">At The Location:</h3>
-                            <ul class="space-y-2 text-sm text-gray-600">
-                                <li class="flex items-start">
-                                    <i class="fas fa-arrow-right text-blue-500 mt-0.5 mr-2 flex-shrink-0"></i>
-                                    <span>Show QR code to staff or scan at express point</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-arrow-right text-blue-500 mt-0.5 mr-2 flex-shrink-0"></i>
-                                    <span>Present the item for quick inspection</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-arrow-right text-blue-500 mt-0.5 mr-2 flex-shrink-0"></i>
-                                    <span>Receive confirmation receipt</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-arrow-right text-blue-500 mt-0.5 mr-2 flex-shrink-0"></i>
-                                    <span>Return process completed!</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sidebar -->
-            <div class="space-y-6">
-
-                <!-- Penalty Information -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">
-                        <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
-                        Penalty Information
-                    </h3>
-                    
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                            <span class="text-sm text-gray-600">Due Date</span>
-                            <span class="text-sm font-medium">{{ $order->end_date->format('d M Y, H:i') }}</span>
-                        </div>
-                        
-                        {{-- Show penalties if any --}}
-                        @if($order->penalties && $order->penalties->count() > 0)
-                            <div class="bg-red-50 rounded-lg p-4">
-                                <h4 class="text-sm font-semibold text-red-800 mb-3">Applied Penalties:</h4>
-                                <div class="space-y-2">
-                                    @php $totalPenalty = 0; @endphp
-                                    @foreach($order->penalties as $penalty)
-                                        <div class="flex justify-between items-center text-sm">
-                                            <span class="text-red-700">{{ $penalty->description }}</span>
-                                            <span class="font-semibold text-red-600">
-                                                Rp {{ number_format($penalty->amount, 0, ',', '.') }}
-                                            </span>
-                                        </div>
-                                        @php $totalPenalty += $penalty->amount; @endphp
-                                    @endforeach
-                                    
-                                    @if($order->penalties->count() > 1)
-                                        <div class="border-t border-red-200 pt-2 mt-2">
-                                            <div class="flex justify-between items-center text-sm font-bold">
-                                                <span class="text-red-800">Total Penalty</span>
-                                                <span class="text-red-600">
-                                                    Rp {{ number_format($totalPenalty, 0, ',', '.') }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-                                
-                                @if($penalty->notes ?? false)
-                                    <div class="mt-3 p-2 bg-red-100 rounded text-xs text-red-700">
-                                        <strong>Notes:</strong> {{ $penalty->notes }}
-                                    </div>
-                                @endif
-                            </div>
-                        @else
-                            <div class="bg-green-50 rounded-lg p-4">
-                                <div class="text-center">
-                                    <i class="fas fa-check-circle text-green-500 text-lg mb-2"></i>
-                                    <p class="text-sm text-green-700 font-medium">No Penalty</p>
-                                    <p class="text-xs text-green-600">Return as scheduled</p>
-                                </div>
-                            </div>
-                        @endif
-                        
-                        <div class="text-xs text-gray-500 bg-gray-50 rounded p-3">
-                            <p class="font-medium mb-2">Possible Penalty Types:</p>
-                            <ul class="space-y-1">
-                                <li>• Late return fee</li>
-                                <li>• Item damage fee</li>
-                                <li>• Lost item replacement</li>
-                                <li>• Condition mismatch fee</li>
-                                <li>• Additional administrative costs</li>
-                            </ul>
-                            <p class="text-xs text-gray-400 mt-2 italic">
-                                *Penalties will be determined by staff after item evaluation
+            {{-- QR CODE --}}
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h2 class="text-xl font-semibold mb-2 text-gray-900 flex items-center">
+                    <i class="fas fa-qrcode text-purple-600 mr-2"></i> Return QR Code
+                </h2>
+                <p class="text-gray-600 mb-4">
+                    Show this QR code when returning <strong>{{ $product->name }}</strong>.
+                </p>
+                <div class="flex justify-center mb-6">
+                    <div class="w-48 h-48 flex items-center justify-center bg-gray-100 rounded-lg border-2 border-gray-200 shadow-inner">
+                        <div class="text-center">
+                            <i class="fas fa-qrcode text-6xl text-gray-400 mb-2"></i>
+                            <p class="text-xs text-gray-500">
+                                #{{ $order->order_code ?? $order->id }} - {{ $product->name }}
                             </p>
                         </div>
                     </div>
                 </div>
-
-                <!-- Add Review -->
-                @php
-    $displayedProducts = [];
-@endphp
-
-@foreach ($returns as $return)
-    @php
-        $rentalItem = $return->orderProduct;
-        $alreadyReviewed = in_array($return->product_id, $existingReviews ?? []);
-    @endphp
-
-    @if ($rentalItem)
-        @if ($alreadyReviewed && !in_array($return->product_id, $displayedProducts))
-            <div class="bg-green-50 p-4 rounded-lg shadow text-sm text-green-700 mt-4">
-                <i class="fas fa-check-circle mr-2 text-green-500"></i>
-                You've already submitted a review for this product. Thank you!
+                <div class="bg-blue-50 p-4 rounded-lg text-sm text-blue-800">
+                    <p class="font-medium mb-2">How to return:</p>
+                    <ul class="space-y-1 list-disc list-inside">
+                        <li>Save this QR to your phone</li>
+                        <li>Show it at drop-off point</li>
+                        <li>Staff will scan and confirm return</li>
+                    </ul>
+                </div>
             </div>
-            @php
-                $displayedProducts[] = $return->product_id;
-            @endphp
-        @elseif (!$alreadyReviewed)
-            @include('components.add-review', ['rentalItem' => $rentalItem, 'return' => $return])
-        @endif
-    @endif
-@endforeach
 
+            {{-- DROP-OFF LOCATION + INSTRUCTIONS --}}
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h2 class="text-xl font-semibold mb-4 text-gray-900 flex items-center">
+                    <i class="fas fa-map-marker-alt text-red-600 mr-2"></i> Dropoff Info & Instructions
+                </h2>
 
-
-                <!-- Contact Support -->
-                <div class="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-lg p-6 text-white">
-                    <h3 class="text-lg font-semibold mb-2">Need Help?</h3>
-                    <p class="text-sm mb-4 opacity-90">Contact our support team for assistance with your return.</p>
-                    <div class="space-y-2">
-                        <a href="tel:+6281234567890" class="flex items-center text-sm hover:underline">
-                            <i class="fas fa-phone mr-2"></i>
-                            +62 812-3456-7890
-                        </a>
-                        <a href="mailto:support@rental.com" class="flex items-center text-sm hover:underline">
-                            <i class="fas fa-envelope mr-2"></i>
-                            support@rental.com
-                        </a>
+                {{-- Location Info --}}
+                <div class="mb-6 border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                    <div class="flex flex-col sm:flex-row justify-between gap-4">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800">Main Store - Batam Center</h3>
+                            <div class="mt-2 text-sm text-gray-600 space-y-1">
+                                <div><i class="fas fa-map-marker-alt text-red-500 mr-1 w-4 inline-block"></i>Jl. Raja Ali Haji No.123</div>
+                                <div><i class="fas fa-clock text-blue-500 mr-1 w-4 inline-block"></i>Mon-Sun: 09:00 - 21:00</div>
+                                <div><i class="fas fa-phone text-green-500 mr-1 w-4 inline-block"></i>+62 778-123456</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-start space-y-2">
+                            <a href="https://maps.google.com/?q=Jl.+Raja+Ali+Haji+No.+123+Batam+Center" target="_blank"
+                               class="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600">
+                                <i class="fas fa-directions mr-1"></i> Directions
+                            </a>
+                            <span class="text-green-700 text-xs bg-green-100 px-2 py-1 rounded font-medium">2.5 km</span>
+                        </div>
                     </div>
                 </div>
+
+                {{-- Instructions --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+                    <div>
+                        <h4 class="font-semibold mb-2">Before You Go</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i> Clean item & remove personal items</li>
+                            <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i> Take item photo (optional)</li>
+                            <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i> Bring the QR code</li>
+                            <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i> Bring your ID</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-2">At The Location</h4>
+                        <ul class="space-y-2">
+                            <li class="flex items-start"><i class="fas fa-arrow-right text-blue-500 mt-1 mr-2"></i> Show the QR code</li>
+                            <li class="flex items-start"><i class="fas fa-arrow-right text-blue-500 mt-1 mr-2"></i> Staff will inspect</li>
+                            <li class="flex items-start"><i class="fas fa-arrow-right text-blue-500 mt-1 mr-2"></i> Confirmation received</li>
+                            <li class="flex items-start"><i class="fas fa-arrow-right text-blue-500 mt-1 mr-2"></i> Done!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- RIGHT PANEL --}}
+        <div class="space-y-6">
+            {{-- Penalty Info --}}
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-exclamation-triangle text-red-600 mr-2"></i> Penalty Information
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center text-sm border-b pb-2">
+                        <span class="text-gray-600">Due Date</span>
+                        <span class="font-medium">{{ $order->end_date->format('d M Y, H:i') }}</span>
+                    </div>
+
+                    @php
+                        $penalties = $return->penalties ?? collect();
+                        $hasPenalty = $penalties->count() > 0;
+                        $total = 0;
+                    @endphp
+
+                    @if ($hasPenalty)
+                        <div class="bg-red-50 p-4 rounded-lg text-sm text-red-700">
+                            <p class="font-semibold mb-2">Applied Penalties:</p>
+                            @foreach($penalties as $penalty)
+                                <div class="flex justify-between">
+                                    <span>{{ $penalty->description }}</span>
+                                    <span>Rp {{ number_format($penalty->amount, 0, ',', '.') }}</span>
+                                </div>
+                                @php $total += $penalty->amount; @endphp
+                            @endforeach
+                            <div class="mt-3 border-t pt-2 flex justify-between font-semibold text-red-800">
+                                <span>Total</span>
+                                <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
+                    @else
+                        <div class="bg-green-50 p-4 text-center text-green-700 text-sm rounded-lg">
+                            <i class="fas fa-check-circle mb-2 text-green-500 text-lg"></i>
+                            <p class="font-semibold">No Penalties Applied</p>
+                            <p class="text-xs">Return completed on time</p>
+                        </div>
+                    @endif
+
+                    <div class="text-xs text-gray-600 bg-gray-50 rounded p-4">
+                        <p class="font-semibold mb-2">Possible Penalties:</p>
+                        <ul class="space-y-1 list-disc list-inside">
+                            <li>Late return fee (Rp50,000/day)</li>
+                            <li>Damage or missing parts</li>
+                            <li>Excessive cleaning</li>
+                        </ul>
+                        <p class="text-[10px] text-gray-400 mt-2 italic">
+                            *Penalties are applied after inspection
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Review --}}
+            <div class="bg-white p-6 rounded-xl shadow-md mt-6">
+                @if (!$alreadyReviewed)
+                    @include('components.add-review', ['return' => $return, 'alreadyReviewed' => $alreadyReviewed])
+                @else
+                    <div class="bg-green-50 p-4 rounded-lg shadow-sm text-green-700 text-sm">
+                        <i class="fas fa-check-circle mr-2 text-green-500"></i>
+                        You've already submitted a review for this product. Thank you!
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -292,18 +191,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Auto-refresh QR code every 30 seconds to ensure it's valid
-    setInterval(function() {
-        // You can implement QR code refresh logic here if needed
+    setInterval(() => {
         console.log('QR Code refreshed');
     }, 30000);
 
-    // Add click handlers for location cards
-    document.querySelectorAll('.border.border-gray-200.rounded-lg').forEach(function(card) {
+    document.querySelectorAll('.border.border-gray-200.rounded-lg').forEach(card => {
         card.addEventListener('click', function(e) {
-            // Don't trigger if clicking on directions button
             if (!e.target.closest('a')) {
-                // You can add logic here to show more details or select location
                 console.log('Location selected');
             }
         });

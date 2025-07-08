@@ -11,6 +11,8 @@ use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+
+
 class ReturnProductController extends Controller
 {
     /**
@@ -49,7 +51,6 @@ class ReturnProductController extends Controller
         ));
     }
 
-    // Upload kondisi barang (admin)
     public function uploadCondition(Request $request, $id)
     {
         $return = ReturnProduct::findOrFail($id);
@@ -79,7 +80,6 @@ class ReturnProductController extends Controller
         return back()->with('success', 'Condition photos uploaded successfully.');
     }
 
-    // Admin update status return
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
@@ -98,7 +98,6 @@ class ReturnProductController extends Controller
         return redirect()->back()->with('success', 'Status return berhasil diupdate!');
     }
 
-    // Admin update catatan kondisi barang
     public function updateNotes(Request $request, $id)
     {
         $request->validate([
@@ -134,18 +133,29 @@ class ReturnProductController extends Controller
         return view('returns.pickup', compact('order', 'return'));
     }
 
-    public function dropoffView($orderId)
+    public function dropoffItemView($orderId, $orderProductId)
     {
         $order = Order::with(['orderProducts.product'])->findOrFail($orderId);
-        $returns = ReturnProduct::where('order_id', $order->id)->with('orderProduct')->get();
-    
-        $userId = auth()->id();
-        $existingReviews = Review::where('user_id', $userId)
-            ->whereIn('product_id', $order->orderProducts->pluck('product_id'))
-            ->pluck('product_id')
-            ->toArray();
-    
-        return view('returns.dropoff', compact('order', 'returns', 'existingReviews'));
+
+        $return = ReturnProduct::where('order_id', $order->id)
+            ->where('order_product_id', $orderProductId)
+            ->with('orderProduct.product', 'penalties', 'review')
+            ->firstOrFail();
+
+        $allReturns = ReturnProduct::where('order_id', $order->id)->get();
+
+        $alreadyReviewed = Review::where('user_id', auth()->id())
+            ->where('return_product_id', $return->id)
+            ->exists();
+
+        return view('returns.dropoff', [
+            'order' => $order,
+            'return' => $return,
+            'allReturns' => $allReturns,
+            'alreadyReviewed' => $alreadyReviewed,
+        ]);
+
+   
     }
 
     public function uploadPhotos(Request $request, $orderId)
@@ -182,28 +192,39 @@ class ReturnProductController extends Controller
         return redirect()->back()->with('success', 'Photos uploaded successfully.');
     }
 
-    public function createReturn(Request $request, $orderId)
+    public function createReturn(Request $request, $orderId, $orderProductId)
     {
         $order = Order::with('orderProducts')->findOrFail($orderId);
+
+        $orderProduct = $order->orderProducts->where('id', $orderProductId)->first();
+        if (!$orderProduct) {
+            abort(404, 'Produk tidak ditemukan dalam order ini.');
+        }
+
         $returnMethod = $request->input('return_option', 'pickup');
 
-        foreach ($order->orderProducts as $orderProduct) {
-            ReturnProduct::create([
+        ReturnProduct::updateOrCreate(
+            [
                 'order_id' => $order->id,
                 'order_product_id' => $orderProduct->id,
                 'product_id' => $orderProduct->product_id,
                 'user_id' => $order->user_id,
+            ],
+            [
                 'quantity_returned' => $orderProduct->quantity,
                 'return_status' => 'in_process',
                 'return_method' => $returnMethod,
                 'return_processed_at' => now(),
-            ]);
-        }
+            ]
+        );
 
         if ($returnMethod === 'pickup') {
             return redirect()->route('return.pickup.view', ['order' => $order->id]);
         } elseif ($returnMethod === 'dropoff') {
-            return redirect()->route('return.dropoff.view', ['order' => $order->id]);
+            return redirect()->route('returns.dropoff.item', [
+                'order' => $order->id,
+                'orderProduct' => $orderProduct->id
+            ]);
         }
 
         return redirect()->back()->with('error', 'Invalid return method.');
@@ -230,36 +251,61 @@ class ReturnProductController extends Controller
         return redirect()->back()->with('success', 'Return berhasil dikonfirmasi!');
     }
 
-    // ======================== CUSTOMER: Submit review + return ========================
     public function submitReview(Request $request, $returnId)
     {
         $request->validate([
             'rating' => 'required|integer|min:1|max:5',
             'review' => 'nullable|string|max:1000',
         ]);
-    
-        $return = ReturnProduct::with(['orderProduct', 'product'])->findOrFail($returnId);
 
-        $existing = \App\Models\Review::where('user_id', auth()->id())
-        ->where('product_id', $return->product_id)
-        ->first();;
+        $return = ReturnProduct::with(['orderProduct.order', 'product'])->findOrFail($returnId);
+
+        if ($return->orderProduct->order->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $existing = Review::where('user_id', auth()->id())
+            ->where('return_product_id', $return->id)
+            ->first();
 
         if ($existing) {
-            return redirect()->back()->with('error', 'You have already submitted a review.');
+            return back()->with('error', 'You have already submitted a review for this return.');
         }
-    
-        $review = new \App\Models\Review();
-        $review->user_id = auth()->id();
-        $review->product_id = $return->product_id;
-        $review->return_product_id = $return->id;
-        $review->order_product_id = $return->order_product_id;
-        $review->rating = $request->rating;
-        $review->review = $request->review;
-        $review->save();
-    
-        return redirect()->back()->with('success', 'Review submitted successfully!');
+
+        Review::create([
+            'user_id' => auth()->id(),
+            'product_id' => $return->product_id,
+            'return_product_id' => $return->id,
+            'order_product_id' => $return->order_product_id,
+            'rating' => $request->rating,
+            'review' => $request->review,
+        ]);
+
+        return back()->with('success', 'Review submitted successfully!');
     }
-}    
+
+    public function initiate($orderId, $orderProductId)
+    {
+        $order = Order::with(['orderProducts.product.images'])->findOrFail($orderId);
+        $orderProduct = $order->orderProducts->where('id', $orderProductId)->first();
+
+        if (!$orderProduct) {
+            abort(404, 'Produk tidak ditemukan dalam order ini.');
+        }
+
+        $existingReturn = ReturnProduct::where('order_id', $orderId)
+            ->where('order_product_id', $orderProductId)
+            ->first();
+
+        return view('profile.initiate', [
+            'order' => $order,
+            'orderProduct' => $orderProduct,
+            'existingReturn' => $existingReturn,
+        ]);
+    }
+}
+
+
 
 
 // namespace App\Http\Controllers;

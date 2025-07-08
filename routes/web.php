@@ -74,9 +74,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
     Route::post('/returns/{return}/submit-review', [ReturnProductController::class, 'submitReview'])->name('returns.submitReview');
 
-
+    Route::get('/return/initiate/{order}/{orderProduct}', [ReturnProductController::class, 'initiate'])->name('return.initiate');
+    Route::post('/return/create/{order}/{orderProduct}', [ReturnProductController::class, 'createReturn'])->name('return.create');
+    
     Route::get('/return/pickup/{order}', [ReturnProductController::class, 'pickupView'])->name('return.pickup.view');
-    Route::get('/return/dropoff/{order}', [ReturnProductController::class, 'dropoffView'])->name('return.dropoff.view');
+    Route::get('/return/{order}/dropoff/item/{orderProduct}', [ReturnProductController::class, 'dropoffItemView'])
+    ->name('returns.dropoff.item');
+
+
+    Route::get('/profile/delivery-tracking/{order}', [\App\Http\Controllers\ProfileController::class, 'deliveryTracking'])
+    ->name('profile.deliveryTracking');
 
     // Route::get('/return/dropoff/{order}', function ($orderId) {
     //     $order = \App\Models\Order::with('products')->findOrFail($orderId);

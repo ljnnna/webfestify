@@ -116,4 +116,9 @@ class Product extends Model
         return $this->stock_quantity - $this->stock_rented;
     }
 
+    public function returnProduct()
+{
+    return $this->hasOne(ReturnProduct::class, 'product_id', 'id');
+}
+
 }

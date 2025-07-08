@@ -7,6 +7,9 @@ use App\Models\OrderProduct;
 use App\Models\User;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
+
 
 class OrderController extends Controller
 {
@@ -134,97 +137,80 @@ class OrderController extends Controller
     }
 
     public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|in:pending,confirmed,active,completed,cancelled'
-        ]);
+{
+    $request->validate([
+        'status' => 'required|in:pending,confirmed,active,completed,cancelled'
+    ]);
 
-        $order = Order::findOrFail($id);
-        $oldStatus = $order->status;
-        $newStatus = $request->status;
+    $order = Order::findOrFail($id);
+    $oldStatus = $order->status;
+    $newStatus = $request->status;
 
-        \Log::info("Updating order status", [
-            'order_id' => $id,
-            'old_status' => $oldStatus,
-            'new_status' => $newStatus
-        ]);
+    Log::info("Updating order status", [
+        'order_id' => $id,
+        'old_status' => $oldStatus,
+        'new_status' => $newStatus
+    ]);
 
-
-        // Kembalikan stock jika order completed atau cancelled
-        if (in_array($newStatus, ['completed', 'cancelled']) && !in_array($oldStatus, ['completed', 'cancelled'])) {
-            foreach ($order->orderProducts as $orderProduct) {
-                $product = $orderProduct->product;
-                $product->decrement('stock_rented', $orderProduct->quantity);
-            }
+    // Kembalikan stock jika order completed atau cancelled
+    if (in_array($newStatus, ['completed', 'cancelled']) && !in_array($oldStatus, ['completed', 'cancelled'])) {
+        foreach ($order->orderProducts as $orderProduct) {
+            $product = $orderProduct->product;
+            $product->decrement('stock_rented', $orderProduct->quantity);
         }
-        
-        // Kurangi stock lagi jika order direactivate dari completed/cancelled
-        if (!in_array($newStatus, ['completed', 'cancelled']) && in_array($oldStatus, ['completed', 'cancelled'])) {
-            foreach ($order->orderProducts as $orderProduct) {
-                $product = $orderProduct->product;
-                $product->increment('stock_rented', $orderProduct->quantity);
-            }
-        }
+    }
 
+    // Tambahkan kembali stock jika keluar dari completed/cancelled
+    if (!in_array($newStatus, ['completed', 'cancelled']) && in_array($oldStatus, ['completed', 'cancelled'])) {
+        foreach ($order->orderProducts as $orderProduct) {
+            $product = $orderProduct->product;
+            $product->increment('stock_rented', $orderProduct->quantity);
+        }
+    }
+
+    // Jika status jadi 'confirmed' dan payment masih 'unpaid', ubah jadi 'paid'
+    if ($newStatus === 'confirmed' && $order->payment_status === 'unpaid') {
+        $order->update([
+            'status' => $newStatus,
+            'payment_status' => 'paid'
+        ]);
+    } else {
         $order->update(['status' => $newStatus]);
-
-        \Log::info("Order status updated", [
-            'order_id' => $id,
-            'final_status' => $order->fresh()->status
-        ]);
-
-        return redirect()->back()->with('success', 'Status order berhasil diupdate');
     }
 
-    public function uploadCondition(Request $request, $id)
-    {
-        $request->validate([
-            'condition_before' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'condition_after' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+    Log::info("Order status updated", [
+        'order_id' => $id,
+        'final_status' => $order->fresh()->status,
+        'final_payment_status' => $order->fresh()->payment_status
+    ]);
 
-        $order = Order::findOrFail($id);
+    return redirect()->back()->with('success', 'Status order berhasil diupdate');
+}
 
-        if ($request->hasFile('condition_before')) {
-            $beforePath = $request->file('condition_before')->store('condition_images', 'public');
-            $order->condition_before = $beforePath;
-        }
-
-        if ($request->hasFile('condition_after')) {
-            $afterPath = $request->file('condition_after')->store('condition_images', 'public');
-            $order->condition_after = $afterPath;
-        }
-
-        $order->save();
-
-        return back()->with('success', 'Foto kondisi berhasil diupload');
-    }
 
     public function cancel(Request $request, Order $order)
     {
-        // Pastikan hanya user yang punya order ini yang boleh cancel
+        // Hanya user yang memiliki order ini yang bisa cancel
         if ($order->user_id !== auth()->id()) {
             abort(403, 'Unauthorized action.');
         }
     
-        // Hanya boleh cancel kalau belum active/completed
-        if (in_array($order->status, ['completed', 'cancelled'])) {
-            return back()->with('error', 'Order tidak bisa dibatalkan.');
+        // ❌ Cegah cancel jika bukan status 'pending'
+        if ($order->status !== 'pending') {
+            return back()->with('error', 'Order hanya bisa dibatalkan jika masih pending.');
         }
     
         // Update status menjadi cancelled
-        $oldStatus = $order->status;
         $order->status = 'cancelled';
         $order->save();
     
-        // Kembalikan stok
-        if (!in_array($oldStatus, ['completed', 'cancelled'])) {
-            foreach ($order->orderProducts as $orderProduct) {
-                $orderProduct->product->decrement('stock_rented', $orderProduct->quantity);
-            }
+        // Kembalikan stok yang sudah dicatat saat pemesanan
+        foreach ($order->orderProducts as $orderProduct) {
+            $orderProduct->product->decrement('stock_rented', $orderProduct->quantity);
         }
     
         return back()->with('success', 'Order berhasil dibatalkan.');
     }
+    
 
 }

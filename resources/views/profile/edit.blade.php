@@ -341,7 +341,7 @@ document.addEventListener('alpine:init', () => {
                         <form method="POST" action="{{ route('profile.saveAll') }}" class="space-y-6">
                             @csrf
                             @method('PUT')
-
+                            
                             <!-- Personal Information Section -->
                             <div class="space-y-4">
                                 <h3 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">Personal Information</h3>

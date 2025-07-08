@@ -66,5 +66,11 @@ class ReturnProduct extends Model
         return $this->belongsTo(User::class);
     }
 
+    // App\Models\Order.php
+public function penalties()
+{
+    return $this->hasMany(Penalty::class);
+}
+
     
 }
