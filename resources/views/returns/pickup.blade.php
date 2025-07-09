@@ -31,7 +31,6 @@
 </div>
 @endsection
 
-<pre>{{ print_r($return->toArray(), true) }}</pre>
 @section('content')
 <div class="min-h-screen bg-gray-50 p-4 sm:p-6">
     <div class="max-w-4xl mx-auto">
