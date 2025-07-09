@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use App\Models\ReturnProduct;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,9 +22,17 @@ class OrderProduct extends Model
     }
 
     public function penalties()
-{
-    return $this->hasMany(Penalty::class);
-}
+    {
+        return $this->hasMany(Penalty::class);
+    }
 
+    public function returnProduct()
+    {
+        return $this->hasOne(ReturnProduct::class, 'order_product_id');
+    }
+
+    protected $casts = [
+        'condition_photos' => 'array',
+    ];
     
 }

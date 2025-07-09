@@ -44,6 +44,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('product', ProductController::class);
     Route::delete('/product/{product}/image/{imageId}', [ProductController::class, 'deleteImage'])->name('product.image.destroy');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
+    
+     
+    Route::put('/returns/{return}/mark-collected', [ReturnProductController::class, 'markCollected'])->name('returns.markCollected');
+
+    
     Route::get('/home', function () {
         return redirect()->route('home');
     })->name('home');
@@ -73,11 +78,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/rental-detail/{id}', [ProfileController::class, 'rentalDetail'])->name('profile.rental.detail');
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
     Route::post('/returns/{return}/submit-review', [ReturnProductController::class, 'submitReview'])->name('returns.submitReview');
-
+    Route::get('/admin/tracking', [OrderController::class, 'tracking'])->name('admin.tracking');
+    Route::put('/admin/tracking/{order}/update-status', [OrderController::class, 'updateDeliveryStatus'])->name('admin.update.delivery.status');
+    Route::post('/orders/{order}/confirm-pickup', [OrderController::class, 'confirmPickup'])->name('order.confirmPickup');
     Route::get('/return/initiate/{order}/{orderProduct}', [ReturnProductController::class, 'initiate'])->name('return.initiate');
     Route::post('/return/create/{order}/{orderProduct}', [ReturnProductController::class, 'createReturn'])->name('return.create');
     
-    Route::get('/return/pickup/{order}', [ReturnProductController::class, 'pickupView'])->name('return.pickup.view');
+    Route::get('/return/{order}/{orderProduct}/pickup', [ReturnProductController::class, 'pickupView'])
+    ->name('return.pickup.view');
     Route::get('/return/{order}/dropoff/item/{orderProduct}', [ReturnProductController::class, 'dropoffItemView'])
     ->name('returns.dropoff.item');
 

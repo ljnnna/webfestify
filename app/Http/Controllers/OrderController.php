@@ -211,6 +211,85 @@ class OrderController extends Controller
     
         return back()->with('success', 'Order berhasil dibatalkan.');
     }
+
+    public function tracking()
+    {
+        $orders = Order::with(['user', 'orderProducts.product'])
+            ->where('status', 'confirmed')
+            ->where(function ($query) {
+                $query->where('delivery_option', 'delivery')
+                      ->orWhere(function ($query) {
+                          $query->where('delivery_option', 'pickup')
+                                ->whereNotNull('pickup_confirmed_at');
+                      });
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+    
+        return view('admin.tracking', compact('orders'));
+    }
+    
+    
+    public function updateDeliveryStatus(Request $request, Order $order)
+    {
+        $request->validate([
+            'delivery_status' => 'required|in:confirmed,preparing,ready_to_ship,in_delivery,delivered',
+        ]);
+        
+    
+        $order->delivery_status = $request->delivery_status;
+        $order->save();
+    
+        return redirect()->back()->with('success', 'Delivery status updated.');
+    }
+    
+    public function customerTracking($orderId)
+    {
+        $order = Order::with(['products.images', 'products.category'])
+            ->where('id', $orderId)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+    
+        return view('profile.tracking', [
+            'order' => $order,
+            'trackingStatus' => $order->delivery_status ?? 'order_confirmed',
+        ]);
+    }
+    
+    public function track($id)
+    {
+        $order = Order::with(['products.images', 'products.category'])
+            ->where('id', $id)
+            ->where('user_id', auth()->id()) // Tambahkan ini agar hanya user yg punya order bisa akses
+            ->firstOrFail();
+    
+        return view('profile.order-tracking', [
+            'order' => $order,
+            'trackingStatus' => $order->delivery_status ?? 'order_confirmed',
+        ]);
+    }
+
+    public function confirmPickup(Order $order)
+{
+    // Cek apakah order milik user yang sedang login (opsional, untuk keamanan)
+    if (auth()->id() !== $order->user_id) {
+        abort(403, 'Unauthorized action.');
+    }
+
+    // Simpan waktu konfirmasi
+    $order->pickup_confirmed_at = now();
+    $order->save();
+
+    return redirect()->back()->with('success', 'Penjemputan telah dikonfirmasi. Harap ambil barang dalam 5 jam.');
+}
+    
+    
+    
+    
+
+    
+
+
     
 
 }
