@@ -51,7 +51,11 @@
                     
                     <!-- Verification Status -->
                     <td class="px-6 py-4">
-                        @if($user->verification_status == 'pending')
+                        @if($user->verification_status == 'not_submitted')
+                            <span class="px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
+                                Belum Submit
+                            </span>
+                        @elseif($user->verification_status == 'pending')
                             <span class="px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">
                                 Menunggu Verifikasi
                             </span>

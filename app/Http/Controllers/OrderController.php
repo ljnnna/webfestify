@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Log;
 
 
 
+
+
 class OrderController extends Controller
 {
     public function getOrdersData()
@@ -146,11 +148,13 @@ class OrderController extends Controller
     $oldStatus = $order->status;
     $newStatus = $request->status;
 
+
     Log::info("Updating order status", [
         'order_id' => $id,
         'old_status' => $oldStatus,
         'new_status' => $newStatus
     ]);
+
 
     // Kembalikan stock jika order completed atau cancelled
     if (in_array($newStatus, ['completed', 'cancelled']) && !in_array($oldStatus, ['completed', 'cancelled'])) {
@@ -176,6 +180,7 @@ class OrderController extends Controller
         ]);
     } else {
         $order->update(['status' => $newStatus]);
+
     }
 
     Log::info("Order status updated", [
@@ -282,14 +287,6 @@ class OrderController extends Controller
 
     return redirect()->back()->with('success', 'Penjemputan telah dikonfirmasi. Harap ambil barang dalam 5 jam.');
 }
-    
-    
-    
-    
 
-    
-
-
-    
 
 }

@@ -312,6 +312,12 @@ document.addEventListener('alpine:init', () => {
         }
     }));
 });
+
+document.querySelector('input[name="picture"]').addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+        document.getElementById('profile-picture-form').submit();
+    }
+});
 </script>
 <!-- END VERIFICATION FORM SECTION -->
 
