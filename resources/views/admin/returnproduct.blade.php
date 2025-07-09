@@ -183,21 +183,24 @@
                         </form>
                     </td>
                     <td class="px-6 py-4">
-                        @if(in_array($return->return_status, ['in_process', 'checked']))
-                            <form action="{{ route('admin.returns.markCollected', $return->id) }}" method="POST">
+                        @if($return->return_status === 'collected')
+                            <form action="{{ route('admin.returns.confirmReturn', $return->id) }}" method="POST" class="inline">
                                 @csrf
-                                @method('PUT') {{-- ✅ Gunakan PUT sesuai route yang tersedia --}}
-                                <button type="submit" class="bg-yellow-500 text-white px-3 py-1 text-sm rounded shadow hover:bg-yellow-600">
-                                    Collected
+                                @method('PUT')
+                                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600"
+                                        onclick="return confirm('Mark this return as completed?')">
+                                    Confirm Return
                                 </button>
                             </form>
-                        @elseif($return->return_status === 'collected')
-                            <span class="text-yellow-700 font-semibold text-sm">Already Collected</span>
+                        @elseif(in_array($return->return_status, ['in_process', 'checked']))
+                            <span class="text-gray-500 italic text-sm">Waiting for pickup</span>
+                        @elseif($return->return_status === 'completed')
+                            <span class="text-green-600 font-semibold">Done</span>
                         @else
-                            <span class="text-gray-500 text-sm">N/A</span>
+                            <span class="text-gray-400 text-sm">N/A</span>
                         @endif
-
                     </td>
+
                     <td class="px-6 py-4">
                     @if(in_array($return->return_status, ['in_process', 'checked']))
                             <form action="{{ route('admin.returns.confirmReturn', $return->id) }}" method="POST" class="inline">

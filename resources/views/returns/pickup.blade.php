@@ -31,6 +31,7 @@
 </div>
 @endsection
 
+<pre>{{ print_r($return->toArray(), true) }}</pre>
 @section('content')
 <div class="min-h-screen bg-gray-50 p-4 sm:p-6">
     <div class="max-w-4xl mx-auto">
@@ -60,16 +61,23 @@
 
                 $photosUploaded = $return && $return->customer_condition_photos && count(json_decode($return->customer_condition_photos, true)) > 0;
                 $hasReview = $return && $return->review;
-                $checked = $return->return_status === 'checked';
-                $itemCollected = $return->return_status === 'collected';
-                $returnCompleted = $return->return_status === 'done' || $return->return_status === 'completed';
+                $photosUploaded = $return && $return->customer_condition_photos && count(json_decode($return->customer_condition_photos, true)) > 0;
+                $hasReview = $return && $return->review;
+                $hasCondition = $return && $return->product_condition; // ✅ Tambahan logika
+
+                // logika existing
+                $hasCondition = $return && $return->product_condition;
+                $checked = $return && $return->return_status === 'checked';
+                $itemCollected = $return && $return->return_status === 'collected';
+                $returnCompleted = in_array($return->return_status, ['done', 'completed']);
 
 
+                // Hitung step
                 $completedUntil = 0;
                 if ($photosUploaded) $completedUntil = 1;
-                if ($hasReview) $completedUntil = 2;
-                if ($checked) $completedUntil = 3;
-                if ($itemCollected) $completedUntil = 4;
+                if ($photosUploaded && $hasReview) $completedUntil = 2;
+                if ($photosUploaded && $hasReview && $checked) $completedUntil = 3;
+                if ($photosUploaded && $hasReview && $itemCollected) $completedUntil = 4;
                 if ($returnCompleted) $completedUntil = 5;
 
                 $steps = collect($rawSteps)->map(function($step, $i) use ($completedUntil) {

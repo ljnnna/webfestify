@@ -42,7 +42,7 @@ public function index()
         'review.user',     
         'review.product'   
     ])
-    ->whereIn('return_status', ['in_process', 'checked'])
+    ->whereIn('return_status', ['in_process', 'checked', 'collected'])
 
     ->orderBy('created_at', 'desc')
     ->get();
@@ -86,10 +86,13 @@ public function uploadCondition(Request $request, $id)
         $return->condition_after = json_encode($photos);
 
         // ✅ Otomatis update status menjadi 'checked'
-        if ($return->return_status === 'in_process') {
-            $return->return_status = 'checked';
+        if (in_array($return->return_status, ['in_process', 'checked'])) {
+            // ✅ Jangan ubah kalau sudah collected atau completed
+            if (!in_array($return->return_status, ['collected', 'completed'])) {
+                $return->return_status = 'checked';
+            }
         }
-
+        
         $return->save();
 
         return back()->with('success', 'Condition after photos uploaded successfully.');
@@ -121,16 +124,40 @@ public function updateStatus(Request $request, $id)
 
 public function updateNotes(Request $request, $id)
 {
-    $request->validate([
-        'condition_notes' => 'nullable|string|max:500',
-        'product_condition' => 'nullable|in:excellent,good,fair,poor,damaged',
-        'penalty_amount' => 'nullable|numeric|min:0'
-    ]);
-
     $returnProduct = ReturnProduct::findOrFail($id);
-    $returnProduct->condition_notes = $request->condition_notes;
-    $returnProduct->product_condition = $request->product_condition;
-    $returnProduct->penalty_amount = $request->penalty_amount ?? 0;
+
+    if ($request->has('condition_notes')) {
+        $request->validate([
+            'condition_notes' => 'nullable|string|max:500',
+        ]);
+        $returnProduct->condition_notes = $request->condition_notes;
+    }
+
+    if ($request->has('product_condition')) {
+        $request->validate([
+            'product_condition' => 'nullable|in:excellent,good,fair,poor,damaged',
+        ]);
+        $returnProduct->product_condition = $request->product_condition;
+    }
+
+    if ($request->has('penalty_amount')) {
+        $request->validate([
+            'penalty_amount' => 'nullable|numeric|min:0',
+        ]);
+        $returnProduct->penalty_amount = $request->penalty_amount ?? 0;
+    }
+
+    // ✅ HANYA ubah ke 'collected' jika sudah 'checked' dan kondisi barang bagus
+    if (
+        in_array($returnProduct->product_condition, ['good', 'excellent']) &&
+        $returnProduct->return_status === 'checked'
+    ) {
+        // ✅ Jangan timpa kalau sudah completed
+        if ($returnProduct->return_status !== 'completed') {
+            $returnProduct->return_status = 'collected';
+        }
+    }
+    
 
     $returnProduct->save();
 
@@ -202,8 +229,6 @@ public function updateNotes(Request $request, $id)
         ]);
     
         $order = Order::with('returnProducts')->findOrFail($orderId);
-    
-        // Ambil satu returnProduct milik order ini saja
         $returnProduct = $order->returnProducts()->first();
     
         if (!$returnProduct) {
@@ -220,8 +245,13 @@ public function updateNotes(Request $request, $id)
         }
     
         $mergedPhotos = array_unique(array_merge($existingPhotos, $paths));
-    
         $returnProduct->customer_condition_photos = json_encode($mergedPhotos);
+    
+        // ❌ HAPUS BAGIAN INI
+        // if (in_array($returnProduct->return_status, ['in_process', null])) {
+        //     $returnProduct->return_status = 'checked';
+        // }
+    
         $returnProduct->save();
     
         return back()->with('success', 'Photos uploaded successfully.');

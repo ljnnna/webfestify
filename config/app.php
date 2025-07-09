@@ -131,6 +131,8 @@ return [
     'URL' => Illuminate\Support\Facades\URL::class,
     'Str' => Illuminate\Support\Str::class,
     'File' => Illuminate\Support\Facades\File::class,
+    'DB' => Illuminate\Support\Facades\DB::class,
+
     ]
 
 ];
