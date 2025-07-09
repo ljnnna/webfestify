@@ -45,7 +45,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::delete('/product/{product}/image/{imageId}', [ProductController::class, 'deleteImage'])->name('product.image.destroy');
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     
-     
+
     Route::put('/returns/{return}/mark-collected', [ReturnProductController::class, 'markCollected'])->name('returns.markCollected');
 
     
@@ -83,7 +83,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/orders/{order}/confirm-pickup', [OrderController::class, 'confirmPickup'])->name('order.confirmPickup');
     Route::get('/return/initiate/{order}/{orderProduct}', [ReturnProductController::class, 'initiate'])->name('return.initiate');
     Route::post('/return/create/{order}/{orderProduct}', [ReturnProductController::class, 'createReturn'])->name('return.create');
-    
+    Route::get('/return/history/{order}/{orderProduct}', [ReturnProductController::class, 'viewHistory'])->name('return.history');
+
     Route::get('/return/{order}/{orderProduct}/pickup', [ReturnProductController::class, 'pickupView'])
     ->name('return.pickup.view');
     Route::get('/return/{order}/dropoff/item/{orderProduct}', [ReturnProductController::class, 'dropoffItemView'])

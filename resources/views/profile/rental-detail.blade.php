@@ -79,6 +79,16 @@
                                                 </a>
                                             </div>
                                         @endif
+                                        @foreach ($order->orderProducts as $orderProduct)
+    @if ($order->status !== 'active')
+        <div class="mt-4">
+            <a href="{{ route('return.history', ['order' => $order->id, 'orderProduct' => $orderProduct->id]) }}"
+                class="bg-gray-700 text-white px-4 py-2 rounded shadow text-sm">
+                View History - {{ $orderProduct->product->name ?? 'Product' }}
+            </a>
+        </div>
+    @endif
+@endforeach
                                     </div>
                                 </div>
                             </div>

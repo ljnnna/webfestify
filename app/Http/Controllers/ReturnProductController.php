@@ -381,6 +381,25 @@ public function updateNotes(Request $request, $id)
         ]);
     }
 
+    public function viewHistory(Order $order, OrderProduct $orderProduct)
+    {
+        $return = ReturnProduct::with(['review'])
+            ->where('order_id', $order->id)
+            ->where('order_product_id', $orderProduct->id)
+            ->first();
+    
+        return view('returns.history', [
+            'order' => $order,
+            'orderProduct' => $orderProduct,
+            'return' => $return
+        ]);
+    }
+    
+    
+    
+    
+
+
 
 }
 
