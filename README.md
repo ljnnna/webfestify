@@ -1,84 +1,80 @@
+Festify - Sistem Penyewaan Kebutuhan Konser
 <p align="center">
   <img src="https://github.com/ljnnna/webfestify/blob/main/public/images/logofestify.png?raw=true" alt="Logo Festify" width="200">
 </p>
+Tentang Proyek
+Festify adalah platform digital yang memudahkan penonton konser dalam menyewa perlengkapan yang dibutuhkan selama acara berlangsung. Aplikasi web ini menyediakan berbagai item penyewaan seperti matras, jas hujan, kipas angin, dan perlengkapan lainnya dengan sistem pengecekan ketersediaan real-time berdasarkan tanggal acara.
+Tim Pengembang - Pixelfront
+NamaNIMPeranSalsabila3312401055UI Designer & Frontend DeveloperNania Maharanny3312401057Backend DeveloperElsa Veronika M.3312401036Database EngineerTheo Febrian S.3312401039Project Manager & IntegratorElisabeth M. T.3312401047System Analyst & Tester
+Fitur Aplikasi
+Untuk Pengguna
 
-<h1 align="center">🎉 Festify</h1>
-<p align="center">Sistem Penyewaan Kebutuhan Konser untuk Penonton</p>
+Pencarian & Filter: Cari barang berdasarkan kategori dan tanggal ketersediaan
+Keranjang Belanja: Kelola item yang akan disewa dengan mudah
+Sistem Checkout: Proses penyewaan yang sederhana dan aman
+Riwayat Transaksi: Pantau status penyewaan dan riwayat peminjaman
+Notifikasi: Pemberitahuan real-time untuk status persetujuan
 
----
+Untuk Admin
 
-## 📝 Deskripsi Proyek
+Manajemen Inventori: Kelola stok dan ketersediaan barang
+Verifikasi Pesanan: Setujui atau tolak permintaan penyewaan
+Dashboard Analytics: Monitor performa dan statistik penyewaan
+Manajemen Pengguna: Kelola data dan aktivitas pengguna
 
-**Festify** adalah platform penyewaan perlengkapan konser khusus untuk penonton. Dirancang untuk memberikan kemudahan dan kenyamanan bagi para penikmat konser yang ingin menyewa barang-barang seperti matras, jas hujan, kipas angin, dan lainnya.  
-Dengan sistem pengecekan ketersediaan berdasarkan tanggal, pengguna bisa memastikan barang yang dibutuhkan tersedia saat konser berlangsung.
+Teknologi
 
----
+Backend: PHP Native
+Database: MySQL
+Frontend: HTML5, CSS3, JavaScript
+Framework CSS: Bootstrap 5
+Version Control: Git & GitHub
 
-## 👨‍💻 Tim Pengembang – Pixelfront
+Instalasi
+Prasyarat
 
-| Nama | Peran |
-|------|-------|
-| Salsa Bila | UI Designer & Frontend Developer |
-| [Nama 2] | Backend Developer |
-| [Nama 3] | Database Engineer |
-| [Nama 4] | Project Manager & Integrator |
+XAMPP/WAMP/LAMP (Apache, MySQL, PHP 7.4+)
+Web browser modern
+Git (opsional)
 
----
+Langkah Instalasi
 
-## 📚 Dokumentasi Proyek
-
-| Dokumen | Tautan |
-|--------|--------|
-| 📄 Laporan Akhir | [Google Docs](https://...) |
-| 📘 SRS (Software Requirement Specification) | [Google Docs](https://...) |
-| 🧩 Use Case Diagram | [Draw.io / PDF](https://...) |
-| 🏗️ Arsitektur & Antarmuka Sistem | [Figma / Docs](https://...) |
-| 💾 Desain Database (ERD) | [Google Drive](https://...) |
-
----
-
-## 🎬 Video
-
-| Jenis | Tautan |
-|-------|--------|
-| 📽️ Video Demo Aplikasi | [YouTube](https://...) |
-| 🎤 Video Presentasi Tim | [YouTube](https://...) |
-
----
-
-## 🧩 Fitur Utama
-
-- 🔍 Cek ketersediaan barang berdasarkan tanggal
-- 🛒 Tambah ke keranjang & sistem checkout
-- 👥 Autentikasi pengguna (Login/Register)
-- 🧾 Riwayat penyewaan & status peminjaman
-- 📤 Admin verifikasi & kelola barang
-- 📩 Notifikasi status (disetujui, ditolak, selesai)
-
----
-
-## 💻 Teknologi yang Digunakan
-
-- PHP Native
-- MySQL
-- HTML5 + CSS3
-- JavaScript
-- Bootstrap 5
-
----
-
-## 📦 Kelengkapan Lain
-
-- [📑 Slide Presentasi](https://...)  
-- [📂 Repository Kode Program](https://github.com/ljnnna/webfestify)  
-- [📎 Panduan Instalasi & Penggunaan](https://github.com/ljnnna/webfestify#instalasi)
-
----
-
-## 🛠️ Cara Instalasi (Localhost)
-
-```bash
-git clone https://github.com/ljnnna/webfestify.git
+Clone Repository
+bashgit clone https://github.com/ljnnna/webfestify.git
 cd webfestify
-# Import database festify.sql ke phpMyAdmin
-# Jalankan project di localhost (XAMPP atau lainnya)
+
+Setup Database
+
+Buka phpMyAdmin
+Buat database baru dengan nama festify
+Import file festify.sql yang tersedia di folder database
+
+
+Konfigurasi
+
+Sesuaikan pengaturan database di file config/database.php
+Pastikan path dan kredensial database sudah benar
+
+
+Menjalankan Aplikasi
+
+Tempatkan folder project di htdocs (XAMPP) atau www (WAMP)
+Akses melalui browser: http://localhost/webfestify
+
+
+
+Dokumentasi
+DokumenStatusLaporan AkhirTersediaSoftware Requirement Specification (SRS)TersediaUse Case DiagramTersediaDesain Antarmuka & Arsitektur SistemTersediaEntity Relationship Diagram (ERD)Tersedia
+Media Presentasi
+
+Demo Aplikasi: Video YouTube
+Presentasi Tim: Video YouTube
+Slide Presentasi: Google Slides
+
+Kontribusi
+Proyek ini dikembangkan sebagai tugas akhir mata kuliah. Untuk saran dan masukan, silakan buat issue atau hubungi tim pengembang.
+Lisensi
+Proyek ini dikembangkan untuk keperluan akademik. Penggunaan untuk tujuan komersial memerlukan izin dari tim pengembang.
+
+Repository: github.com/ljnnna/webfestify
+Tim Pixelfront © 2024
