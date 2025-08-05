@@ -32,6 +32,7 @@ Berikut adalah dokumen dan berkas penting terkait pengembangan Festify:
 |----------|--------|
 | 📄 Laporan Proyek | [Laporan PBL Semester 2 (PDF)](https://github.com/ljnnna/webfestify/blob/main/Laporan%20PBL%20Sem%202%20IF%20-%202025.pdf) |
 | 💾 PowerPoint Presentasi | [PowerPoint AAS Festify (PDF)](https://github.com/ljnnna/webfestify/blob/main/Ppt%20Presentasi%20PBLIF-002%20Festify.pdf) |
+| 📝 Manual Book | [Manual Book Festify (PDF)](https://github.com/ljnnna/webfestify/blob/main/Manual%20Book%20PBLIF-002%20Aplikasi%20Festify%20-%20IF%202B%20Pagi.pdf) |
 
 ---
 
@@ -41,6 +42,11 @@ Berikut adalah dokumen dan berkas penting terkait pengembangan Festify:
 |------|--------|
 | Demo Aplikasi | [YouTube](https://youtu.be/yatBjLxDLx8) |
 | Presentasi Tim | [YouTube](https://youtu.be/atSsFnIRdi8) |
+
+## 📷 Poster
+<p align="center">
+  <img src="https://github.com/ljnnna/webfestify/blob/main/Poster%20PBLIF-002%20Festify%20IF2B%20Pagi%20HD.png" alt="Poster Festify" width="200">
+</p>
 
 ---
 
