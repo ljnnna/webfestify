@@ -43,6 +43,8 @@ Berikut adalah dokumen dan berkas penting terkait pengembangan Festify:
 | Demo Aplikasi | [YouTube](https://youtu.be/yatBjLxDLx8) |
 | Presentasi Tim | [YouTube](https://youtu.be/atSsFnIRdi8) |
 
+---
+
 ## 📷 Poster
 <p align="center">
   <img src="https://github.com/ljnnna/webfestify/blob/main/Poster%20PBLIF-002%20Festify%20IF2B%20Pagi%20HD.png" alt="Poster Festify" width="200">
