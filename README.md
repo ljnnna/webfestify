@@ -24,7 +24,7 @@
 
 ---
 
-## 📂 Struktur Dokumentasi
+## 📂 File Dokumentasi
 
 Berikut adalah dokumen dan berkas penting terkait pengembangan Festify:
 
