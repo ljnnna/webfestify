@@ -30,8 +30,8 @@ Berikut adalah dokumen dan berkas penting terkait pengembangan Festify:
 
 | Kategori | Tautan |
 |----------|--------|
-| 📄 Laporan Proyek Lengkap | [Google Docs](https://...) |
-| 💾 PowerPoint Presentasi | [Google Docs](https://...) |
+| 📄 Laporan Proyek Lengkap | [Laporan PBL Semester 2 (PDF)](https://github.com/ljnnna/webfestify/blob/main/Laporan%20PBL%20Sem%202%20IF%20-%202025.pdf) |
+| 💾 PowerPoint Presentasi | [PowerPoint AAS Festify (PDF)]([https://...](https://github.com/ljnnna/webfestify/blob/main/Ppt%20Presentasi%20PBLIF-002%20Festify.pdf)) |
 
 ---
 
