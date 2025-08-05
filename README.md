@@ -14,13 +14,13 @@
 
 ## 👥 Tim Pengembang
 
-| NIM | Nama |
-|-----|------|
-| 3312401057 | Nania Maharanny |
-| 3312401036 | Elsa Veronika M. |
-| 3312401039 | Theo Febrian S. |
-| 3312401047 | Elisabeth M. T. |
-| 3312401055 | Salsabila |
+| NIM | Nama Lengkap | GitHub |
+|-----|---------------|--------|
+| 3312401057 | Nania Maharanny | [@ljnnna](https://github.com/ljnnna) |
+| 3312401036 | Elsa Veronika M. | [@elsaveroo](https://github.com/elsaveroo) |
+| 3312401039 | Theo Febrian S. | [@theofebrian](https://github.com/Kenma-ps) |
+| 3312401047 | Elisabeth M. T. | [@elisabeth1047](https://github.com/elisabeth1047) |
+| 3312401055 | Salsabila | [@xalxabila](https://github.com/xalxabila) |
 
 ---
 
@@ -30,8 +30,8 @@ Berikut adalah dokumen dan berkas penting terkait pengembangan Festify:
 
 | Kategori | Tautan |
 |----------|--------|
-| 📄 Laporan Proyek Lengkap | [Laporan PBL Semester 2 (PDF)](https://github.com/ljnnna/webfestify/blob/main/Laporan%20PBL%20Sem%202%20IF%20-%202025.pdf) |
-| 💾 PowerPoint Presentasi | [PowerPoint AAS Festify (PDF)]([https://...](https://github.com/ljnnna/webfestify/blob/main/Ppt%20Presentasi%20PBLIF-002%20Festify.pdf)) |
+| 📄 Laporan Proyek | [Laporan PBL Semester 2 (PDF)](https://github.com/ljnnna/webfestify/blob/main/Laporan%20PBL%20Sem%202%20IF%20-%202025.pdf) |
+| 💾 PowerPoint Presentasi | [PowerPoint AAS Festify (PDF)](https://github.com/ljnnna/webfestify/blob/main/Ppt%20Presentasi%20PBLIF-002%20Festify.pdf) |
 
 ---
 
@@ -52,8 +52,6 @@ Berikut adalah dokumen dan berkas penting terkait pengembangan Festify:
 - 📦 Status penyewaan: menunggu, disetujui, ditolak, selesai
 - 🧾 Riwayat penyewaan pengguna
 - 👑 Panel admin untuk verifikasi & manajemen barang
-
----
 
 ---
 
