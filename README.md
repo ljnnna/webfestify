@@ -1,97 +1,78 @@
-```markdown
-# Festify - Sistem Penyewaan Kebutuhan Konser
-
 <p align="center">
   <img src="https://github.com/ljnnna/webfestify/blob/main/public/images/logofestify.png?raw=true" alt="Logo Festify" width="200">
 </p>
 
-## Tentang Proyek
-
-Festify adalah platform digital yang memudahkan penonton konser dalam menyewa perlengkapan yang dibutuhkan selama acara berlangsung. Aplikasi web ini menyediakan berbagai item penyewaan seperti matras, jas hujan, kipas angin, dan perlengkapan lainnya dengan sistem pengecekan ketersediaan real-time berdasarkan tanggal acara.
-
-## Tim Pengembang - Pixelfront
-
-| Nama | NIM | Peran |
-|------|-----|-------|
-| Salsabila | 3312401055 | UI Designer & Frontend Developer |
-| Nania Maharanny | 3312401057 | Backend Developer |
-| Elsa Veronika M. | 3312401036 | Database Engineer |
-| Theo Febrian S. | 3312401039 | Project Manager & Integrator |
-| Elisabeth M. T. | 3312401047 | System Analyst & Tester |
-
-## Fitur Aplikasi
-
-### Untuk Pengguna
-- **Pencarian & Filter**: Cari barang berdasarkan kategori dan tanggal ketersediaan
-- **Keranjang Belanja**: Kelola item yang akan disewa dengan mudah
-- **Sistem Checkout**: Proses penyewaan yang sederhana dan aman
-- **Riwayat Transaksi**: Pantau status penyewaan dan riwayat peminjaman
-- **Notifikasi**: Pemberitahuan real-time untuk status persetujuan
-
-### Untuk Admin
-- **Manajemen Inventori**: Kelola stok dan ketersediaan barang
-- **Verifikasi Pesanan**: Setujui atau tolak permintaan penyewaan
-- **Dashboard Analytics**: Monitor performa dan statistik penyewaan
-- **Manajemen Pengguna**: Kelola data dan aktivitas pengguna
-
-## Teknologi
-
-- **Backend**: PHP Native
-- **Database**: MySQL
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Framework CSS**: Bootstrap 5
-- **Version Control**: Git & GitHub
-
-## Instalasi
-
-### Prasyarat
-- XAMPP/WAMP/LAMP (Apache, MySQL, PHP 7.4+)
-- Web browser modern
-- Git (opsional)
-
-### Langkah Instalasi
-
-1. **Clone Repository**
-   ```bash
-   git clone https://github.com/ljnnna/webfestify.git
-   cd webfestify
-   ```
-
-2. **Setup Database**
-   - Buka phpMyAdmin
-   - Buat database baru dengan nama `festify`
-   - Import file `festify.sql` yang tersedia di folder database
-
-3. **Konfigurasi**
-   - Sesuaikan pengaturan database di file `config/database.php`
-   - Pastikan path dan kredensial database sudah benar
-
-4. **Menjalankan Aplikasi**
-   - Tempatkan folder project di `htdocs` (XAMPP) atau `www` (WAMP)
-   - Akses melalui browser: `http://localhost/webfestify`
-
-## Dokumentasi
-
-| Dokumen | Status |
-|---------|--------|
-| Laporan Akhir | [Tersedia](https://...) |
-
-## Media Presentasi
-
-- **Demo Aplikasi**: [Video YouTube]([https://...](https://youtu.be/yatBjLxDLx8))
-- **Presentasi Tim**: [Video YouTube]([https://...](https://youtu.be/atSsFnIRdi8))
-- **Slide Presentasi**: [Google Slides](https://...)
-
-## Kontribusi
-
-Proyek ini dikembangkan sebagai tugas akhir mata kuliah. Untuk saran dan masukan, silakan buat issue atau hubungi tim pengembang.
-
-## Lisensi
-
-Proyek ini dikembangkan untuk keperluan akademik. Penggunaan untuk tujuan komersial memerlukan izin dari tim pengembang.
+<h1 align="center">FESTIFY</h1>
+<p align="center"><i>Sewa kebutuhan konser tanpa ribet – semua bisa lewat Festify.</i></p>
 
 ---
 
-**Repository**: [github.com/ljnnna/webfestify](https://github.com/ljnnna/webfestify)  
-**Tim Festify** © 2025
-```
+## 📌 Tentang Festify
+
+**Festify** adalah sebuah sistem penyewaan perlengkapan konser yang dirancang khusus untuk penonton. Kami memahami bahwa menghadiri konser sering kali membutuhkan berbagai perlengkapan tambahan — mulai dari jas hujan hingga matras duduk. Dengan Festify, pengguna bisa mencari, memesan, dan mengecek ketersediaan barang yang dibutuhkan hanya dalam beberapa klik, lengkap dengan sistem pengecekan berdasarkan tanggal acara.
+
+Festify hadir sebagai solusi sederhana namun efisien bagi siapa pun yang ingin menikmati konser dengan lebih nyaman dan siap.
+
+---
+
+## 👥 Tim Pengembang
+
+| NIM | Nama |
+|-----|------|
+| 3312401057 | Nania Maharanny |
+| 3312401036 | Elsa Veronika M. |
+| 3312401039 | Theo Febrian S. |
+| 3312401047 | Elisabeth M. T. |
+| 3312401055 | Salsabila |
+
+---
+
+## 📂 Struktur Dokumentasi
+
+Berikut adalah dokumen dan berkas penting terkait pengembangan Festify:
+
+| Kategori | Tautan |
+|----------|--------|
+| 📄 Laporan Proyek Lengkap | [Google Docs](https://...) |
+| 📘 SRS (Software Requirement Specification) | [Google Docs](https://...) |
+| 🧩 Use Case Diagram | [Draw.io / PDF](https://...) |
+| 🏗️ Arsitektur Sistem & Antarmuka | [Figma / Docs](https://...) |
+| 💾 Desain Database (ERD & Relasi Tabel) | [Google Drive](https://...) |
+
+---
+
+## 🎬 Video
+
+| Tipe | Tautan |
+|------|--------|
+| Demo Aplikasi | [YouTube](https://...) |
+| Presentasi Tim | [YouTube](https://...) |
+
+---
+
+## 🔧 Fitur Unggulan
+
+- 🔍 Cek ketersediaan barang berdasarkan tanggal konser
+- 🛒 Sistem penyewaan lengkap dengan keranjang & checkout
+- 👥 Login & registrasi pengguna
+- 📦 Status penyewaan: menunggu, disetujui, ditolak, selesai
+- 🧾 Riwayat penyewaan pengguna
+- 👑 Panel admin untuk verifikasi & manajemen barang
+
+---
+
+## 💡 Teknologi yang Digunakan
+
+- **PHP Native**
+- **MySQL**
+- **HTML5, CSS3, Bootstrap 5**
+- **JavaScript (vanilla)**
+
+---
+
+## 🚀 Cara Menjalankan di Localhost
+
+1. Clone repository:
+   ```bash
+   git clone https://github.com/ljnnna/webfestify.git
+   cd webfestify
