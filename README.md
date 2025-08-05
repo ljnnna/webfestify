@@ -2,16 +2,13 @@
   <img src="https://github.com/ljnnna/webfestify/blob/main/public/images/logofestify.png?raw=true" alt="Logo Festify" width="200">
 </p>
 
-<h1 align="center">FESTIFY</h1>
 <p align="center"><i>Sewa kebutuhan konser tanpa ribet – semua bisa lewat Festify.</i></p>
 
 ---
 
 ## 📌 Tentang Festify
 
-**Festify** adalah sebuah sistem penyewaan perlengkapan konser yang dirancang khusus untuk penonton. Kami memahami bahwa menghadiri konser sering kali membutuhkan berbagai perlengkapan tambahan — mulai dari jas hujan hingga matras duduk. Dengan Festify, pengguna bisa mencari, memesan, dan mengecek ketersediaan barang yang dibutuhkan hanya dalam beberapa klik, lengkap dengan sistem pengecekan berdasarkan tanggal acara.
-
-Festify hadir sebagai solusi sederhana namun efisien bagi siapa pun yang ingin menikmati konser dengan lebih nyaman dan siap.
+**Aplikasi Festify** merupakan sebuah platform online berbasis website yang menyediakan layanan penyewaan berbagai perlengkapan konser seperti lightstick, perangkat elektronik seperti kamera dan powerbank, serta merchandise dan aksesorir konser lainnya. Pengembangan website ini dilakukan untuk memudahkan penonton konser dalam mencari dan menyewa peralatan yang dibutuhkan secara efisien. Dengan adanya website ini, pengguna dapat dengan mudah memilih, memesan, dan mengelola penyewaan perlengkapan konser secara online. 
 
 ---
 
@@ -34,10 +31,7 @@ Berikut adalah dokumen dan berkas penting terkait pengembangan Festify:
 | Kategori | Tautan |
 |----------|--------|
 | 📄 Laporan Proyek Lengkap | [Google Docs](https://...) |
-| 📘 SRS (Software Requirement Specification) | [Google Docs](https://...) |
-| 🧩 Use Case Diagram | [Draw.io / PDF](https://...) |
-| 🏗️ Arsitektur Sistem & Antarmuka | [Figma / Docs](https://...) |
-| 💾 Desain Database (ERD & Relasi Tabel) | [Google Drive](https://...) |
+| 💾 PowerPoint Presentasi | [Google Docs](https://...) |
 
 ---
 
@@ -45,8 +39,8 @@ Berikut adalah dokumen dan berkas penting terkait pengembangan Festify:
 
 | Tipe | Tautan |
 |------|--------|
-| Demo Aplikasi | [YouTube](https://...) |
-| Presentasi Tim | [YouTube](https://...) |
+| Demo Aplikasi | [YouTube](https://youtu.be/yatBjLxDLx8) |
+| Presentasi Tim | [YouTube](https://youtu.be/atSsFnIRdi8) |
 
 ---
 
@@ -60,13 +54,6 @@ Berikut adalah dokumen dan berkas penting terkait pengembangan Festify:
 - 👑 Panel admin untuk verifikasi & manajemen barang
 
 ---
-
-## 💡 Teknologi yang Digunakan
-
-- **PHP Native**
-- **MySQL**
-- **HTML5, CSS3, Bootstrap 5**
-- **JavaScript (vanilla)**
 
 ---
 
